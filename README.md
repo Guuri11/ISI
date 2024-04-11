@@ -9,7 +9,7 @@ Why ISI? ISI was my cat that passed away some time ago, so this is kind of a ded
 
 
 ## Demo
-Not the best video/audio quality, but good enough for the POC
+Not the best video/audio quality, but good enough for the POC (audio in spanish)
 
 
 https://github.com/Guuri11/ISI/assets/48799796/9454e0d6-2bd3-4467-9544-4dd5c14b7084
