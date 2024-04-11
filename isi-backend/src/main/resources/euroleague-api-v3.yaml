@@ -1,0 +1,3271 @@
+openapi: 3.0.1
+info:
+  title: Competition Engine
+  version: '3.0'
+servers:
+  - url: https://api-live.euroleague.net
+paths:
+  /v3/clubs:
+    get:
+      tags:
+        - Clubs
+      summary: Get all registered clubs
+      parameters:
+        - name: Limit
+          in: query
+          schema:
+            maximum: 2147483647
+            minimum: 0
+            type: integer
+            format: int32
+        - name: Offset
+          in: query
+          schema:
+            maximum: 2147483647
+            minimum: 0
+            type: integer
+            format: int32
+        - name: hasParentClub
+          in: query
+          description: ''
+          schema:
+            type: boolean
+        - name: search
+          in: query
+          description: ''
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClubModelPagingResultModel'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ClubModelPagingResultModel'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - OAuth2:
+            - euroleagueapi
+  '/v3/clubs/{clubCode}':
+    get:
+      tags:
+        - Clubs
+      summary: Get a club by its code
+      parameters:
+        - name: clubCode
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClubModel'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ClubModel'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - OAuth2:
+            - euroleagueapi
+  '/v3/clubs/{clubCode}/info':
+    get:
+      tags:
+        - Clubs
+      summary: Get a club by its code
+      parameters:
+        - name: clubCode
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClubInfoModel'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ClubInfoModel'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - OAuth2:
+            - euroleagueapi
+  '/v3/competitions/{competitionCode}/seasons/{seasonCode}/coaches/{coachCode}':
+    get:
+      tags:
+        - Coaches
+      parameters:
+        - name: competitionCode
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: seasonCode
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: coachCode
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CoachRecordsModel'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CoachRecordsModel'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - OAuth2:
+            - euroleagueapi
+  '/v3/competitions/{competitionCode}/seasons/{seasonCode}/games/{gameCode}/report':
+    get:
+      tags:
+        - Games
+      parameters:
+        - name: competitionCode
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: seasonCode
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: gameCode
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MatchReportModel'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/MatchReportModel'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - OAuth2:
+            - euroleagueapi
+  '/v3/competitions/{competitionCode}/statistics/players/leaders':
+    get:
+      tags:
+        - PlayersStats
+      parameters:
+        - name: competitionCode
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: SeasonMode
+          in: query
+          schema:
+            $ref: '#/components/schemas/SeasonRangeModeModel'
+        - name: SeasonCode
+          in: query
+          schema:
+            type: string
+        - name: FromSeasonCode
+          in: query
+          schema:
+            type: string
+        - name: ToSeasonCode
+          in: query
+          schema:
+            type: string
+        - name: phaseTypeCode
+          in: query
+          schema:
+            type: string
+        - name: teamCode
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            format: int32
+            default: 200
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlayerLeaderModelLeadersModel'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/PlayerLeaderModelLeadersModel'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - OAuth2:
+            - euroleagueapi
+  '/v3/competitions/{competitionCode}/statistics/players/traditional':
+    get:
+      tags:
+        - PlayersStats
+      parameters:
+        - name: competitionCode
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: SeasonMode
+          in: query
+          schema:
+            $ref: '#/components/schemas/SeasonRangeModeModel'
+        - name: SeasonCode
+          in: query
+          schema:
+            type: string
+        - name: FromSeasonCode
+          in: query
+          schema:
+            type: string
+        - name: ToSeasonCode
+          in: query
+          schema:
+            type: string
+        - name: phaseTypeCode
+          in: query
+          schema:
+            type: string
+        - name: statisticMode
+          in: query
+          schema:
+            $ref: '#/components/schemas/StatsAggregateModel'
+        - name: statisticSortMode
+          in: query
+          schema:
+            $ref: '#/components/schemas/StatsAggregateModel'
+        - name: statistic
+          in: query
+          schema:
+            $ref: '#/components/schemas/StatsCategoryModel'
+        - name: sortDirection
+          in: query
+          schema:
+            $ref: '#/components/schemas/ListSortDirection'
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            format: int32
+            default: 100
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlayersTraditionalStatsModel'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/PlayersTraditionalStatsModel'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - OAuth2:
+            - euroleagueapi
+  '/v3/competitions/{competitionCode}/statistics/players/advanced':
+    get:
+      tags:
+        - PlayersStats
+      parameters:
+        - name: competitionCode
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: SeasonMode
+          in: query
+          schema:
+            $ref: '#/components/schemas/SeasonRangeModeModel'
+        - name: SeasonCode
+          in: query
+          schema:
+            type: string
+        - name: FromSeasonCode
+          in: query
+          schema:
+            type: string
+        - name: ToSeasonCode
+          in: query
+          schema:
+            type: string
+        - name: phaseTypeCode
+          in: query
+          schema:
+            type: string
+        - name: statisticMode
+          in: query
+          schema:
+            $ref: '#/components/schemas/StatsAggregateModel'
+        - name: statistic
+          in: query
+          schema:
+            $ref: '#/components/schemas/StatsCategoryModel'
+        - name: sortDirection
+          in: query
+          schema:
+            $ref: '#/components/schemas/ListSortDirection'
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            format: int32
+            default: 100
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlayersAdvancedStatsModel'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/PlayersAdvancedStatsModel'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - OAuth2:
+            - euroleagueapi
+  '/v3/competitions/{competitionCode}/statistics/players/misc':
+    get:
+      tags:
+        - PlayersStats
+      parameters:
+        - name: competitionCode
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: SeasonMode
+          in: query
+          schema:
+            $ref: '#/components/schemas/SeasonRangeModeModel'
+        - name: SeasonCode
+          in: query
+          schema:
+            type: string
+        - name: FromSeasonCode
+          in: query
+          schema:
+            type: string
+        - name: ToSeasonCode
+          in: query
+          schema:
+            type: string
+        - name: phaseTypeCode
+          in: query
+          schema:
+            type: string
+        - name: statisticMode
+          in: query
+          schema:
+            $ref: '#/components/schemas/StatsAggregateModel'
+        - name: statistic
+          in: query
+          schema:
+            $ref: '#/components/schemas/StatsCategoryModel'
+        - name: sortDirection
+          in: query
+          schema:
+            $ref: '#/components/schemas/ListSortDirection'
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            format: int32
+            default: 100
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlayersMiscStatsModel'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/PlayersMiscStatsModel'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - OAuth2:
+            - euroleagueapi
+  '/v3/competitions/{competitionCode}/statistics/players/scoring':
+    get:
+      tags:
+        - PlayersStats
+      parameters:
+        - name: competitionCode
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: SeasonMode
+          in: query
+          schema:
+            $ref: '#/components/schemas/SeasonRangeModeModel'
+        - name: SeasonCode
+          in: query
+          schema:
+            type: string
+        - name: FromSeasonCode
+          in: query
+          schema:
+            type: string
+        - name: ToSeasonCode
+          in: query
+          schema:
+            type: string
+        - name: phaseTypeCode
+          in: query
+          schema:
+            type: string
+        - name: statisticMode
+          in: query
+          schema:
+            $ref: '#/components/schemas/StatsAggregateModel'
+        - name: statistic
+          in: query
+          schema:
+            $ref: '#/components/schemas/StatsCategoryModel'
+        - name: sortDirection
+          in: query
+          schema:
+            $ref: '#/components/schemas/ListSortDirection'
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            format: int32
+            default: 100
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlayersScoringStatsModel'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/PlayersScoringStatsModel'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - OAuth2:
+            - euroleagueapi
+  '/v3/competitions/{competitionCode}/seasons/{seasonCode}/rounds/{roundNumber}/calendarstandings':
+    get:
+      tags:
+        - Standings
+      summary: Gets a standings calendar
+      parameters:
+        - name: competitionCode
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+        - name: seasonCode
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+        - name: roundNumber
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalendarStandingsModel'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CalendarStandingsModel'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - OAuth2:
+            - euroleagueapi
+  '/v3/competitions/{competitionCode}/seasons/{seasonCode}/rounds/{roundNumber}/streaks':
+    get:
+      tags:
+        - Standings
+      summary: Get a standings streaks
+      parameters:
+        - name: competitionCode
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+        - name: seasonCode
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+        - name: roundNumber
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StreakStandingsModel'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/StreakStandingsModel'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - OAuth2:
+            - euroleagueapi
+  '/v3/competitions/{competitionCode}/seasons/{seasonCode}/rounds/{roundNumber}/aheadbehind':
+    get:
+      tags:
+        - Standings
+      summary: Get a Ahead/Behind standings
+      parameters:
+        - name: competitionCode
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+        - name: seasonCode
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+        - name: roundNumber
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AheadBehindStandingsModel'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/AheadBehindStandingsModel'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - OAuth2:
+            - euroleagueapi
+  '/v3/competitions/{competitionCode}/seasons/{seasonCode}/rounds/{roundNumber}/margins':
+    get:
+      tags:
+        - Standings
+      summary: Get a margins standings
+      parameters:
+        - name: competitionCode
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+        - name: seasonCode
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+        - name: roundNumber
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MarginsStandingsModel'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/MarginsStandingsModel'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - OAuth2:
+            - euroleagueapi
+  '/v3/competitions/{competitionCode}/seasons/{seasonCode}/rounds/{roundNumber}/basicstandings':
+    get:
+      tags:
+        - Standings
+      summary: Get a basic standings
+      parameters:
+        - name: competitionCode
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+        - name: seasonCode
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+        - name: roundNumber
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicStandingsModel'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/BasicStandingsModel'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - OAuth2:
+            - euroleagueapi
+  '/v3/competitions/{competitionCode}/stats/players/leaders':
+    get:
+      tags:
+        - Stats
+      summary: Gets person leaders stats in competition
+      parameters:
+        - name: competitionCode
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: maxRound
+          in: query
+          schema:
+            type: integer
+            format: int32
+        - name: round
+          in: query
+          schema:
+            type: integer
+            format: int32
+        - name: clubCode
+          in: query
+          schema:
+            type: string
+        - name: SeasonMode
+          in: query
+          schema:
+            $ref: '#/components/schemas/SeasonRangeModeModel'
+        - name: SeasonCode
+          in: query
+          schema:
+            type: string
+        - name: FromSeasonCode
+          in: query
+          schema:
+            type: string
+        - name: ToSeasonCode
+          in: query
+          schema:
+            type: string
+        - name: phaseTypeCode
+          in: query
+          schema:
+            type: string
+        - name: category
+          in: query
+          schema:
+            $ref: '#/components/schemas/StatsCategoryModel'
+        - name: aggregate
+          in: query
+          schema:
+            $ref: '#/components/schemas/StatsAggregateModel'
+        - name: misc
+          in: query
+          schema:
+            $ref: '#/components/schemas/MiscStatsFilterModel'
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            format: int32
+            default: 200
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClubPersonStatsModelStatsCollectionModel'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ClubPersonStatsModelStatsCollectionModel'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - OAuth2:
+            - euroleagueapi
+  '/v3/competitions/{competitionCode}/seasons/{seasonCode}/clubs/{clubCode}/stats':
+    get:
+      tags:
+        - Stats
+      summary: Get a competition season club stats
+      parameters:
+        - name: competitionCode
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+        - name: seasonCode
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+        - name: clubCode
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+        - name: maxRound
+          in: query
+          description: ''
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClubAggregatedStatsModel'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClubAggregatedStatsModel'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - OAuth2:
+            - euroleagueapi
+  '/v3/competitions/{competitionCode}/seasons/{seasonCode}/games/{gameCode}/stats':
+    get:
+      tags:
+        - Stats
+      summary: Gets game statistics
+      parameters:
+        - name: competitionCode
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+        - name: seasonCode
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+        - name: gameCode
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClubsGameStatsModel'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ClubsGameStatsModel'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - OAuth2:
+            - euroleagueapi
+  '/v3/competitions/{competitionCode}/seasons/{seasonCode}/games/{gameCode}/teamsComparison':
+    get:
+      tags:
+        - Stats
+      summary: Teams comparison (pre-game)
+      parameters:
+        - name: competitionCode
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: seasonCode
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: gameCode
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamsComparisonModel'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/TeamsComparisonModel'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - OAuth2:
+            - euroleagueapi
+  '/v3/competitions/{competitionCode}/statistics/teams/leaders':
+    get:
+      tags:
+        - TeamsStats
+      parameters:
+        - name: competitionCode
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: SeasonMode
+          in: query
+          schema:
+            $ref: '#/components/schemas/SeasonRangeModeModel'
+        - name: SeasonCode
+          in: query
+          schema:
+            type: string
+        - name: FromSeasonCode
+          in: query
+          schema:
+            type: string
+        - name: ToSeasonCode
+          in: query
+          schema:
+            type: string
+        - name: phaseTypeCode
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            format: int32
+            default: 200
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamModelTeamTopPerformersModel'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/TeamModelTeamTopPerformersModel'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - OAuth2:
+            - euroleagueapi
+  '/v3/competitions/{competitionCode}/statistics/teams/traditional':
+    get:
+      tags:
+        - TeamsStats
+      parameters:
+        - name: competitionCode
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: SeasonMode
+          in: query
+          schema:
+            $ref: '#/components/schemas/SeasonRangeModeModel'
+        - name: SeasonCode
+          in: query
+          schema:
+            type: string
+        - name: FromSeasonCode
+          in: query
+          schema:
+            type: string
+        - name: ToSeasonCode
+          in: query
+          schema:
+            type: string
+        - name: phaseTypeCode
+          in: query
+          schema:
+            type: string
+        - name: statisticMode
+          in: query
+          schema:
+            $ref: '#/components/schemas/TeamStatsAggregateModel'
+        - name: statisticSortMode
+          in: query
+          schema:
+            $ref: '#/components/schemas/TeamStatsAggregateModel'
+        - name: statistic
+          in: query
+          schema:
+            $ref: '#/components/schemas/StatsCategoryModel'
+        - name: sortDirection
+          in: query
+          schema:
+            $ref: '#/components/schemas/ListSortDirection'
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            format: int32
+            default: 100
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamsTraditionalStatsModel'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/TeamsTraditionalStatsModel'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - OAuth2:
+            - euroleagueapi
+  '/v3/competitions/{competitionCode}/statistics/teams/advanced':
+    get:
+      tags:
+        - TeamsStats
+      parameters:
+        - name: competitionCode
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: SeasonMode
+          in: query
+          schema:
+            $ref: '#/components/schemas/SeasonRangeModeModel'
+        - name: SeasonCode
+          in: query
+          schema:
+            type: string
+        - name: FromSeasonCode
+          in: query
+          schema:
+            type: string
+        - name: ToSeasonCode
+          in: query
+          schema:
+            type: string
+        - name: phaseTypeCode
+          in: query
+          schema:
+            type: string
+        - name: statisticMode
+          in: query
+          schema:
+            $ref: '#/components/schemas/TeamStatsAggregateModel'
+        - name: statisticSortMode
+          in: query
+          schema:
+            $ref: '#/components/schemas/TeamStatsAggregateModel'
+        - name: statistic
+          in: query
+          schema:
+            $ref: '#/components/schemas/StatsCategoryModel'
+        - name: sortDirection
+          in: query
+          schema:
+            $ref: '#/components/schemas/ListSortDirection'
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            format: int32
+            default: 100
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamsAdvancedStatsModel'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/TeamsAdvancedStatsModel'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - OAuth2:
+            - euroleagueapi
+  '/v3/competitions/{competitionCode}/statistics/teams/opponentsTraditional':
+    get:
+      tags:
+        - TeamsStats
+      parameters:
+        - name: competitionCode
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: SeasonMode
+          in: query
+          schema:
+            $ref: '#/components/schemas/SeasonRangeModeModel'
+        - name: SeasonCode
+          in: query
+          schema:
+            type: string
+        - name: FromSeasonCode
+          in: query
+          schema:
+            type: string
+        - name: ToSeasonCode
+          in: query
+          schema:
+            type: string
+        - name: phaseTypeCode
+          in: query
+          schema:
+            type: string
+        - name: statisticMode
+          in: query
+          schema:
+            $ref: '#/components/schemas/TeamStatsAggregateModel'
+        - name: statisticSortMode
+          in: query
+          schema:
+            $ref: '#/components/schemas/TeamStatsAggregateModel'
+        - name: statistic
+          in: query
+          schema:
+            $ref: '#/components/schemas/StatsCategoryModel'
+        - name: sortDirection
+          in: query
+          schema:
+            $ref: '#/components/schemas/ListSortDirection'
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            format: int32
+            default: 100
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamsTraditionalStatsModel'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/TeamsTraditionalStatsModel'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - OAuth2:
+            - euroleagueapi
+  '/v3/competitions/{competitionCode}/statistics/teams/opponentsAdvanced':
+    get:
+      tags:
+        - TeamsStats
+      parameters:
+        - name: competitionCode
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: SeasonMode
+          in: query
+          schema:
+            $ref: '#/components/schemas/SeasonRangeModeModel'
+        - name: SeasonCode
+          in: query
+          schema:
+            type: string
+        - name: FromSeasonCode
+          in: query
+          schema:
+            type: string
+        - name: ToSeasonCode
+          in: query
+          schema:
+            type: string
+        - name: phaseTypeCode
+          in: query
+          schema:
+            type: string
+        - name: statisticMode
+          in: query
+          schema:
+            $ref: '#/components/schemas/TeamStatsAggregateModel'
+        - name: statisticSortMode
+          in: query
+          schema:
+            $ref: '#/components/schemas/TeamStatsAggregateModel'
+        - name: statistic
+          in: query
+          schema:
+            $ref: '#/components/schemas/StatsCategoryModel'
+        - name: sortDirection
+          in: query
+          schema:
+            $ref: '#/components/schemas/ListSortDirection'
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            format: int32
+            default: 100
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamsAdvancedStatsModel'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/TeamsAdvancedStatsModel'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - OAuth2:
+            - euroleagueapi
+components:
+  schemas:
+    AheadBehindStandingsModel:
+      type: object
+      properties:
+        winner:
+          $ref: '#/components/schemas/SeasonClubModel'
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamAheadBehindStandingModel'
+          nullable: true
+      additionalProperties: false
+    BasicStandingsModel:
+      type: object
+      properties:
+        winner:
+          $ref: '#/components/schemas/SeasonClubModel'
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamBasicStandingModel'
+          nullable: true
+      additionalProperties: false
+    CalendarStandingsModel:
+      type: object
+      properties:
+        winner:
+          $ref: '#/components/schemas/SeasonClubModel'
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamStandingModel'
+          nullable: true
+      additionalProperties: false
+    ClubAggregatedStatsModel:
+      type: object
+      properties:
+        accumulated:
+          $ref: '#/components/schemas/GameClubStatsSummaryModel'
+        averagePerGame:
+          $ref: '#/components/schemas/GameClubStatsSummaryModel'
+      additionalProperties: false
+    ClubGameStatsModel:
+      type: object
+      properties:
+        coach:
+          $ref: '#/components/schemas/CoachModel'
+        players:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClubPersonGameStatsModel'
+          nullable: true
+        team:
+          $ref: '#/components/schemas/GameStatsModel'
+        total:
+          $ref: '#/components/schemas/GameStatsModel'
+      additionalProperties: false
+    ClubInfoModel:
+      type: object
+      properties:
+        info:
+          type: string
+          nullable: true
+      additionalProperties: false
+    ClubModel:
+      type: object
+      properties:
+        code:
+          type: string
+          nullable: true
+        name:
+          type: string
+          nullable: true
+        alias:
+          type: string
+          nullable: true
+        isVirtual:
+          type: boolean
+        country:
+          $ref: '#/components/schemas/CountryModel'
+        address:
+          type: string
+          nullable: true
+        website:
+          type: string
+          nullable: true
+        ticketsUrl:
+          type: string
+          nullable: true
+        twitterAccount:
+          type: string
+          nullable: true
+        instagramAccount:
+          type: string
+          nullable: true
+        facebookAccount:
+          type: string
+          nullable: true
+        venue:
+          $ref: '#/components/schemas/VenueModel'
+        venueBackup:
+          $ref: '#/components/schemas/VenueModel'
+        nationalCompetitionCode:
+          type: string
+          nullable: true
+        city:
+          type: string
+          nullable: true
+        president:
+          type: string
+          nullable: true
+        phone:
+          type: string
+          nullable: true
+        fax:
+          type: string
+          nullable: true
+        images:
+          type: object
+          additionalProperties:
+            type: string
+          nullable: true
+      additionalProperties: false
+    ClubModelPagingResultModel:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClubModel'
+          nullable: true
+        total:
+          type: integer
+          format: int32
+      additionalProperties: false
+    ClubPersonGameStatsModel:
+      type: object
+      properties:
+        player:
+          $ref: '#/components/schemas/SeasonPersonModel'
+        stats:
+          $ref: '#/components/schemas/PersonStatsModel'
+      additionalProperties: false
+    ClubPersonStatsModel:
+      type: object
+      properties:
+        rank:
+          type: integer
+          format: int64
+        playerCode:
+          type: string
+          nullable: true
+        playerName:
+          type: string
+          nullable: true
+        playerAbbreviatedName:
+          type: string
+          nullable: true
+        imageUrl:
+          type: string
+          nullable: true
+        teamImageUrl:
+          type: string
+          nullable: true
+        timePlayed:
+          type: string
+          nullable: true
+        averageTimePlayed:
+          type: string
+          nullable: true
+        secondsPlayed:
+          type: integer
+          format: int32
+        gamesPlayed:
+          type: integer
+          format: int32
+        possessions:
+          type: number
+          format: double
+        total:
+          type: number
+          format: double
+        averagePerGame:
+          type: number
+          format: double
+        averagePerMinute:
+          type: number
+          format: double
+        averagePer100Possessions:
+          type: number
+          format: double
+        divisorTotal:
+          type: number
+          format: double
+          nullable: true
+        divisorAveragePerGame:
+          type: number
+          format: double
+          nullable: true
+        divisorAveragePerMinute:
+          type: number
+          format: double
+          nullable: true
+        divisorAveragePer100Possessions:
+          type: number
+          format: double
+          nullable: true
+        percentage:
+          type: number
+          format: double
+          nullable: true
+        gameNumber:
+          type: integer
+          format: int32
+          nullable: true
+        gameCode:
+          type: integer
+          format: int32
+          nullable: true
+        phaseTypeCode:
+          type: string
+          nullable: true
+        gameDate:
+          type: string
+          format: date-time
+          nullable: true
+        phaseType:
+          type: string
+          nullable: true
+        oponentClubCode:
+          type: string
+          nullable: true
+        oponentClubName:
+          type: string
+          nullable: true
+        clubCodes:
+          type: string
+          nullable: true
+        clubNames:
+          type: string
+          nullable: true
+        abbreviatedClubNames:
+          type: string
+          nullable: true
+        tvCodes:
+          type: string
+          nullable: true
+        clubSeasonCodes:
+          type: string
+          nullable: true
+        year:
+          type: string
+          format: date-time
+          nullable: true
+        seasonName:
+          type: string
+          nullable: true
+        seasonCode:
+          type: string
+          nullable: true
+      additionalProperties: false
+    ClubPersonStatsModelStatsCollectionModel:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClubPersonStatsModel'
+          nullable: true
+        minGames:
+          type: integer
+          format: int32
+          nullable: true
+        minimumAttempted:
+          type: integer
+          format: int32
+          nullable: true
+        minGamesReason:
+          type: string
+          nullable: true
+        errorMessage:
+          type: string
+          nullable: true
+        resultField:
+          type: string
+          nullable: true
+        orderType:
+          type: integer
+          format: int32
+        groupBy:
+          type: integer
+          format: int32
+      additionalProperties: false
+    ClubsGameStatsModel:
+      type: object
+      properties:
+        local:
+          $ref: '#/components/schemas/ClubGameStatsModel'
+        road:
+          $ref: '#/components/schemas/ClubGameStatsModel'
+      additionalProperties: false
+    CoachCompetitionRecordModel:
+      type: object
+      properties:
+        competitionName:
+          type: string
+          nullable: true
+        seasons:
+          type: array
+          items:
+            $ref: '#/components/schemas/CoachSeasonRecordItemModel'
+          nullable: true
+      additionalProperties: false
+    CoachModel:
+      type: object
+      properties:
+        code:
+          type: string
+          nullable: true
+        name:
+          type: string
+          nullable: true
+      additionalProperties: false
+    CoachRecordsModel:
+      type: object
+      properties:
+        coach:
+          $ref: '#/components/schemas/PersonModel'
+        team:
+          $ref: '#/components/schemas/SeasonClubModel'
+        competitions:
+          type: array
+          items:
+            $ref: '#/components/schemas/CoachCompetitionRecordModel'
+          nullable: true
+      additionalProperties: false
+    CoachSeasonRecordItemModel:
+      type: object
+      properties:
+        competitionYears:
+          type: string
+          nullable: true
+        teamName:
+          type: string
+          nullable: true
+        winLossRecord:
+          $ref: '#/components/schemas/RecordModel'
+      additionalProperties: false
+    CountryModel:
+      type: object
+      properties:
+        code:
+          type: string
+          nullable: true
+        name:
+          type: string
+          nullable: true
+      additionalProperties: false
+    GameClubModel:
+      type: object
+      properties:
+        club:
+          $ref: '#/components/schemas/SeasonClubModel'
+        score:
+          type: integer
+          format: int32
+        standingsScore:
+          type: integer
+          format: int32
+      additionalProperties: false
+    GameClubStatsSummaryModel:
+      type: object
+      properties:
+        timePlayed:
+          type: number
+          format: double
+        valuation:
+          type: number
+          format: double
+        points:
+          type: number
+          format: double
+        fieldGoalsMade2:
+          type: number
+          format: double
+        fieldGoalsAttempted2:
+          type: number
+          format: double
+        fieldGoalsMade3:
+          type: number
+          format: double
+        fieldGoalsAttempted3:
+          type: number
+          format: double
+        freeThrowsMade:
+          type: number
+          format: double
+        freeThrowsAttempted:
+          type: number
+          format: double
+        fieldGoalsMadeTotal:
+          type: number
+          format: double
+        fieldGoalsAttemptedTotal:
+          type: number
+          format: double
+        accuracyMade:
+          type: number
+          format: double
+        accuracyAttempted:
+          type: number
+          format: double
+        totalRebounds:
+          type: number
+          format: double
+        defensiveRebounds:
+          type: number
+          format: double
+        offensiveRebounds:
+          type: number
+          format: double
+        assistances:
+          type: number
+          format: double
+        steals:
+          type: number
+          format: double
+        turnovers:
+          type: number
+          format: double
+        blocksFavour:
+          type: number
+          format: double
+        blocksAgainst:
+          type: number
+          format: double
+        foulsCommited:
+          type: number
+          format: double
+        foulsReceived:
+          type: number
+          format: double
+        plusMinus:
+          type: number
+          format: double
+        gamesPlayed:
+          type: integer
+          format: int32
+      additionalProperties: false
+    GameStatsModel:
+      type: object
+      properties:
+        timePlayed:
+          type: number
+          format: double
+        valuation:
+          type: number
+          format: double
+        points:
+          type: number
+          format: double
+        fieldGoalsMade2:
+          type: number
+          format: double
+        fieldGoalsAttempted2:
+          type: number
+          format: double
+        fieldGoalsMade3:
+          type: number
+          format: double
+        fieldGoalsAttempted3:
+          type: number
+          format: double
+        freeThrowsMade:
+          type: number
+          format: double
+        freeThrowsAttempted:
+          type: number
+          format: double
+        fieldGoalsMadeTotal:
+          type: number
+          format: double
+        fieldGoalsAttemptedTotal:
+          type: number
+          format: double
+        accuracyMade:
+          type: number
+          format: double
+        accuracyAttempted:
+          type: number
+          format: double
+        totalRebounds:
+          type: number
+          format: double
+        defensiveRebounds:
+          type: number
+          format: double
+        offensiveRebounds:
+          type: number
+          format: double
+        assistances:
+          type: number
+          format: double
+        steals:
+          type: number
+          format: double
+        turnovers:
+          type: number
+          format: double
+        blocksFavour:
+          type: number
+          format: double
+        blocksAgainst:
+          type: number
+          format: double
+        foulsCommited:
+          type: number
+          format: double
+        foulsReceived:
+          type: number
+          format: double
+        plusMinus:
+          type: number
+          format: double
+      additionalProperties: false
+    GroupModel:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        order:
+          type: integer
+          format: int32
+        name:
+          type: string
+          nullable: true
+        rawName:
+          type: string
+          nullable: true
+      additionalProperties: false
+    ListSortDirection:
+      enum:
+        - Ascending
+        - Descending
+      type: string
+    MarginsStandingsModel:
+      type: object
+      properties:
+        winner:
+          $ref: '#/components/schemas/SeasonClubModel'
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamMarginsStandingModel'
+          nullable: true
+      additionalProperties: false
+    MatchReportModel:
+      type: object
+      properties:
+        gameCode:
+          type: integer
+          format: int32
+          nullable: true
+        season:
+          $ref: '#/components/schemas/SeasonModel'
+        group:
+          $ref: '#/components/schemas/GroupModel'
+        phaseType:
+          $ref: '#/components/schemas/PhaseTypeModel'
+        round:
+          type: integer
+          format: int32
+          nullable: true
+        roundAlias:
+          type: string
+          nullable: true
+        roundName:
+          type: string
+          nullable: true
+        played:
+          type: boolean
+        date:
+          type: string
+          format: date-time
+        confirmedDate:
+          type: boolean
+        confirmedHour:
+          type: boolean
+        localTimeZone:
+          type: integer
+          format: int32
+          nullable: true
+        localDate:
+          type: string
+          format: date-time
+        utcDate:
+          type: string
+          format: date-time
+        local:
+          $ref: '#/components/schemas/GameClubModel'
+        road:
+          $ref: '#/components/schemas/GameClubModel'
+        localLast5Form:
+          type: array
+          items:
+            type: string
+          nullable: true
+        roadLast5Form:
+          type: array
+          items:
+            type: string
+          nullable: true
+      additionalProperties: false
+    MiscStatsFilterModel:
+      enum:
+        - HomeGames
+        - AwayGames
+        - GamesWon
+        - GamesLost
+        - ResultsIn5Points
+        - Guards
+        - Forwards
+        - Centers
+        - RisingStar
+      type: string
+    PersonModel:
+      type: object
+      properties:
+        code:
+          type: string
+          nullable: true
+        name:
+          type: string
+          nullable: true
+        alias:
+          type: string
+          nullable: true
+        aliasRaw:
+          type: string
+          nullable: true
+        passportName:
+          type: string
+          nullable: true
+        passportSurname:
+          type: string
+          nullable: true
+        jerseyName:
+          type: string
+          nullable: true
+        abbreviatedName:
+          type: string
+          nullable: true
+        country:
+          $ref: '#/components/schemas/CountryModel'
+        height:
+          type: integer
+          format: int32
+          nullable: true
+        weight:
+          type: integer
+          format: int32
+          nullable: true
+        birthDate:
+          type: string
+          format: date-time
+          nullable: true
+        birthCountry:
+          $ref: '#/components/schemas/CountryModel'
+        twitterAccount:
+          type: string
+          nullable: true
+        instagramAccount:
+          type: string
+          nullable: true
+        facebookAccount:
+          type: string
+          nullable: true
+        isReferee:
+          type: boolean
+        images:
+          type: object
+          additionalProperties:
+            type: string
+          nullable: true
+      additionalProperties: false
+    PersonStatsModel:
+      type: object
+      properties:
+        timePlayed:
+          type: number
+          format: double
+        valuation:
+          type: number
+          format: double
+        points:
+          type: number
+          format: double
+        fieldGoalsMade2:
+          type: number
+          format: double
+        fieldGoalsAttempted2:
+          type: number
+          format: double
+        fieldGoalsMade3:
+          type: number
+          format: double
+        fieldGoalsAttempted3:
+          type: number
+          format: double
+        freeThrowsMade:
+          type: number
+          format: double
+        freeThrowsAttempted:
+          type: number
+          format: double
+        fieldGoalsMadeTotal:
+          type: number
+          format: double
+        fieldGoalsAttemptedTotal:
+          type: number
+          format: double
+        accuracyMade:
+          type: number
+          format: double
+        accuracyAttempted:
+          type: number
+          format: double
+        totalRebounds:
+          type: number
+          format: double
+        defensiveRebounds:
+          type: number
+          format: double
+        offensiveRebounds:
+          type: number
+          format: double
+        assistances:
+          type: number
+          format: double
+        steals:
+          type: number
+          format: double
+        turnovers:
+          type: number
+          format: double
+        blocksFavour:
+          type: number
+          format: double
+        blocksAgainst:
+          type: number
+          format: double
+        foulsCommited:
+          type: number
+          format: double
+        foulsReceived:
+          type: number
+          format: double
+        plusMinus:
+          type: number
+          format: double
+        dorsal:
+          type: integer
+          format: int32
+        startFive:
+          type: boolean
+        startFive2:
+          type: boolean
+      additionalProperties: false
+    PhaseTypeModel:
+      type: object
+      properties:
+        code:
+          type: string
+          nullable: true
+        alias:
+          type: string
+          nullable: true
+        name:
+          type: string
+          nullable: true
+        isGroupPhase:
+          type: boolean
+      additionalProperties: false
+    PlayerAdvancedStatsItemModel:
+      type: object
+      properties:
+        playerRanking:
+          type: integer
+          format: int32
+        player:
+          $ref: '#/components/schemas/PlayerModel'
+        gamesPlayed:
+          type: number
+          format: double
+        minutesPlayed:
+          type: number
+          format: double
+        effectiveFieldGoalPercentage:
+          type: string
+          nullable: true
+        trueShootingPercentage:
+          type: string
+          nullable: true
+        offensiveReboundsPercentage:
+          type: string
+          nullable: true
+        defensiveReboundsPercentage:
+          type: string
+          nullable: true
+        reboundsPercentage:
+          type: string
+          nullable: true
+        assistsToTurnoversRatio:
+          type: number
+          format: double
+        assistsRatio:
+          type: string
+          nullable: true
+        turnoversRatio:
+          type: string
+          nullable: true
+        twoPointAttemptsRatio:
+          type: string
+          nullable: true
+        threePointAttemptsRatio:
+          type: string
+          nullable: true
+        freeThrowsRate:
+          type: string
+          nullable: true
+        possesions:
+          type: number
+          format: double
+      additionalProperties: false
+    PlayerLeaderModel:
+      type: object
+      properties:
+        code:
+          type: string
+          nullable: true
+        name:
+          type: string
+          nullable: true
+        age:
+          type: integer
+          format: int32
+          nullable: true
+        position:
+          type: string
+          nullable: true
+        imageUrl:
+          type: string
+          nullable: true
+        team:
+          $ref: '#/components/schemas/TeamModel'
+      additionalProperties: false
+    PlayerLeaderModelLeadersItemModel:
+      type: object
+      properties:
+        details:
+          $ref: '#/components/schemas/PlayerLeaderModel'
+        rank:
+          type: integer
+          format: int32
+        gamesPlayed:
+          type: integer
+          format: int32
+        average:
+          type: number
+          format: double
+      additionalProperties: false
+    PlayerLeaderModelLeadersModel:
+      type: object
+      properties:
+        points:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlayerLeaderModelLeadersItemModel'
+          nullable: true
+        rebounds:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlayerLeaderModelLeadersItemModel'
+          nullable: true
+        assists:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlayerLeaderModelLeadersItemModel'
+          nullable: true
+        steals:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlayerLeaderModelLeadersItemModel'
+          nullable: true
+        blocks:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlayerLeaderModelLeadersItemModel'
+          nullable: true
+        pir:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlayerLeaderModelLeadersItemModel'
+          nullable: true
+        twoPointersPercentage:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlayerLeaderModelLeadersPercentageItemModel'
+          nullable: true
+        threePointersPercentage:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlayerLeaderModelLeadersPercentageItemModel'
+          nullable: true
+        freeThrowsPercentage:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlayerLeaderModelLeadersPercentageItemModel'
+          nullable: true
+        offensiveRebounds:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlayerLeaderModelLeadersItemModel'
+          nullable: true
+      additionalProperties: false
+    PlayerLeaderModelLeadersPercentageItemModel:
+      type: object
+      properties:
+        details:
+          $ref: '#/components/schemas/PlayerLeaderModel'
+        rank:
+          type: integer
+          format: int32
+        value:
+          type: string
+          nullable: true
+      additionalProperties: false
+    PlayerMiscStatsItemModel:
+      type: object
+      properties:
+        playerRanking:
+          type: integer
+          format: int32
+        player:
+          $ref: '#/components/schemas/PlayerModel'
+        gamesPlayed:
+          type: number
+          format: double
+        gamesStarted:
+          type: number
+          format: double
+        wins:
+          type: number
+          format: double
+        losses:
+          type: number
+          format: double
+        minutesPlayed:
+          type: number
+          format: double
+        doubleDoubles:
+          type: number
+          format: double
+        tripleDoubles:
+          type: number
+          format: double
+      additionalProperties: false
+    PlayerModel:
+      type: object
+      properties:
+        code:
+          type: string
+          nullable: true
+        name:
+          type: string
+          nullable: true
+        age:
+          type: integer
+          format: int32
+          nullable: true
+        imageUrl:
+          type: string
+          nullable: true
+        team:
+          $ref: '#/components/schemas/TeamModel'
+      additionalProperties: false
+    PlayersAdvancedStatsModel:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int32
+        players:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlayerAdvancedStatsItemModel'
+          nullable: true
+      additionalProperties: false
+    PlayerScoringStatsItemModel:
+      type: object
+      properties:
+        playerRanking:
+          type: integer
+          format: int32
+        player:
+          $ref: '#/components/schemas/PlayerModel'
+        gamesPlayed:
+          type: number
+          format: double
+        gamesStarted:
+          type: number
+          format: double
+        twoPointAttemptsShare:
+          type: string
+          nullable: true
+        threePointAttemptsShare:
+          type: string
+          nullable: true
+        freeThrowsAttemptsShare:
+          type: string
+          nullable: true
+        twoPointersMadeShare:
+          type: string
+          nullable: true
+        threePointersMadeShare:
+          type: string
+          nullable: true
+        freeThrowsMadeShare:
+          type: string
+          nullable: true
+        twoPointRate:
+          type: string
+          nullable: true
+        threePointRate:
+          type: string
+          nullable: true
+        pointsFromTwoPointersPercentage:
+          type: string
+          nullable: true
+        pointsFromThreePointersPercentage:
+          type: string
+          nullable: true
+        pointsFromFreeThrowsPercentage:
+          type: string
+          nullable: true
+      additionalProperties: false
+    PlayersMiscStatsModel:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int32
+        players:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlayerMiscStatsItemModel'
+          nullable: true
+      additionalProperties: false
+    PlayersScoringStatsModel:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int32
+        players:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlayerScoringStatsItemModel'
+          nullable: true
+      additionalProperties: false
+    PlayersTraditionalStatsModel:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int32
+        players:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlayerTraditionalStatsItemModel'
+          nullable: true
+      additionalProperties: false
+    PlayerTraditionalStatsItemModel:
+      type: object
+      properties:
+        playerRanking:
+          type: integer
+          format: int32
+        player:
+          $ref: '#/components/schemas/PlayerModel'
+        gamesPlayed:
+          type: number
+          format: double
+        gamesStarted:
+          type: number
+          format: double
+        minutesPlayed:
+          type: number
+          format: double
+        pointsScored:
+          type: number
+          format: double
+        twoPointersMade:
+          type: number
+          format: double
+        twoPointersAttempted:
+          type: number
+          format: double
+        twoPointersPercentage:
+          type: string
+          nullable: true
+        threePointersMade:
+          type: number
+          format: double
+        threePointersAttempted:
+          type: number
+          format: double
+        threePointersPercentage:
+          type: string
+          nullable: true
+        freeThrowsMade:
+          type: number
+          format: double
+        freeThrowsAttempted:
+          type: number
+          format: double
+        freeThrowsPercentage:
+          type: string
+          nullable: true
+        offensiveRebounds:
+          type: number
+          format: double
+        defensiveRebounds:
+          type: number
+          format: double
+        totalRebounds:
+          type: number
+          format: double
+        assists:
+          type: number
+          format: double
+        steals:
+          type: number
+          format: double
+        turnovers:
+          type: number
+          format: double
+        blocks:
+          type: number
+          format: double
+        blocksAgainst:
+          type: number
+          format: double
+        foulsCommited:
+          type: number
+          format: double
+        foulsDrawn:
+          type: number
+          format: double
+        pir:
+          type: number
+          format: double
+      additionalProperties: false
+    PositionChangeModel:
+      enum:
+        - Up
+        - Down
+        - Equal
+      type: string
+    RecordModel:
+      type: object
+      properties:
+        winLossRecord:
+          type: string
+          nullable: true
+        winLossPercentage:
+          type: string
+          nullable: true
+      additionalProperties: false
+    SeasonClubModel:
+      type: object
+      properties:
+        code:
+          type: string
+          nullable: true
+        name:
+          type: string
+          nullable: true
+        abbreviatedName:
+          type: string
+          nullable: true
+        editorialName:
+          type: string
+          nullable: true
+        tvCode:
+          type: string
+          nullable: true
+        isVirtual:
+          type: boolean
+        images:
+          type: object
+          additionalProperties:
+            type: string
+          nullable: true
+      additionalProperties: false
+    SeasonModel:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: true
+        code:
+          type: string
+          nullable: true
+        alias:
+          type: string
+          nullable: true
+        competitionCode:
+          type: string
+          nullable: true
+        year:
+          type: integer
+          format: int32
+        startDate:
+          type: string
+          format: date-time
+      additionalProperties: false
+    SeasonPersonModel:
+      type: object
+      properties:
+        person:
+          $ref: '#/components/schemas/PersonModel'
+        type:
+          type: string
+          nullable: true
+        typeName:
+          type: string
+          nullable: true
+        active:
+          type: boolean
+        startDate:
+          type: string
+          format: date-time
+          nullable: true
+        endDate:
+          type: string
+          format: date-time
+          nullable: true
+        dorsal:
+          type: string
+          nullable: true
+        dorsalRaw:
+          type: string
+          nullable: true
+        position:
+          type: integer
+          format: int32
+          nullable: true
+        positionName:
+          type: string
+          nullable: true
+        lastTeam:
+          type: string
+          nullable: true
+        externalId:
+          type: integer
+          format: int32
+        images:
+          type: object
+          additionalProperties:
+            type: string
+          nullable: true
+        club:
+          $ref: '#/components/schemas/SeasonClubModel'
+        season:
+          $ref: '#/components/schemas/SeasonModel'
+      additionalProperties: false
+    SeasonRangeModeModel:
+      enum:
+        - Single
+        - Range
+        - All
+      type: string
+    StatsAggregateModel:
+      enum:
+        - PerGame
+        - Accumulated
+        - PerMinute
+        - Per100Possesions
+        - PerGameReverse
+        - AccumulatedReverse
+      type: string
+    StatsCategoryModel:
+      enum:
+        - Valuation
+        - Score
+        - TotalRebounds
+        - OffensiveRebounds
+        - DefensiveRebounds
+        - Assistances
+        - Steals
+        - BlocksFavour
+        - BlocksAgainst
+        - Turnovers
+        - FoulsReceived
+        - FoulsCommited
+        - FreeThrowsMade
+        - FreeThrowsAttempted
+        - FreeThrowsPercent
+        - FieldGoalsMade2
+        - FieldGoalsAttempted2
+        - FieldGoals2Percent
+        - FieldGoalsMade3
+        - FieldGoalsAttempted3
+        - FieldGoals3Percent
+        - FieldGoalsMadeTotal
+        - FieldGoalsAttemptedTotal
+        - FieldGoalsPercent
+        - AccuracyMade
+        - AccuracyAttempted
+        - AccuracyPercent
+        - AssistancesTurnoversRatio
+        - GamesPlayed
+        - GamesStarted
+        - TimePlayed
+        - Contras
+        - Dunks
+        - OffensiveReboundPercentage
+        - DefensiveReboundPercentage
+        - ReboundPercentage
+        - EffectiveFieldGoalPercentage
+        - TrueShootingPercentage
+        - AssistRatio
+        - TurnoverRatio
+        - FieldGoals2AttemptedRatio
+        - FieldGoals3AttemptedRatio
+        - FreeThrowRate
+        - Possesions
+        - GamesWon
+        - GamesLost
+        - DoubleDoubles
+        - TripleDoubles
+        - FieldGoalsAttempted2Share
+        - FieldGoalsAttempted3Share
+        - FreeThrowsAttemptedShare
+        - FieldGoalsMade2Share
+        - FieldGoalsMade3Share
+        - FreeThrowsMadeShare
+        - PointsMade2Rate
+        - PointsMade3Rate
+        - PointsMadeFreeThrowsRate
+        - PointsAttempted2Rate
+        - PointsAttempted3Rate
+        - Age
+      type: string
+    StreakStandingsModel:
+      type: object
+      properties:
+        winner:
+          $ref: '#/components/schemas/SeasonClubModel'
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamStreakStandingModel'
+          nullable: true
+      additionalProperties: false
+    TeamAdvancedStatsItemModel:
+      type: object
+      properties:
+        teamRanking:
+          type: integer
+          format: int32
+        team:
+          $ref: '#/components/schemas/TeamModel'
+        gamesPlayed:
+          type: number
+          format: double
+        effectiveFieldGoalPercentage:
+          type: string
+          nullable: true
+        trueShootingPercentage:
+          type: string
+          nullable: true
+        offensiveReboundsPercentage:
+          type: string
+          nullable: true
+        defensiveReboundsPercentage:
+          type: string
+          nullable: true
+        reboundsPercentage:
+          type: string
+          nullable: true
+        assistsToTurnoversRatio:
+          type: number
+          format: double
+        assistsRatio:
+          type: string
+          nullable: true
+        turnoversRatio:
+          type: string
+          nullable: true
+        twoPointRate:
+          type: string
+          nullable: true
+        threePointRate:
+          type: string
+          nullable: true
+        freeThrowsRate:
+          type: string
+          nullable: true
+        pointsFromTwoPointersPercentage:
+          type: string
+          nullable: true
+        pointsFromThreePointersPercentage:
+          type: string
+          nullable: true
+        pointsFromFreeThrowsPercentage:
+          type: string
+          nullable: true
+      additionalProperties: false
+    TeamAheadBehindStandingModel:
+      type: object
+      properties:
+        position:
+          type: integer
+          format: int32
+        positionChange:
+          $ref: '#/components/schemas/PositionChangeModel'
+        gamesPlayed:
+          type: integer
+          format: int32
+        gamesWon:
+          type: integer
+          format: int32
+        gamesLost:
+          type: integer
+          format: int32
+        qualified:
+          type: boolean
+        winsPercentage:
+          type: string
+          nullable: true
+        club:
+          $ref: '#/components/schemas/SeasonClubModel'
+        quater1Ahead:
+          type: string
+          nullable: true
+        quater1Behind:
+          type: string
+          nullable: true
+        quater1Tied:
+          type: string
+          nullable: true
+        half1Ahead:
+          type: string
+          nullable: true
+        half1Behind:
+          type: string
+          nullable: true
+        half1Tied:
+          type: string
+          nullable: true
+        quater3Ahead:
+          type: string
+          nullable: true
+        quater3Behind:
+          type: string
+          nullable: true
+        quater3Tied:
+          type: string
+          nullable: true
+        groupName:
+          type: string
+          nullable: true
+      additionalProperties: false
+    TeamAveragesModel:
+      type: object
+      properties:
+        offenseStats:
+          $ref: '#/components/schemas/TeamAverageStatsModel'
+        defenseStats:
+          $ref: '#/components/schemas/TeamAverageStatsModel'
+      additionalProperties: false
+    TeamAverageStatModel:
+      type: object
+      properties:
+        rank:
+          type: integer
+          format: int64
+        value:
+          type: number
+          format: double
+      additionalProperties: false
+    TeamAverageStatsModel:
+      type: object
+      properties:
+        valuation:
+          $ref: '#/components/schemas/TeamAverageStatModel'
+        score:
+          $ref: '#/components/schemas/TeamAverageStatModel'
+        fieldGoals2Percent:
+          $ref: '#/components/schemas/TeamAverageStatModel'
+        fieldGoals3Percent:
+          $ref: '#/components/schemas/TeamAverageStatModel'
+        freeThrowsPercent:
+          $ref: '#/components/schemas/TeamAverageStatModel'
+        defensiveRebounds:
+          $ref: '#/components/schemas/TeamAverageStatModel'
+        offensiveRebounds:
+          $ref: '#/components/schemas/TeamAverageStatModel'
+        totalRebounds:
+          $ref: '#/components/schemas/TeamAverageStatModel'
+        assists:
+          $ref: '#/components/schemas/TeamAverageStatModel'
+        steals:
+          $ref: '#/components/schemas/TeamAverageStatModel'
+        blocks:
+          $ref: '#/components/schemas/TeamAverageStatModel'
+        turnovers:
+          $ref: '#/components/schemas/TeamAverageStatModel'
+      additionalProperties: false
+    TeamBasicStandingModel:
+      type: object
+      properties:
+        position:
+          type: integer
+          format: int32
+        positionChange:
+          $ref: '#/components/schemas/PositionChangeModel'
+        gamesPlayed:
+          type: integer
+          format: int32
+        gamesWon:
+          type: integer
+          format: int32
+        gamesLost:
+          type: integer
+          format: int32
+        qualified:
+          type: boolean
+        club:
+          $ref: '#/components/schemas/SeasonClubModel'
+        winPercentage:
+          type: string
+          nullable: true
+        pointsDifference:
+          type: string
+          nullable: true
+        pointsFor:
+          type: integer
+          format: int32
+        pointsAgainst:
+          type: integer
+          format: int32
+        homeRecord:
+          type: string
+          nullable: true
+        awayRecord:
+          type: string
+          nullable: true
+        neutralRecord:
+          type: string
+          nullable: true
+        overtimeRecord:
+          type: string
+          nullable: true
+        lastTenRecord:
+          type: string
+          nullable: true
+        lastFiveRecord:
+          type: string
+          nullable: true
+        groupName:
+          type: string
+          nullable: true
+        last5Form:
+          type: array
+          items:
+            type: string
+          nullable: true
+      additionalProperties: false
+    TeamMarginsStandingModel:
+      type: object
+      properties:
+        position:
+          type: integer
+          format: int32
+        positionChange:
+          $ref: '#/components/schemas/PositionChangeModel'
+        gamesPlayed:
+          type: integer
+          format: int32
+        gamesWon:
+          type: integer
+          format: int32
+        gamesLost:
+          type: integer
+          format: int32
+        qualified:
+          type: boolean
+        club:
+          $ref: '#/components/schemas/SeasonClubModel'
+        pointDifference1to5:
+          type: string
+          nullable: true
+        pointDifference6to10:
+          type: string
+          nullable: true
+        pointDifference11to15:
+          type: string
+          nullable: true
+        pointDifferenceMoreThan15:
+          type: string
+          nullable: true
+        rebounds:
+          type: string
+          nullable: true
+        assists:
+          type: string
+          nullable: true
+        blocks:
+          type: string
+          nullable: true
+        threePointers:
+          type: string
+          nullable: true
+        twoPointers:
+          type: string
+          nullable: true
+        freeThrows:
+          type: string
+          nullable: true
+        groupName:
+          type: string
+          nullable: true
+      additionalProperties: false
+    TeamModel:
+      type: object
+      properties:
+        code:
+          type: string
+          nullable: true
+        tvCodes:
+          type: string
+          nullable: true
+        name:
+          type: string
+          nullable: true
+        imageUrl:
+          type: string
+          nullable: true
+      additionalProperties: false
+    TeamModelLeadersItemModel:
+      type: object
+      properties:
+        details:
+          $ref: '#/components/schemas/TeamModel'
+        rank:
+          type: integer
+          format: int32
+        gamesPlayed:
+          type: integer
+          format: int32
+        average:
+          type: number
+          format: double
+      additionalProperties: false
+    TeamModelTeamTopPerformersModel:
+      type: object
+      properties:
+        points:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamModelLeadersItemModel'
+          nullable: true
+        pir:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamModelLeadersItemModel'
+          nullable: true
+        assists:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamModelLeadersItemModel'
+          nullable: true
+        blocks:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamModelLeadersItemModel'
+          nullable: true
+        steals:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamModelLeadersItemModel'
+          nullable: true
+        offensiveRebounds:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamModelLeadersItemModel'
+          nullable: true
+        defensiveRebounds:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamModelLeadersItemModel'
+          nullable: true
+        rebounds:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamModelLeadersItemModel'
+          nullable: true
+        freeThrowsMade:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamModelLeadersItemModel'
+          nullable: true
+        twoPointersMade:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamModelLeadersItemModel'
+          nullable: true
+        threePointersMade:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamModelLeadersItemModel'
+          nullable: true
+        threePointersAttempted:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamModelLeadersItemModel'
+          nullable: true
+      additionalProperties: false
+    TeamsAdvancedStatsModel:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int32
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamAdvancedStatsItemModel'
+          nullable: true
+      additionalProperties: false
+    TeamsComparisonModel:
+      type: object
+      properties:
+        localTeam:
+          $ref: '#/components/schemas/TeamAveragesModel'
+        roadTeam:
+          $ref: '#/components/schemas/TeamAveragesModel'
+      additionalProperties: false
+    TeamStandingCalendarStreakModel:
+      type: object
+      properties:
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        winLossRecord:
+          type: string
+          nullable: true
+      additionalProperties: false
+    TeamStandingModel:
+      type: object
+      properties:
+        position:
+          type: integer
+          format: int32
+        positionChange:
+          $ref: '#/components/schemas/PositionChangeModel'
+        gamesPlayed:
+          type: integer
+          format: int32
+        gamesWon:
+          type: integer
+          format: int32
+        gamesLost:
+          type: integer
+          format: int32
+        qualified:
+          type: boolean
+        groupName:
+          type: string
+          nullable: true
+        club:
+          $ref: '#/components/schemas/SeasonClubModel'
+        streaks:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamStandingCalendarStreakModel'
+          nullable: true
+      additionalProperties: false
+    TeamStatsAggregateModel:
+      enum:
+        - PerGame
+        - Accumulated
+      type: string
+    TeamsTraditionalStatsModel:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int32
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamTraditionalStatsItemModel'
+          nullable: true
+      additionalProperties: false
+    TeamStreakStandingModel:
+      type: object
+      properties:
+        position:
+          type: integer
+          format: int32
+        positionChange:
+          $ref: '#/components/schemas/PositionChangeModel'
+        gamesPlayed:
+          type: integer
+          format: int32
+        gamesWon:
+          type: integer
+          format: int32
+        gamesLost:
+          type: integer
+          format: int32
+        qualified:
+          type: boolean
+        homeRecord:
+          type: string
+          nullable: true
+        awayRecord:
+          type: string
+          nullable: true
+        last10:
+          type: string
+          nullable: true
+        homeLast5:
+          type: string
+          nullable: true
+        awayLast5:
+          type: string
+          nullable: true
+        longestWinsStreakCurrentSeason:
+          type: integer
+          format: int32
+        longestLosesStreakCurrentSeason:
+          type: integer
+          format: int32
+        longestWinsStreakAnySeason:
+          type: integer
+          format: int32
+        longestLosesStreakAnySeason:
+          type: integer
+          format: int32
+        club:
+          $ref: '#/components/schemas/SeasonClubModel'
+        groupName:
+          type: string
+          nullable: true
+      additionalProperties: false
+    TeamTraditionalStatsItemModel:
+      type: object
+      properties:
+        teamRanking:
+          type: integer
+          format: int32
+        team:
+          $ref: '#/components/schemas/TeamModel'
+        gamesPlayed:
+          type: number
+          format: double
+        minutesPlayed:
+          type: number
+          format: double
+        pointsScored:
+          type: number
+          format: double
+        twoPointersMade:
+          type: number
+          format: double
+        twoPointersAttempted:
+          type: number
+          format: double
+        twoPointersPercentage:
+          type: string
+          nullable: true
+        threePointersMade:
+          type: number
+          format: double
+        threePointersAttempted:
+          type: number
+          format: double
+        threePointersPercentage:
+          type: string
+          nullable: true
+        freeThrowsMade:
+          type: number
+          format: double
+        freeThrowsAttempted:
+          type: number
+          format: double
+        freeThrowsPercentage:
+          type: string
+          nullable: true
+        offensiveRebounds:
+          type: number
+          format: double
+        defensiveRebounds:
+          type: number
+          format: double
+        totalRebounds:
+          type: number
+          format: double
+        assists:
+          type: number
+          format: double
+        steals:
+          type: number
+          format: double
+        turnovers:
+          type: number
+          format: double
+        blocks:
+          type: number
+          format: double
+        blocksAgainst:
+          type: number
+          format: double
+        foulsCommited:
+          type: number
+          format: double
+        foulsDrawn:
+          type: number
+          format: double
+        pir:
+          type: number
+          format: double
+      additionalProperties: false
+    VenueModel:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: true
+        code:
+          type: string
+          nullable: true
+        capacity:
+          type: integer
+          format: int32
+          nullable: true
+        address:
+          type: string
+          nullable: true
+        images:
+          type: object
+          additionalProperties:
+            type: string
+          nullable: true
+        active:
+          type: boolean
+        notes:
+          type: string
+          nullable: true
+      additionalProperties: false

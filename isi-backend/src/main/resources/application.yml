@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: isi
+  datasource:
+    password: password
+    url: jdbc:postgresql://localhost:5432/isi
+    username: isi
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
+  ai:
+    retry:
+      max-attempts: 5
+    openai:
+      api-key: PASTE_API_KEY_HERE
+springdoc:
+  swagger-ui:
+    path: /swagger-ui/index.html
+    enabled: true
+  api-docs:
+    path: /api-docs
+logging:
+  level:
+    org:
+      springframework:
+        cache: DEBUG
