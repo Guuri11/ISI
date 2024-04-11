@@ -8,7 +8,7 @@ Looking for a way to build a smart assistant that helps me with some tasks, deci
 Why ISI? ISI was my cat that passed away some time ago, so this is kind of a dedication to it.
 
 
-## Demo
+## 📽️ Demo
 Not the best video/audio quality, but good enough for the POC (audio in spanish)
 
 
@@ -17,7 +17,7 @@ https://github.com/Guuri11/ISI/assets/48799796/9454e0d6-2bd3-4467-9544-4dd5c14b7
 
 
 
-## Features
+## 🪛 Features
 
 - Speech To Text using Voice input from Wear OS API
 - Text to speech using Wear OS API also
@@ -25,20 +25,20 @@ https://github.com/Guuri11/ISI/assets/48799796/9454e0d6-2bd3-4467-9544-4dd5c14b7
 
 
 
-## Tech Stack 🛠️
+## 🛠️ Tech Stack
 
 **Client:** Android Wear OS App
 
 **Server:** Spring Boot 3 | Postgresql | Spring AI with OpenAI
 
 
-## Roadmap
+## 🗺️ Roadmap
 
 - Be able to open and handle apps through commands
 - Connect with my side project called [JVim](https://github.com/Guuri11/jvim)
 - OpenCV related features
 
 
-## Installation
+## 💻️ Installation
 
 Work in progres...
