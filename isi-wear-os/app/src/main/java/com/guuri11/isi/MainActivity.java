@@ -71,6 +71,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_SPEECH_INPUT && resultCode == RESULT_OK) {
             List<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+            assert results != null;
             String result = results.get(0);
             Log.d("SpeechRecognition", "Result: " + result);
             manageCommand(result);
@@ -147,6 +148,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
      * Called when we click on the Lottie
      */
     public void startVoiceRecognition(View view) {
+        textToSpeech.stop();
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         startActivityForResult(intent, REQUEST_CODE_SPEECH_INPUT);
