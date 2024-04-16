@@ -139,6 +139,10 @@
 			<artifactId>springdoc-openapi-core</artifactId>
 			<version>1.1.49</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.ai</groupId>
+			<artifactId>spring-ai-ollama-spring-boot-starter</artifactId>
+		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>

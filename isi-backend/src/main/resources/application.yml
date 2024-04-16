@@ -17,6 +17,8 @@ spring:
   ai:
     retry:
       max-attempts: 5
+    ollama:
+      base-url: http://localhost:11434/
     openai:
       api-key: PASTE_API_KEY_HERE
 springdoc:

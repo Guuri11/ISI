@@ -1,10 +1,12 @@
 package com.guuri11.isi.application.Command.service;
 
 
+import com.guuri11.isi.application.AiClient.CallAiClient;
 import com.guuri11.isi.application.Chat.service.ChatServiceCreateEntity;
 import com.guuri11.isi.application.Command.CommandDto;
 import com.guuri11.isi.application.Command.CommandRequest;
 import com.guuri11.isi.domain.Chat.Chat;
+import com.guuri11.isi.domain.Command.AiClient;
 import com.guuri11.isi.domain.Command.Command;
 import com.guuri11.isi.domain.Command.CommandMapper;
 import com.guuri11.isi.infrastructure.persistance.ChatRepository;
@@ -12,27 +14,22 @@ import com.guuri11.isi.infrastructure.persistance.CommandRepository;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.ai.chat.ChatResponse;
-import org.springframework.ai.chat.messages.ChatMessage;
-import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.MessageType;
-import org.springframework.ai.chat.prompt.Prompt;
-import org.springframework.ai.openai.OpenAiChatClient;
-import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class CommandCreate {
     private final CommandRepository repository;
     private final CommandMapper mapper;
-    private final OpenAiChatClient chatClient;
+    private final CallAiClient callAiClient;
     private final ChatServiceCreateEntity chatServiceCreate;
+    private final CommandHandler commandHandler;
     private final ChatRepository chatRepository;
 
     public CommandDto create(final CommandRequest request, MessageType messageType) {
@@ -40,13 +37,9 @@ public class CommandCreate {
         entity.setMessageType(messageType);
         List<Command> commands = getChatCommands(request, entity);
 
-        ChatResponse response = chatClient.call(
-                new Prompt(
-                        getMessageList(commands),
-                        OpenAiChatOptions.builder()
-                                .withModel("gpt-3.5-turbo")
-                                .build()
-                ));
+        commandHandler.handle(request.request());
+
+        ChatResponse response = callAiClient.call(commands, AiClient.GPT);
 
         return mapper.toDto(createEntity(response, entity.getChat()));
     }
@@ -96,9 +89,5 @@ public class CommandCreate {
         return entity;
     }
 
-    private static @NotNull List<Message> getMessageList(List<Command> commands) {
-        return commands.stream()
-                .map(c -> new ChatMessage(c.getMessageType(), c.getContent()))
-                .collect(Collectors.toList());
-    }
+
 }
