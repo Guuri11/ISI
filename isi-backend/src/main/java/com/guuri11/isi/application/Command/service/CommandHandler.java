@@ -25,25 +25,26 @@ public class CommandHandler {
     private final OtherTopics otherTopics;
 
     public ChatResponse handle(Command entity, CommandRequest request) {
-        ChatResponse taskManagerOutput = callAiClient.call(Prompts.COMMAND_MANAGER_PROMPT + request, AiClient.OLLAMA);
+        ChatResponse taskManagerOutput = callAiClient.call(Prompts.COMMAND_MANAGER_PROMPT + request, AiClient.GPT);
         Task task = getTask(taskManagerOutput.getResult().getOutput().getContent());
         entity.setTask(task);
         commandRepository.save(entity);
         if (task == null) {
-            // TODO: improve exception
+            //TODO: improve exception handling
+            System.out.println("stopped");
             return taskManagerOutput;
         }
         switch (task) {
-            case Task.REFACTOR:
+            case REFACTOR:
                 logger.info("Refactor requested");
                 return refactor.refactor();
-            case Task.OPEN_APP:
+            case OPEN_APP:
                 logger.info("Open app requested");
                 break;
-            case Task.WEATHER:
+            case WEATHER:
                 logger.info("Weather requested");
                 break;
-            case Task.OTHER_TOPICS:
+            case OTHER_TOPICS:
                 return otherTopics.handle(request, entity);
             default:
                 break;
@@ -52,13 +53,9 @@ public class CommandHandler {
     }
 
     private Task getTask(String input) {
-        String[] words = input.split("\\s+");
-
-        for (String word : words) {
-            for (Task task : Task.values()) {
-                if (task.name().equals(word)) {
-                    return task;
-                }
+        for (Task task : Task.values()) {
+            if (input.contains(task.name())) {
+                return task;
             }
         }
         return null;

@@ -22,11 +22,11 @@ public class Refactor {
 
     public ChatResponse refactor() {
 
-        ChatResponse response = callAiClient.call(Prompts.REFACTOR + readClipboard(), AiClient.OLLAMA);
+        ChatResponse response = callAiClient.call(Prompts.REFACTOR + readClipboard(), AiClient.GPT);
         String output = response.getResult().getOutput().getContent();
         sendToClipboard(output);
 
-        return callAiClient.call(Prompts.REFACTOR_DONE, AiClient.OLLAMA);
+        return callAiClient.call(Prompts.REFACTOR_DONE, AiClient.GPT);
     }
 
     private void sendToClipboard(String input) {
