@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public class HTTPService {
 
-    private static final String BASE_URL = "http://192.168.1.76:8080/api/v1/commands";
+    private static final String BASE_URL = "http://192.168.1.198:8080/api/v1/commands";
 
     public interface Callback {
         void onSuccess(InputStream inputStream);

@@ -31,6 +31,7 @@ public class Command implements Message {
     @ManyToOne
     @JoinColumn(name = "chat_id")
     private Chat chat;
+    private Task task;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
