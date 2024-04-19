@@ -9,6 +9,8 @@ import com.guuri11.isi.domain.Command.Command;
 import com.guuri11.isi.domain.Command.CommandMapper;
 import com.guuri11.isi.infrastructure.persistance.ChatRepository;
 import com.guuri11.isi.infrastructure.persistance.CommandRepository;
+import com.sshtools.twoslices.Toast;
+import com.sshtools.twoslices.ToastType;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -60,7 +62,7 @@ public class CommandCreate {
 
     private Command createEntity(ChatResponse response, Chat chat) {
         logger.info("Response: {}", response.getResult().getOutput().getContent());
-
+        Toast.toast(ToastType.INFO, "ISI \uD83D\uDE3A", response.getResult().getOutput().getContent());
         Command entity = new Command();
 
         entity.setContent(response.getResult().getOutput().getContent());
