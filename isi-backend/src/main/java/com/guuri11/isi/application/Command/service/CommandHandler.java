@@ -5,7 +5,6 @@ import com.guuri11.isi.application.Command.CommandRequest;
 import com.guuri11.isi.application.Command.service.Task.AddBookmark;
 import com.guuri11.isi.application.Command.service.Task.OtherTopics;
 import com.guuri11.isi.application.Command.service.Task.Refactor;
-import com.guuri11.isi.application.Fav.FavCreate;
 import com.guuri11.isi.domain.Command.AiClient;
 import com.guuri11.isi.domain.Command.Command;
 import com.guuri11.isi.domain.Command.Task;
@@ -16,9 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.ChatResponse;
 import org.springframework.stereotype.Service;
-
-import java.awt.*;
-import java.io.IOException;
 
 @Service
 @AllArgsConstructor
@@ -31,7 +27,7 @@ public class CommandHandler {
     private final OtherTopics otherTopics;
 
     public ChatResponse handle(Command entity, CommandRequest request) {
-        ChatResponse taskManagerOutput = callAiClient.call(Prompts.COMMAND_MANAGER_PROMPT + request, AiClient.GPT);
+        ChatResponse taskManagerOutput = callAiClient.call(Prompts.COMMAND_MANAGER_PROMPT + request.request(), AiClient.GPT);
         Task task = getTask(taskManagerOutput.getResult().getOutput().getContent());
         entity.setTask(task);
         commandRepository.save(entity);

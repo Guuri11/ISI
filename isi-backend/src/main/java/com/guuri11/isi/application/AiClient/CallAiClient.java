@@ -38,7 +38,7 @@ public class CallAiClient {
                     new Prompt(
                             getMessageList(commands),
                             OllamaOptions.create()
-                                    .withModel("llama2")
+                                    .withModel("llama3")
                     ));
         }
     }
@@ -53,12 +53,11 @@ public class CallAiClient {
                                     .build()
                     ));
         } else {
-            // condition: aiClient.equals(AiClient.OLLAMA)
             return ollamaClient.call(
                     new Prompt(
                             command,
                             OllamaOptions.create()
-                                    .withModel("llama2")
+                                    .withModel("llama3")
                     ));
         }
     }
