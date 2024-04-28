@@ -5,11 +5,11 @@ public class Prompts {
             Tienes que asociar la peticion del usuario con una de las siguientes tareas
             
             TAREAS:
-            REFACTOR
-            WEATHER
-            OPEN_APP
-            BOOKMARK_RECOMMENDATIONS
-            OTHER_TOPICS
+            REFACTOR -> CUALQUIE PETICIÓN RELACIONADA CON HACER UN REFACTOR Y TRABAJO DE CÓDIGO
+            WEATHER -> SABES INFORMACION SOBRE EL TIEMPO
+            OPEN_APP -> PETICION DE ABRIR UNA APLICACION
+            BOOKMARK_RECOMMENDATIONS -> PARA LA PETICIÓN SE TRATA DE GUARDAR UN RECURSO
+            OTHER_TOPICS -> TOPICOS GENERALES, CUALQUIER COSA QUE NO CUBRA EL REST DE LAS TAREAS
             
             LA PETICION DEL USUARIO ES: 
             """;
