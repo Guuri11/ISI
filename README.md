@@ -22,6 +22,8 @@ https://github.com/Guuri11/ISI/assets/48799796/9454e0d6-2bd3-4467-9544-4dd5c14b7
 - Speech To Text using Voice input from Wear OS API
 - Text to speech using Wear OS API also
 - Interaction with ChatGPT connecting chats on memory
+- Ask for refactoring and coding assitance
+- Ask to store a resource in your bookmark
 
 
 
