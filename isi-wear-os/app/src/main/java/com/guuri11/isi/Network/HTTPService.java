@@ -1,6 +1,11 @@
 package com.guuri11.isi.Network;
 
+import android.content.Context;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
+
+import com.guuri11.isi.R;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,12 +15,17 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
+import dev.ai4j.openai4j.OpenAiClient;
+import dev.ai4j.openai4j.chat.ChatCompletionModel;
+import dev.ai4j.openai4j.chat.ChatCompletionRequest;
+
 public class HTTPService {
 
-    private static final String BASE_URL = "http://192.168.1.198:8080/api/v1/commands";
+    private static final String BASE_URL = "http://192.168.1.76:8080/api/v1/commands";
 
     public interface Callback {
         void onSuccess(InputStream inputStream);
+
         void onError(String error);
     }
 
@@ -47,17 +57,42 @@ public class HTTPService {
         String jsonInputString;
 
         if (chatId != null) {
-            jsonInputString = "{\"request\": \"" + result + "\", \"chat\": {\"id\": \"" + chatId.toString() + "\"}}";
+            jsonInputString = "{\"request\": \"" + result + "\", \"chat\": {\"id\": \"" + chatId + "\"}}";
         } else {
             jsonInputString = "{\"request\": \"" + result + "\"}";
         }
 
         conn.setDoOutput(true);
-        try(OutputStream os = conn.getOutputStream()) {
+        try (OutputStream os = conn.getOutputStream()) {
             byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
             os.write(input, 0, input.length);
         }
         return conn;
+    }
+
+    public interface GptLocalCallback {
+        void onResponse(String response);
+
+        void onError(String errorMessage);
+    }
+
+    public static void gptLocal(String result, GptLocalCallback callback, Context context) {
+        String openAiKey = context.getString(R.string.openai_key);
+        Log.d("HTTPService", "OpenAI API Key: " + openAiKey);
+
+        OpenAiClient client = OpenAiClient.builder()
+                .openAiApiKey(openAiKey)
+                .build();
+
+        ChatCompletionRequest request = ChatCompletionRequest.builder()
+                .model(ChatCompletionModel.GPT_3_5_TURBO)
+                .addUserMessage(result)
+                .build();
+
+        client.chatCompletion(request)
+                .onResponse(response -> callback.onResponse(response.content()))
+                .onError(error -> callback.onError(error.getMessage()))
+                .execute();
     }
 }
 

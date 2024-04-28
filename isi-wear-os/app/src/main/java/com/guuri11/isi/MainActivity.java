@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.guuri11.isi.Dto.CommandDto;
 import com.guuri11.isi.Network.HTTPService;
+import com.guuri11.isi.Network.WiFiUtils;
 import com.guuri11.isi.TaskManager.GreetingHandler;
 import com.guuri11.isi.TaskManager.Task;
 
@@ -23,6 +24,8 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MainActivity extends Activity implements TextToSpeech.OnInitListener {
 
@@ -30,6 +33,12 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     private TextToSpeech textToSpeech;
     private static UUID chatId = null;
     private final GreetingHandler greetingHandler = new GreetingHandler();
+
+    private static final String THINKING_EMOJI = "Pensando... \uD83D\uDCAD";
+    private static final String MIC_EMOJI = "\uD83C\uDF99";
+    private static final String ERROR_CONNECTION_MESSAGE = "Error en la conexión: ";
+    private final ExecutorService executorService = Executors.newCachedThreadPool();
+
     /**
      * The value could be any other number, is a code that we sent on startActivityForResult so whenever
      * we have a result, we check if is that code to know if the activity is related with STT
@@ -43,7 +52,6 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 
         textToSpeech = new TextToSpeech(this, this);
         isiMessage = findViewById(R.id.text);
-        startVoiceRecognition();
     }
 
     @SuppressLint("SetTextI18n")
@@ -52,6 +60,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         if (status == TextToSpeech.SUCCESS) {
             textToSpeech.setLanguage(new Locale("es", "ES"));
             speakOut(greetingHandler.getGreeting());
+            startVoiceRecognition();
         } else {
             Log.e("TTS onInit", "Error: could not init - Line 92");
             isiMessage.setText("TTS error  ⚠️\uD83D\uDE3F");
@@ -92,38 +101,75 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
             return;
         }
 
-        // Task ask to AI
         sendCommand(command);
     }
 
-    private void sendCommand(String result) {
-        isiMessage.setText("Pensando... \uD83D\uDCAD");
-        HTTPService.sendCommand(result, new HTTPService.Callback() {
-            @Override
-            public void onSuccess(InputStream inputStream) {
-                runOnUiThread(() -> {
-                    Log.d("HTTPService", "Success, received stream");
-                    String response = convertInputStreamToString(inputStream);
-                    Log.d("HTTPService response", response);
+    private void sendCommand(String command) {
 
-                    Gson gson = new Gson();
-                    CommandDto commandDto = gson.fromJson(response, CommandDto.class);
-                    chatId = UUID.fromString(commandDto.getChat().getId());
-                    // Icon for microphone
-                    isiMessage.setText("\uD83C\uDF99\uFE0F");
-                    speakOut(commandDto.getContent());
+        runOnUiThread(() -> isiMessage.setText(THINKING_EMOJI));
+
+        Runnable sendTask = () -> {
+            HTTPService.Callback callback = new HTTPService.Callback() {
+                @Override
+                public void onSuccess(InputStream inputStream) {
+                    handleSuccess(inputStream);
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+                    handleError(errorMessage);
+                }
+            };
+
+            boolean isConnected = WiFiUtils.isConnectedToWifi(this, "\"" + getString(R.string.wifi_ssid) + "\"");
+
+            if (isConnected) {
+                HTTPService.sendCommand(command, callback, chatId);
+            } else {
+                HTTPService.gptLocal(command, getGptLocalCallback(), this);
+            }
+        };
+
+        executorService.submit(sendTask);
+    }
+
+    private HTTPService.GptLocalCallback getGptLocalCallback() {
+        return new HTTPService.GptLocalCallback() {
+            @Override
+            public void onResponse(String response) {
+                runOnUiThread(() -> {
+                    isiMessage.setText(MIC_EMOJI);
+                    speakOut(response);
                 });
             }
 
             @Override
             public void onError(String errorMessage) {
-                runOnUiThread(() -> {
-                    Log.e("HTTPService", "Error: " + errorMessage);
-                    speakOut("Error en la conexión: " + errorMessage);
-                    isiMessage.setText(errorMessage);
-                });
+                handleError(errorMessage);
             }
-        }, chatId);
+        };
+    }
+
+    private void handleSuccess(InputStream inputStream) {
+        runOnUiThread(() -> {
+            Log.d("HTTPService", "Success, received stream");
+            String response = convertInputStreamToString(inputStream);
+            Log.d("HTTPService response", response);
+
+            Gson gson = new Gson();
+            CommandDto commandDto = gson.fromJson(response, CommandDto.class);
+            chatId = UUID.fromString(commandDto.getChat().getId());
+            isiMessage.setText(MIC_EMOJI);
+            speakOut(commandDto.getContent());
+        });
+    }
+
+    private void handleError(String errorMessage) {
+        runOnUiThread(() -> {
+            Log.e("HTTPService", "Error: " + errorMessage);
+            speakOut(ERROR_CONNECTION_MESSAGE + errorMessage);
+            isiMessage.setText(errorMessage);
+        });
     }
 
     private String convertInputStreamToString(InputStream inputStream) {
@@ -154,6 +200,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         startActivityForResult(intent, REQUEST_CODE_SPEECH_INPUT);
     }
+
     public void startVoiceRecognition() {
         textToSpeech.stop();
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
