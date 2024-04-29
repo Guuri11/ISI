@@ -33,6 +33,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     private TextToSpeech textToSpeech;
     private static UUID chatId = null;
     private final GreetingHandler greetingHandler = new GreetingHandler();
+    private static boolean localAssistant = false;
 
     private static final String THINKING_EMOJI = "Pensando... \uD83D\uDCAD";
     private static final String MIC_EMOJI = "\uD83C\uDF99";
@@ -100,7 +101,16 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
             System.exit(0);
             return;
         }
-
+        if (Task.ACTIVATE_LOCAL_ASSISTANT.options.contains(command.toLowerCase())) {
+            localAssistant = true;
+            speakOut("Asistente local activado");
+            return;
+        }
+        if (Task.ACTIVATE_REMOTE_ASSISTANT.options.contains(command.toLowerCase())) {
+            localAssistant = false;
+            speakOut("Asistente remoto activado");
+            return;
+        }
         sendCommand(command);
     }
 
@@ -123,7 +133,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 
             boolean isConnected = WiFiUtils.isConnectedToWifi(this, "\"" + getString(R.string.wifi_ssid) + "\"");
 
-            if (isConnected) {
+            if (isConnected & !localAssistant) {
                 HTTPService.sendCommand(command, callback, chatId);
             } else {
                 HTTPService.gptLocal(command, getGptLocalCallback(), this);
