@@ -10,35 +10,27 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.guuri11.isi.Dto.CommandDto;
-import com.guuri11.isi.Network.HTTPService;
-import com.guuri11.isi.Network.WiFiUtils;
-import com.guuri11.isi.TaskManager.GreetingHandler;
-import com.guuri11.isi.TaskManager.Task;
+import com.guuri11.isi.helpers.TaskManager.GreetingHandler;
+import com.guuri11.isi.helpers.TaskManager.Task;
+import com.guuri11.isi.helpers.AlarmHelper;
+import com.guuri11.isi.helpers.Network.NetworkManager;
+import com.guuri11.isi.helpers.VoiceManager;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends Activity implements TextToSpeech.OnInitListener {
 
     private TextView isiMessage;
-    private TextToSpeech textToSpeech;
-    private static UUID chatId = null;
-    private final GreetingHandler greetingHandler = new GreetingHandler();
-    private static boolean localAssistant = false;
+    private VoiceManager voiceManager;
+    private NetworkManager networkManager;
+    private AlarmHelper alarmHelper;
+    private final ExecutorService executorService = Executors.newCachedThreadPool();
 
     private static final String THINKING_EMOJI = "Pensando... \uD83D\uDCAD";
     private static final String MIC_EMOJI = "\uD83C\uDF99";
-    private static final String ERROR_CONNECTION_MESSAGE = "Error en la conexión: ";
-    private final ExecutorService executorService = Executors.newCachedThreadPool();
 
     /**
      * The value could be any other number, is a code that we sent on startActivityForResult so whenever
@@ -51,28 +43,36 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        textToSpeech = new TextToSpeech(this, this);
         isiMessage = findViewById(R.id.text);
+        voiceManager = new VoiceManager(this, this);
+        networkManager = new NetworkManager(this);
+        alarmHelper = new AlarmHelper(this);
     }
 
-    @SuppressLint("SetTextI18n")
-    @Override // TTS
+    @Override
     public void onInit(int status) {
         if (status == TextToSpeech.SUCCESS) {
-            textToSpeech.setLanguage(new Locale("es", "ES"));
-            speakOut(greetingHandler.getGreeting());
-            startVoiceRecognition();
+            String greeting = new GreetingHandler().getGreeting();
+            voiceManager.initializeTextToSpeech(greeting);
+            alarmHelper.setAlarm();
         } else {
-            Log.e("TTS onInit", "Error: could not init - Line 92");
-            isiMessage.setText("TTS error  ⚠️\uD83D\uDE3F");
+            isiMessage.setText("TTS Initialization Failed ⚠️");
         }
     }
 
-    @Override // TTS
-    public void onDestroy() {
-        if (textToSpeech != null) {
-            textToSpeech.stop();
-            textToSpeech.shutdown();
+    @Override
+    protected void onDestroy() {
+        voiceManager.stopTextToSpeech();
+        if (executorService != null && !executorService.isShutdown()) {
+            executorService.shutdownNow();
+            try {
+                if (!executorService.awaitTermination(1, TimeUnit.MINUTES)) {
+                    executorService.shutdownNow();
+                }
+            } catch (InterruptedException ie) {
+                executorService.shutdownNow();
+                Thread.currentThread().interrupt();
+            }
         }
         super.onDestroy();
     }
@@ -80,7 +80,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_SPEECH_INPUT && resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_CODE_SPEECH_INPUT && resultCode == RESULT_OK && data != null) {
             List<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
             assert results != null;
             String result = results.get(0);
@@ -89,134 +89,59 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         }
     }
 
-    private void manageCommand(final String command) {
-        if (Task.HELLO.options.contains(command.toLowerCase())) {
-            Log.d("manageCommand", "command: " + Task.HELLO.name());
-            speakOut(greetingHandler.getGreeting());
-            return;
-        }
+    private void manageCommand(String command) {
         if (Task.EXIT.options.contains(command.toLowerCase())) {
-            Log.d("manageCommand", "command: " + Task.EXIT.name());
             finishAffinity();
             System.exit(0);
             return;
         }
+
         if (Task.ACTIVATE_LOCAL_ASSISTANT.options.contains(command.toLowerCase())) {
-            localAssistant = true;
-            speakOut("Asistente local activado");
+            NetworkManager.localAssistant = true;
+            voiceManager.speak("Asistente local activado");
             return;
         }
         if (Task.ACTIVATE_REMOTE_ASSISTANT.options.contains(command.toLowerCase())) {
-            localAssistant = false;
-            speakOut("Asistente remoto activado");
+            NetworkManager.localAssistant = false;
+            voiceManager.speak("Asistente remoto activado");
             return;
         }
+
         sendCommand(command);
     }
 
     private void sendCommand(String command) {
+        displayLoadingIndicator();
 
-        runOnUiThread(() -> isiMessage.setText(THINKING_EMOJI));
-
-        Runnable sendTask = () -> {
-            HTTPService.Callback callback = new HTTPService.Callback() {
-                @Override
-                public void onSuccess(InputStream inputStream) {
-                    handleSuccess(inputStream);
-                }
-
-                @Override
-                public void onError(String errorMessage) {
-                    handleError(errorMessage);
-                }
-            };
-
-            boolean isConnected = WiFiUtils.isConnectedToWifi(this, "\"" + getString(R.string.wifi_ssid) + "\"");
-
-            if (isConnected & !localAssistant) {
-                HTTPService.sendCommand(command, callback, chatId);
-            } else {
-                HTTPService.gptLocal(command, getGptLocalCallback(), this);
+        Runnable sendTask = () -> networkManager.sendCommand(command, new NetworkManager.NetworkCallback() {
+            @Override
+            public void onCommandSuccess(String response) {
+                runOnUiThread(() -> updateUIWithResponse(response));
             }
-        };
+
+            @Override
+            public void onCommandError(String error) {
+                runOnUiThread(() -> showErrorMessage(error));
+            }
+        });
 
         executorService.submit(sendTask);
     }
 
-    private HTTPService.GptLocalCallback getGptLocalCallback() {
-        return new HTTPService.GptLocalCallback() {
-            @Override
-            public void onResponse(String response) {
-                runOnUiThread(() -> {
-                    isiMessage.setText(MIC_EMOJI);
-                    speakOut(response);
-                });
-            }
-
-            @Override
-            public void onError(String errorMessage) {
-                handleError(errorMessage);
-            }
-        };
+    private void updateUIWithResponse(String response) {
+        isiMessage.setText(MIC_EMOJI);
+        voiceManager.speak(response);
     }
 
-    private void handleSuccess(InputStream inputStream) {
-        runOnUiThread(() -> {
-            Log.d("HTTPService", "Success, received stream");
-            String response = convertInputStreamToString(inputStream);
-            Log.d("HTTPService response", response);
-
-            Gson gson = new Gson();
-            CommandDto commandDto = gson.fromJson(response, CommandDto.class);
-            chatId = UUID.fromString(commandDto.getChat().getId());
-            isiMessage.setText(MIC_EMOJI);
-            speakOut(commandDto.getContent());
-        });
+    private void showErrorMessage(String error) {
+        isiMessage.setText("Error: " + error);
+        voiceManager.speak("Error en la conexión: " + error);
     }
 
-    private void handleError(String errorMessage) {
-        runOnUiThread(() -> {
-            Log.e("HTTPService", "Error: " + errorMessage);
-            speakOut(ERROR_CONNECTION_MESSAGE + errorMessage);
-            isiMessage.setText(errorMessage);
-        });
+    private void displayLoadingIndicator() {
+        isiMessage.setText(MainActivity.THINKING_EMOJI);
     }
-
-    private String convertInputStreamToString(InputStream inputStream) {
-        StringBuilder stringBuilder = new StringBuilder();
-        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream))) {
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                stringBuilder.append(line).append("\n");
-            }
-        } catch (IOException e) {
-            Log.e("HTTPService", "Error converting InputStream to String", e);
-        }
-        return stringBuilder.toString();
-    }
-
-
-    private void speakOut(String text) {
-        Log.d("speak out", "text: " + text);
-        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
-    }
-
-    /**
-     * Called when we click on the Lottie
-     */
     public void startVoiceRecognition(View view) {
-        textToSpeech.stop();
-        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        startActivityForResult(intent, REQUEST_CODE_SPEECH_INPUT);
+        voiceManager.startVoiceRecognition(REQUEST_CODE_SPEECH_INPUT);
     }
-
-    public void startVoiceRecognition() {
-        textToSpeech.stop();
-        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        startActivityForResult(intent, REQUEST_CODE_SPEECH_INPUT);
-    }
-
 }
-

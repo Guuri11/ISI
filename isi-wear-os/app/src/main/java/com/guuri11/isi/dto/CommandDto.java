@@ -1,4 +1,4 @@
-package com.guuri11.isi.Dto;
+package com.guuri11.isi.dto;
 
 public class CommandDto {
     private String id;

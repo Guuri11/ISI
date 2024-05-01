@@ -1,9 +1,8 @@
-package com.guuri11.isi.TaskManager;
+package com.guuri11.isi.helpers.TaskManager;
 
 import java.time.LocalTime;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Random;
 
 public class GreetingHandler {
 

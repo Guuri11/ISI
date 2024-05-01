@@ -1,4 +1,4 @@
-package com.guuri11.isi.Network;
+package com.guuri11.isi.helpers.Network;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
