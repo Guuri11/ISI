@@ -19,6 +19,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        // TODO: change Alarma! string for user request
         Toast.makeText(context, "Alarma!", Toast.LENGTH_LONG).show();
 
         Uri alarmTone = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);

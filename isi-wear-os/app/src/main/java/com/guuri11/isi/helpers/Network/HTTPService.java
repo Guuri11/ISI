@@ -6,6 +6,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.guuri11.isi.R;
+import com.guuri11.isi.persistance.ErrorMessage;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,10 +40,10 @@ public class HTTPService {
                 if (responseCode == HttpURLConnection.HTTP_OK) {
                     callback.onSuccess(conn.getInputStream());
                 } else {
-                    callback.onError("Error al hacer la solicitud: " + responseCode);
+                    callback.onError(ErrorMessage.CANT_PERFOM_REQUEST + responseCode);
                 }
             } catch (IOException e) {
-                callback.onError("Exception: " + e.getMessage());
+                callback.onError(e.getMessage());
             }
         }).start();
     }

@@ -15,11 +15,18 @@ import com.guuri11.isi.helpers.TaskManager.Task;
 import com.guuri11.isi.helpers.AlarmHelper;
 import com.guuri11.isi.helpers.Network.NetworkManager;
 import com.guuri11.isi.helpers.VoiceManager;
+import com.guuri11.isi.persistance.Emoji;
+import com.guuri11.isi.persistance.ErrorMessage;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MainActivity extends Activity implements TextToSpeech.OnInitListener {
 
@@ -28,9 +35,6 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     private NetworkManager networkManager;
     private AlarmHelper alarmHelper;
     private final ExecutorService executorService = Executors.newCachedThreadPool();
-
-    private static final String THINKING_EMOJI = "Pensando... \uD83D\uDCAD";
-    private static final String MIC_EMOJI = "\uD83C\uDF99";
 
     /**
      * The value could be any other number, is a code that we sent on startActivityForResult so whenever
@@ -54,7 +58,6 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         if (status == TextToSpeech.SUCCESS) {
             String greeting = new GreetingHandler().getGreeting();
             voiceManager.initializeTextToSpeech(greeting);
-            alarmHelper.setAlarm();
         } else {
             isiMessage.setText("TTS Initialization Failed ⚠️");
         }
@@ -106,9 +109,29 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
             voiceManager.speak("Asistente remoto activado");
             return;
         }
-
+        if (Task.CREATE_ALARM.options.contains(command.substring(0, 17).toLowerCase())) {
+            createAlarm(command);
+            return;
+        }
         sendCommand(command);
     }
+
+    private void createAlarm(String command) {
+        try {
+            long triggerTime = alarmHelper.parseTime(command);
+            alarmHelper.setAlarm(triggerTime);
+            runOnUiThread(() -> {
+                isiMessage.setText("Alarma configurada correctamente.");
+                voiceManager.speak("Alarma configurada.");
+            });
+        } catch (IllegalArgumentException e) {
+            runOnUiThread(() -> {
+                isiMessage.setText(e.getMessage());
+                voiceManager.speak(e.getMessage());
+            });
+        }
+    }
+
 
     private void sendCommand(String command) {
         displayLoadingIndicator();
@@ -129,17 +152,17 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     }
 
     private void updateUIWithResponse(String response) {
-        isiMessage.setText(MIC_EMOJI);
+        isiMessage.setText(Emoji.MIC_EMOJI);
         voiceManager.speak(response);
     }
 
     private void showErrorMessage(String error) {
-        isiMessage.setText("Error: " + error);
-        voiceManager.speak("Error en la conexión: " + error);
+        isiMessage.setText(error);
+        voiceManager.speak(ErrorMessage.CONNECTION_ERROR + error);
     }
 
     private void displayLoadingIndicator() {
-        isiMessage.setText(MainActivity.THINKING_EMOJI);
+        isiMessage.setText(Emoji.THINKING_EMOJI);
     }
     public void startVoiceRecognition(View view) {
         voiceManager.startVoiceRecognition(REQUEST_CODE_SPEECH_INPUT);
