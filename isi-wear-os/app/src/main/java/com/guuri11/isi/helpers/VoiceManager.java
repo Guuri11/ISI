@@ -16,11 +16,7 @@ public class VoiceManager {
     public VoiceManager(Activity activity, TextToSpeech.OnInitListener listener) {
         this.activity = activity;
         textToSpeech = new TextToSpeech(activity, listener);
-    }
-
-    public void initializeTextToSpeech(String greeting) {
         textToSpeech.setLanguage(new Locale("es", "ES"));
-        speak(greeting);
     }
 
     public void speak(String text) {

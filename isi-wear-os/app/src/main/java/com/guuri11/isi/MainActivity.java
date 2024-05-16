@@ -1,6 +1,5 @@
 package com.guuri11.isi;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +9,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import com.guuri11.isi.helpers.TaskManager.GreetingHandler;
 import com.guuri11.isi.helpers.TaskManager.Task;
 import com.guuri11.isi.helpers.AlarmHelper;
 import com.guuri11.isi.helpers.Network.NetworkManager;
@@ -18,15 +16,10 @@ import com.guuri11.isi.helpers.VoiceManager;
 import com.guuri11.isi.persistance.Emoji;
 import com.guuri11.isi.persistance.ErrorMessage;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class MainActivity extends Activity implements TextToSpeech.OnInitListener {
 
@@ -51,13 +44,14 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         voiceManager = new VoiceManager(this, this);
         networkManager = new NetworkManager(this);
         alarmHelper = new AlarmHelper(this);
+
+        voiceManager.startVoiceRecognition(REQUEST_CODE_SPEECH_INPUT);
     }
 
     @Override
     public void onInit(int status) {
         if (status == TextToSpeech.SUCCESS) {
-            String greeting = new GreetingHandler().getGreeting();
-            voiceManager.initializeTextToSpeech(greeting);
+            isiMessage.setText(Emoji.SALUTE_EMOJI);
         } else {
             isiMessage.setText("TTS Initialization Failed ⚠️");
         }
@@ -109,7 +103,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
             voiceManager.speak("Asistente remoto activado");
             return;
         }
-        if (Task.CREATE_ALARM.options.contains(command.substring(0, 17).toLowerCase())) {
+        if (command.length() > 16 && Task.CREATE_ALARM.options.contains(command.substring(0, 17).toLowerCase())) {
             createAlarm(command);
             return;
         }

@@ -86,7 +86,7 @@ public class HTTPService {
                 .build();
 
         ChatCompletionRequest request = ChatCompletionRequest.builder()
-                .model(ChatCompletionModel.GPT_3_5_TURBO)
+                .model(ChatCompletionModel.GPT_3_5_TURBO_0125)
                 .addUserMessage(result)
                 .build();
 
