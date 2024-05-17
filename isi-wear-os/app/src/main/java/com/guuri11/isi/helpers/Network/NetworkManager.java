@@ -10,13 +10,20 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+
+import dev.ai4j.openai4j.chat.AssistantMessage;
+import dev.ai4j.openai4j.chat.Message;
+import dev.ai4j.openai4j.chat.UserMessage;
 
 public class NetworkManager {
     private final Context context;
     private UUID chatId;
     private final Gson gson;
     public static boolean localAssistant = false;
+    public static List<Message> messages = new ArrayList<>();
 
     public interface NetworkCallback {
         void onCommandSuccess(String response);
@@ -55,9 +62,11 @@ public class NetworkManager {
     }
 
     private void sendToLocalGPT(String command, NetworkCallback callback) {
-        HTTPService.gptLocal(command, new HTTPService.GptLocalCallback() {
+        messages.add(UserMessage.from(command));
+        HTTPService.gptLocal(messages, new HTTPService.GptLocalCallback() {
             @Override
             public void onResponse(String response) {
+                messages.add(AssistantMessage.from(response));
                 callback.onCommandSuccess(response);
             }
 

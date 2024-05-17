@@ -14,11 +14,13 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.UUID;
 
 import dev.ai4j.openai4j.OpenAiClient;
 import dev.ai4j.openai4j.chat.ChatCompletionModel;
 import dev.ai4j.openai4j.chat.ChatCompletionRequest;
+import dev.ai4j.openai4j.chat.Message;
 
 public class HTTPService {
 
@@ -77,7 +79,7 @@ public class HTTPService {
         void onError(String errorMessage);
     }
 
-    public static void gptLocal(String result, GptLocalCallback callback, Context context) {
+    public static void gptLocal(List<Message> messages, GptLocalCallback callback, Context context) {
         String openAiKey = context.getString(R.string.openai_key);
         Log.d("HTTPService", "OpenAI API Key: " + openAiKey);
 
@@ -87,7 +89,7 @@ public class HTTPService {
 
         ChatCompletionRequest request = ChatCompletionRequest.builder()
                 .model(ChatCompletionModel.GPT_3_5_TURBO_0125)
-                .addUserMessage(result)
+                .messages(messages)
                 .build();
 
         client.chatCompletion(request)
