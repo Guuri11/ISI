@@ -2,7 +2,9 @@ package com.guuri11.isi_wear.utils
 
 import android.util.Log
 import com.guuri11.isi_wear.BuildConfig
+import com.guuri11.isi_wear.domain.Chat
 import com.guuri11.isi_wear.domain.ErrorMessage
+import com.guuri11.isi_wear.domain.Request
 import dev.ai4j.openai4j.OpenAiClient
 import dev.ai4j.openai4j.chat.ChatCompletionModel
 import dev.ai4j.openai4j.chat.ChatCompletionRequest
@@ -67,17 +69,19 @@ object HTTPService {
 
     private suspend fun postRequest(url: String, result: String, chatId: UUID?): HttpResponse {
         Log.i("HTTP Service", "chatId: $chatId")
-        val jsonInputString = if (chatId != null) {
-            Json.encodeToString(mapOf("request" to result, "chat" to mapOf("id" to chatId.toString())))
+
+        val requestBody = if (chatId != null) {
+            Json.encodeToString(Request(result, Chat(chatId.toString())))
         } else {
-            Json.encodeToString(mapOf("request" to result))
+            Json.encodeToString(Request(result))
         }
 
         return client.post(url) {
-            setBody(jsonInputString)
+            setBody(requestBody)
             contentType(ContentType.Application.Json)
         }
     }
+
 
     interface GptLocalCallback {
         fun onResponse(response: String)
