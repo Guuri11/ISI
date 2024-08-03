@@ -1,6 +1,7 @@
 package com.guuri11.isi_wear.utils
 
 import android.content.Context
+import android.util.Log
 import com.guuri11.isi_wear.BuildConfig
 import com.guuri11.isi_wear.domain.Command
 import dev.ai4j.openai4j.chat.AssistantMessage
@@ -10,9 +11,7 @@ import kotlinx.serialization.json.Json
 import java.util.*
 
 class NetworkManager(private val context: Context) {
-
     private var chatId: UUID? = null
-    private val json = Json { ignoreUnknownKeys = true } // Configure Json parser
 
     companion object {
         var localAssistant = false
@@ -27,22 +26,30 @@ class NetworkManager(private val context: Context) {
     fun sendCommand(command: String, callback: NetworkCallback) {
         val wifiUtils = WifiService()
         val wifiSSID = BuildConfig.WIFI_SSID
+        val isConnectedToExpectedWifi: Boolean = wifiUtils.isConnectedToWifi(context, "\"" + wifiSSID + "\"")
 
-        wifiUtils.isConnectedToWifi(context, "\"" + wifiSSID + "\"") { isConnectedToExpectedWifi ->
-            if (isConnectedToExpectedWifi && !localAssistant) {
-                sendToBackend(command, callback)
-            } else {
-                sendToLocalGPT(command, callback)
-            }
+        if (isConnectedToExpectedWifi && !localAssistant) {
+            sendToBackend(command, callback)
+        } else {
+            sendToLocalGPT(command, callback)
         }
     }
 
     private fun sendToBackend(command: String, callback: NetworkCallback) {
         HTTPService.sendCommand(command, object : HTTPService.Callback {
+            private val json = Json { ignoreUnknownKeys = true }
+
             override fun onSuccess(response: String) {
-                val commandDto = json.decodeFromString<Command>(response)
-                chatId = UUID.fromString(commandDto.chat.id)
-                callback.onCommandSuccess(commandDto.content)
+                Log.i("NetworkManager", "response from backend: $response")
+
+                try {
+                    val commandDto = json.decodeFromString<Command>(response)
+                    chatId = UUID.fromString(commandDto.chat.id)
+                    callback.onCommandSuccess(commandDto.content)
+                } catch (e: Exception) {
+                    println(e)
+                    callback.onCommandError(e.message ?: "Serialization error")
+                }
             }
 
             override fun onError(error: String) {

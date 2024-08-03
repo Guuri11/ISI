@@ -57,7 +57,12 @@ fun WearApp(viewModel: MainViewModel) {
                             voiceLauncher.launch(voiceIntent)
                         }
                 )
-                Text(text = viewModel.isiText, fontSize = 10.sp)
+                Text(
+                    text = viewModel.isiText,
+                    fontSize = 16.sp,
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                )
             }
         }
     }

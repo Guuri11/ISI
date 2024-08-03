@@ -28,9 +28,10 @@ import java.util.*
 object HTTPService {
 
     private const val BASE_URL = BuildConfig.SERVER + "/api/v1/commands"
+    private val json = Json { ignoreUnknownKeys = true }
     private val client = HttpClient(CIO) {
         install(ContentNegotiation) {
-            json()
+            json(json)
         }
         // TODO: review logging in ktor client
     }
@@ -40,6 +41,7 @@ object HTTPService {
     }
 
     fun sendCommand(result: String, callback: Callback, chatId: UUID?) {
+        Log.i("HTTP Service", "Sending command with result $result and chatId $chatId")
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val url = BASE_URL
@@ -55,6 +57,7 @@ object HTTPService {
                     }
                 }
             } catch (e: Exception) {
+                Log.e("HTTP Service", "Exception cached: ${e.message} |||| ${e}")
                 withContext(Dispatchers.Main) {
                     callback.onError(e.message ?: "Unknown error")
                 }
@@ -63,6 +66,7 @@ object HTTPService {
     }
 
     private suspend fun postRequest(url: String, result: String, chatId: UUID?): HttpResponse {
+        Log.i("HTTP Service", "chatId: $chatId")
         val jsonInputString = if (chatId != null) {
             Json.encodeToString(mapOf("request" to result, "chat" to mapOf("id" to chatId.toString())))
         } else {

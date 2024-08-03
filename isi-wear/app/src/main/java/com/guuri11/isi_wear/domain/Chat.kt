@@ -1,5 +1,10 @@
 package com.guuri11.isi_wear.domain
 
-data class Chat (
-    var id: String
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class Chat(
+    val id: String,
+    val createdAt: String,
+    val updatedAt: String
 )

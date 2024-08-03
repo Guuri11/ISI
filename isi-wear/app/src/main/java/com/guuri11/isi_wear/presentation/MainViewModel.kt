@@ -46,7 +46,7 @@ class MainViewModel(
                     Log.i("TextToSpeech", "TTS Language is set to Spanish")
                 }
             } else {
-                Log.e("TextToSpeech", "TTS Initialization failed")
+                Log.e("TextToSpeech", "TTS Initialization failed with status -> $status")
                 isiText = "TTS Initialization failed"
             }
         }
@@ -72,7 +72,7 @@ class MainViewModel(
     private fun speak(mic: Boolean, content: String) {
         isiText = if (mic) Emoji.MIC_EMOJI else content
         textToSpeech.speak(content, TextToSpeech.QUEUE_FLUSH, null)
-
+        Log.i("ISI Speaking", content)
     }
 
     private fun exitApp() {
