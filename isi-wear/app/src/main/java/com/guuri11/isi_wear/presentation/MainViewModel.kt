@@ -26,7 +26,8 @@ class MainViewModel(
     private val applicationContext: Context
 ) : ViewModel() {
 
-    var isiText by mutableStateOf(Emoji.SALUTE_EMOJI)
+    var isiText by mutableStateOf("")
+    var isiIsTalking by mutableStateOf(false)
 
     init {
         setupTextToSpeech()
@@ -71,6 +72,7 @@ class MainViewModel(
 
     private fun speak(mic: Boolean, content: String) {
         isiText = if (mic) Emoji.MIC_EMOJI else content
+        isiIsTalking = true
         textToSpeech.speak(content, TextToSpeech.QUEUE_FLUSH, null)
         Log.i("ISI Speaking", content)
     }
@@ -105,7 +107,7 @@ class MainViewModel(
                 val response =
                     networkManager.sendCommand(command, object : NetworkManager.NetworkCallback {
                         override fun onCommandSuccess(response: String) {
-                            viewModelScope.launch(Dispatchers.Main) { speak(true, response) }
+                            viewModelScope.launch(Dispatchers.Main) { speak(false, response) }
                         }
 
                         override fun onCommandError(error: String) {

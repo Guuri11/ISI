@@ -11,7 +11,7 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.guuri11.isi_wear.R
 
 @Composable
-fun ISIRobot(modifier: Modifier = Modifier) {
+fun ISIRobot(modifier: Modifier = Modifier, isPlaying: Boolean = false) {
     val preloaderLottieComposition by rememberLottieComposition(
         LottieCompositionSpec.RawRes(
             R.raw.robot
@@ -21,7 +21,7 @@ fun ISIRobot(modifier: Modifier = Modifier) {
     val preloaderProgress by animateLottieCompositionAsState(
         preloaderLottieComposition,
         iterations = LottieConstants.IterateForever,
-        isPlaying = true
+        isPlaying = isPlaying
     )
 
 
@@ -29,5 +29,6 @@ fun ISIRobot(modifier: Modifier = Modifier) {
         composition = preloaderLottieComposition,
         progress = preloaderProgress,
         modifier = modifier,
+
     )
 }

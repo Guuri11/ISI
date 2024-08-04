@@ -9,14 +9,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.MaterialTheme
-import androidx.wear.compose.material.Text
 import com.guuri11.isi_wear.presentation.MainViewModel
 import com.guuri11.isi_wear.theme.IsiwearTheme
 
@@ -47,22 +47,35 @@ fun WearApp(viewModel: MainViewModel) {
                 .background(MaterialTheme.colors.background),
             contentAlignment = Alignment.Center
         ) {
-            Column {
-                ISIRobot(
-                    modifier = Modifier
-                        .size(80.dp)
-                        .align(Alignment.CenterHorizontally)
-                        .clickable {
-                            viewModel.textToSpeech.stop()
-                            voiceLauncher.launch(voiceIntent)
-                        }
-                )
-                Text(
-                    text = viewModel.isiText,
-                    fontSize = 16.sp,
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                )
+            ISIRobot(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clickable {
+                        viewModel.textToSpeech.stop()
+                        viewModel.isiIsTalking = false
+                        voiceLauncher.launch(voiceIntent)
+                    },
+                isPlaying = viewModel.isiIsTalking,
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()) // scroll for long texts
+                    .padding(
+                        horizontal = 16.dp,
+                        vertical = 60.dp
+                    ) // padding to avoid overlap from screen borders
+                    .align(Alignment.Center)
+                    .clickable {
+                        viewModel.textToSpeech.stop()
+                        viewModel.isiIsTalking = false
+                        voiceLauncher.launch(voiceIntent)
+                    }
+            ) {
+                TypingEffectText(fullText = viewModel.isiText, stopLottie = {
+                    viewModel.isiIsTalking = false
+                })
+
             }
         }
     }
