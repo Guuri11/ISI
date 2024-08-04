@@ -17,6 +17,7 @@ import com.guuri11.isi_wear.utils.alarm.AlarmService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.Locale
+import java.util.UUID
 import kotlin.system.exitProcess
 
 class MainViewModel(
@@ -71,11 +72,14 @@ class MainViewModel(
     }
 
     private fun speak(mic: Boolean, content: String) {
-        isiText = if (mic) Emoji.MIC_EMOJI else content
-        isiIsTalking = true
-        textToSpeech.speak(content, TextToSpeech.QUEUE_FLUSH, null)
-        Log.i("ISI Speaking", content)
+        viewModelScope.launch(Dispatchers.Default) {
+            isiText = if (mic) Emoji.MIC_EMOJI else content
+            isiIsTalking = true
+            textToSpeech.speak(content, TextToSpeech.QUEUE_FLUSH, null, null)
+            Log.i("ISI Speaking", content)
+        }
     }
+
 
     private fun exitApp() {
         exitProcess(0)
@@ -88,7 +92,7 @@ class MainViewModel(
 
     private fun activateRemoteAssistant() {
         NetworkManager.localAssistant = false
-        textToSpeech.speak("Asistente remoto activado", TextToSpeech.QUEUE_FLUSH, null)
+        speak(true, "Asistente remoto activado")
     }
 
     private fun createAlarm(command: String) {

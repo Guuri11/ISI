@@ -13,9 +13,7 @@ import com.guuri11.isi_wear.R
 @Composable
 fun ISIRobot(modifier: Modifier = Modifier, isPlaying: Boolean = false) {
     val preloaderLottieComposition by rememberLottieComposition(
-        LottieCompositionSpec.RawRes(
-            R.raw.robot
-        )
+        LottieCompositionSpec.RawRes(R.raw.robot)
     )
 
     val preloaderProgress by animateLottieCompositionAsState(
@@ -24,11 +22,9 @@ fun ISIRobot(modifier: Modifier = Modifier, isPlaying: Boolean = false) {
         isPlaying = isPlaying
     )
 
-
     LottieAnimation(
         composition = preloaderLottieComposition,
         progress = preloaderProgress,
-        modifier = modifier,
-
+        modifier = modifier
     )
 }
