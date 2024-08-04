@@ -27,6 +27,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.encodeToString
 import java.util.*
 
+// TODO better error logging with more context
 object HTTPService {
 
     private const val BASE_URL = BuildConfig.SERVER + "/api/v1/commands"
@@ -43,7 +44,7 @@ object HTTPService {
     }
 
     fun sendCommand(result: String, callback: Callback, chatId: UUID?) {
-        Log.i("HTTP Service", "Sending command with result $result and chatId $chatId")
+        Log.i(HTTPService::class.simpleName, "Sending command with result $result and chatId $chatId")
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val url = BASE_URL
@@ -55,20 +56,21 @@ object HTTPService {
                     }
                 } else {
                     withContext(Dispatchers.Main) {
-                        callback.onError("${ErrorMessage.CANT_PERFOM_REQUEST} ${response.status.value}")
+                        callback.onError("${ErrorMessage.CANT_PERFORM_REQUEST} ${response.status.value}")
                     }
                 }
             } catch (e: Exception) {
-                Log.e("HTTP Service", "Exception cached: ${e.message} |||| ${e}")
+                Log.e(HTTPService::class.simpleName, "${ErrorMessage.EXCEPTION_CACHED}: ${e.message} |||| ${e}")
+
                 withContext(Dispatchers.Main) {
-                    callback.onError(e.message ?: "Unknown error")
+                    callback.onError(e.message ?: ErrorMessage.UNKNOWN_ERROR)
                 }
             }
         }
     }
 
     private suspend fun postRequest(url: String, result: String, chatId: UUID?): HttpResponse {
-        Log.i("HTTP Service", "chatId: $chatId")
+        Log.i(HTTPService::class.simpleName, "chatId: $chatId")
 
         val requestBody = if (chatId != null) {
             Json.encodeToString(Request(result, Chat(chatId.toString())))
@@ -90,7 +92,7 @@ object HTTPService {
 
     fun gptLocal(messages: List<Message>, callback: GptLocalCallback) {
         val openAiKey = BuildConfig.OPEN_AI_API_KEY
-        Log.d("HTTPService", "OpenAI API Key: $openAiKey")
+        Log.d(HTTPService::class.simpleName, "OpenAI API Key: $openAiKey")
 
         val client = OpenAiClient.builder()
             .openAiApiKey(openAiKey)
@@ -103,7 +105,7 @@ object HTTPService {
 
         client.chatCompletion(request)
             .onResponse { response -> callback.onResponse(response.content()) }
-            .onError { error -> callback.onError(error.message ?: "Unknown error") }
+            .onError { error -> callback.onError(error.message ?: ErrorMessage.UNKNOWN_ERROR) }
             .execute()
     }
 }

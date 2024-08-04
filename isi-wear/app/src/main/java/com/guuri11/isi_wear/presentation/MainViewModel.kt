@@ -1,4 +1,3 @@
-// MainViewModel.kt
 package com.guuri11.isi_wear.presentation
 
 import android.content.Context
@@ -16,6 +15,7 @@ import com.guuri11.isi_wear.domain.Task
 import com.guuri11.isi_wear.utils.alarm.AlarmService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Locale
 import kotlin.system.exitProcess
 
@@ -39,15 +39,15 @@ class MainViewModel(
                 val result = textToSpeech.setLanguage(Locale("es", "ES"))
                 if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                     Log.e(
-                        "TextToSpeech",
-                        "Language data is missing or the language is not supported"
+                        MainViewModel::class.simpleName,
+                        ErrorMessage.LANGUAGE_NOT_SUPPORTED
                     )
-                    isiText = "Language data is missing or the language is not supported"
+                    isiText = ErrorMessage.LANGUAGE_NOT_SUPPORTED
                 } else {
-                    Log.i("TextToSpeech", "TTS Language is set to Spanish")
+                    Log.i(MainViewModel::class.simpleName, "TTS Language is set to Spanish")
                 }
             } else {
-                Log.e("TextToSpeech", "TTS Initialization failed with status -> $status")
+                Log.e(MainViewModel::class.simpleName, "TTS Initialization failed with status -> $status")
                 isiText = "TTS Initialization failed"
             }
         }
@@ -115,17 +115,26 @@ class MainViewModel(
 
                         override fun onCommandError(error: String) {
                             viewModelScope.launch(Dispatchers.Main) {
-                                speak(
-                                    false,
-                                    ErrorMessage.CONNECTION_ERROR + error
-                                )
+                                handleCommandError(error, command)
                             }
                         }
                     })
                 println(response)
             } catch (e: Exception) {
-                speak(false, e.message ?: "Error desconocido")
+                withContext(Dispatchers.Main) {
+                    speak(false, e.message ?: ErrorMessage.UNKNOWN_ERROR)
+                }
             }
+        }
+    }
+
+    private fun handleCommandError(error: String, command: String) {
+        if (error.contains(ErrorMessage.CONNECTED_REFUSED) && !NetworkManager.localAssistant) {
+            speak(false, ErrorMessage.CONNECTION_ERROR_TRYING_WITH_LOCAL_ASSISTANT)
+            NetworkManager.localAssistant = true
+            sendCommand(command)
+        } else {
+            speak(false, ErrorMessage.CONNECTION_ERROR + error)
         }
     }
 }

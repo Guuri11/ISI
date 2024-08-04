@@ -25,8 +25,10 @@ class NetworkManager(private val context: Context) {
 
     fun sendCommand(command: String, callback: NetworkCallback) {
         val wifiUtils = WifiService()
-        val wifiSSID = BuildConfig.WIFI_SSID
-        val isConnectedToExpectedWifi: Boolean = wifiUtils.isConnectedToWifi(context, "\"" + wifiSSID + "\"")
+        val wifiSSIDs = BuildConfig.WIFI_SSIDs.split("++")
+        val isConnectedToExpectedWifi = wifiSSIDs.any { ssid ->
+            wifiUtils.isConnectedToWifi(context, "\"$ssid\"")
+        }
 
         if (isConnectedToExpectedWifi && !localAssistant) {
             sendToBackend(command, callback)
