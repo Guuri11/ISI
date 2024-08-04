@@ -25,7 +25,7 @@ android {
         properties.load(keystoreFile.inputStream())
 
         val OPEN_AI_API_KEY = properties.getProperty("openai.key") ?: ""
-        val WIFI_SSID = properties.getProperty("wifi.ssid") ?: ""
+        val WIFI_SSIDs = properties.getProperty("wifi.ssids") ?: ""
         val SERVER = properties.getProperty("server.host") ?: ""
 
         buildConfigField(
@@ -35,8 +35,8 @@ android {
         )
         buildConfigField(
             type = "String",
-            name = "WIFI_SSID",
-            value = WIFI_SSID
+            name = "WIFI_SSIDs",
+            value = WIFI_SSIDs
         )
         buildConfigField(
             type = "String",
