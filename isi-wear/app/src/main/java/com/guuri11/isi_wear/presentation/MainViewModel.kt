@@ -17,7 +17,6 @@ import com.guuri11.isi_wear.utils.alarm.AlarmService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.Locale
-import java.util.UUID
 import kotlin.system.exitProcess
 
 class MainViewModel(
