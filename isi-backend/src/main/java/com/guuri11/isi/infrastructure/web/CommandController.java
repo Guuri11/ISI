@@ -1,8 +1,8 @@
 package com.guuri11.isi.infrastructure.web;
 
-import com.guuri11.isi.application.Command.CommandDto;
-import com.guuri11.isi.application.Command.CommandRequest;
-import com.guuri11.isi.application.Command.service.*;
+import com.guuri11.isi.application.command.CommandDto;
+import com.guuri11.isi.application.command.CommandRequest;
+import com.guuri11.isi.application.command.service.*;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
