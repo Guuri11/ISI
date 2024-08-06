@@ -26,6 +26,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class CommandCreate {
     public final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     private final CommandRepository repository;
     private final CommandMapper mapper;
     private final ChatServiceCreateEntity chatServiceCreate;
@@ -36,7 +37,7 @@ public class CommandCreate {
         final Command entity = createEntity(request);
         entity.setMessageType(messageType);
 
-        return mapper.toDto(createEntity(commandHandler.handle(entity, request), entity.getChat()));
+        return mapper.toDto(commandHandler.handle(entity, request));
     }
 
     private @NotNull Command createEntity(CommandRequest request) {
@@ -59,22 +60,4 @@ public class CommandCreate {
         }
         return chatServiceCreate.createEntity();
     }
-
-    private Command createEntity(ChatResponse response, Chat chat) {
-        logger.info("Response: {}", response.getResult().getOutput().getContent());
-        Toast.toast(ToastType.INFO, "ISI \uD83D\uDE3A", response.getResult().getOutput().getContent());
-        Command entity = new Command();
-
-        entity.setContent(response.getResult().getOutput().getContent());
-        entity.setMessageType(response.getResult().getOutput().getMessageType());
-        entity.setCreatedAt(LocalDateTime.now());
-        entity.setUpdatedAt(LocalDateTime.now());
-        entity.setChat(chat != null ? chat : chatServiceCreate.createEntity());
-
-        repository.save(entity);
-
-        return entity;
-    }
-
-
 }
