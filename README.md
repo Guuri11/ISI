@@ -1,5 +1,7 @@
-# ISI
-
+<h1 align="center">ISI</h1>
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/f46a2800-cf00-4b0f-97da-8d6ad8acb2fb" alt="Animation - 1712686744780">
+</p>
 ISI is a highly advanced artificial intelligence system designed to provide assistance and facilitate interactive interactions. With its machine learning capability and wide range of features, ISI becomes an invaluable ally for complex tasks and decision-making processes.
 
 ### 🏆️ Motivation
