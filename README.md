@@ -32,9 +32,13 @@ https://github.com/Guuri11/ISI/assets/48799796/9454e0d6-2bd3-4467-9544-4dd5c14b7
 ## 🛠️ Tech Stack
 
 **Wear OS Client:** Android Wear OS App with Kotlin
+
 **Desktop & Android Client:** Kotlin Multiplatform
+
 **Server:** Spring Boot 3 | JPA | Spring AI with OpenAI
+
 **Java version:** 21
+
 **DB**: Postgresql with Docker, also PGAdmin 4 as Db client
 
 ## 🗺️ Roadmap
