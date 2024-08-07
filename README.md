@@ -11,10 +11,14 @@ Why ISI? ISI was my cat that passed away some time ago, so this is kind of a ded
 ## 📽️ Demo
 Not the best video/audio quality, but good enough for the POC (audio in spanish)
 
+**Wear OS Demo**
+https://drive.google.com/file/d/1KYnLJzjzIcFGq5DchbBlU6hdreu_6c6t/view?usp=drive_link
 
-https://github.com/Guuri11/ISI/assets/48799796/9454e0d6-2bd3-4467-9544-4dd5c14b7084
+**KMP Desktop Demo**
+https://drive.google.com/file/d/1viPK9nL-CDI4_YFndFItu3qUKK4ELcrS/view?usp=drive_link
 
-
+**KMP Android Demo Photo**
+https://drive.google.com/file/d/1wEF1zCMSXae-XcyEeHgZAY_gfcmUhA7T/view?usp=drive_link
 
 
 ## 🪛 Features
