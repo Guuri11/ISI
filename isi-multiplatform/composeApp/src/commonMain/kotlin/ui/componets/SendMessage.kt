@@ -49,7 +49,6 @@ fun SendMessage(sendMessage: (String) -> Unit) {
                 Row(
                     modifier = Modifier
                         .clickable {
-                            println(inputText)
                             sendMessage(inputText)
                             inputText = ""
                         }
