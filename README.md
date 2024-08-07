@@ -37,7 +37,7 @@ https://drive.google.com/file/d/1wEF1zCMSXae-XcyEeHgZAY_gfcmUhA7T/view?usp=drive
 
 ## 🛠️ Tech Stack
 
-**Wear OS Client:** Android Wear OS App with Kotlin
+**Wear OS Client:** Android Wear OS App with Kotlin (Legacy app was made with Java, there is a branch with that application but I won't work on it anymore)
 
 **Desktop & Android Client:** Kotlin Multiplatform
 
