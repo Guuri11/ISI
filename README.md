@@ -27,12 +27,12 @@ https://drive.google.com/file/d/1wEF1zCMSXae-XcyEeHgZAY_gfcmUhA7T/view?usp=drive
 
 - Speech To Text using Voice input from Wear OS API
 - Text to speech using Wear OS API also
-- Interaction with ChatGPT connecting chats on memory
+- Interaction with ChatGPT connecting chats in memory
 - Ask for refactoring and coding assitance
-- Ask to store a resource in your bookmark
-- Set alarms
+- Ask to store a resource in your bookmark doing a screenshot
+- Set alarms (Wear OS)
+- Fast reply to Linkedin
 - Android & Desktop Client built with Kotlin Multiplatform
-
 
 
 ## 🛠️ Tech Stack
@@ -56,4 +56,4 @@ https://drive.google.com/file/d/1wEF1zCMSXae-XcyEeHgZAY_gfcmUhA7T/view?usp=drive
 
 ## 💻️ Installation
 
-Work in progres...
+Work in progres... If you're interested in trying out the entire flow, please open an issue, and I'll guide you through the installation process
