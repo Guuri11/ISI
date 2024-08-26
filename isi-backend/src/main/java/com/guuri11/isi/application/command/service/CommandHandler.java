@@ -40,13 +40,13 @@ public class CommandHandler {
         ChatResponse taskManagerOutput = callAiClient.call(Prompts.COMMAND_MANAGER_PROMPT + request.request(), AiClient.GPT);
         Task task = getTask(taskManagerOutput.getResult().getOutput().getContent());
         entity.setTask(task);
-        commandRepository.save(entity);
+        Command entitySaved = commandRepository.save(entity);
 
         ChatResponse chatResponse = switch (task) {
             case Task.REFACTOR -> refactor.refactor();
             // case Task.OPEN_APP -> logger.info("Open app requested"); // TODO
             // case Task.WEATHER -> logger.info("Weather requested"); // TODO
-            case Task.BOOKMARK_RECOMMENDATIONS -> addBookmark.add();
+            case Task.BOOKMARK_RECOMMENDATIONS -> addBookmark.add(entitySaved);
             case Task.LINKEDIN_OFFER_REJECTION -> linkedinRejection.reject();
             default -> otherTopics.handle(request, entity);
         };

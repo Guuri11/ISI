@@ -18,6 +18,7 @@ public class CommandMapper {
             entity.getChat(),
             entity.getCreatedAt(),
             entity.getUpdatedAt(),
+            entity.getFavName(),
             entity.getTask(),
             entity.getContent(),
             entity.getMessageType()
@@ -35,6 +36,7 @@ public class CommandMapper {
             dto.content(),
             dto.messageType(),
             dto.chat(),
+            dto.favName(),
             dto.task(),
             dto.createdAt(),
             dto.updateAt());

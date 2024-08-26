@@ -13,6 +13,7 @@ public record CommandDto(
         Chat chat,
         LocalDateTime createdAt,
         LocalDateTime updateAt,
+        String favName,
         Task task,
         String content,
         MessageType messageType
