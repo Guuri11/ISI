@@ -7,4 +7,6 @@ import java.util.UUID;
 
 public interface FavRepository extends JpaRepository<Fav, UUID> {
 
+  // Not the most elegant way in a scenario with multiple concurrent users. But as I am the only one using the application it works.
+  Fav findFirstByOrderByCreatedAtDesc();
 }

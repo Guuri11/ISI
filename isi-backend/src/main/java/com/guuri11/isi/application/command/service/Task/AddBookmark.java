@@ -22,9 +22,9 @@ public class AddBookmark {
     private final ClipboardRead clipboardRead;
     private final FavCreate favCreate;
 
-    public ChatResponse add(final Command command) {
+    public ChatResponse add() {
         try {
-            favCreate.create(new FavRequest(clipboardRead.read()), command);
+            favCreate.create(new FavRequest(clipboardRead.read()));
             return callAiClient.call(Prompts.FAV_CREATED, AiClient.GPT);
         } catch (AWTException | IOException e) {
             throw new RuntimeException(e);
