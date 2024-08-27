@@ -3,6 +3,7 @@ package navigator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import data.CommandRepositoryImpl
+import data.CommandRepositoryLocalImpl
 import domain.entity.Chat
 import domain.entity.TaskType
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
@@ -11,12 +12,13 @@ import moe.tlaster.precompose.navigation.Navigator
 import moe.tlaster.precompose.viewmodel.viewModel
 import presentation.IsiViewModel
 import ui.screens.Home
+import utils.isLocal
 
 @Composable
 fun Navigation(navigator: Navigator) {
 
     val viewModel = viewModel(modelClass = (IsiViewModel::class)) {
-        IsiViewModel(CommandRepositoryImpl())
+        IsiViewModel(if (isLocal) CommandRepositoryLocalImpl() else CommandRepositoryImpl(), isLocal)
     }
 
     val filterCommands: (taskType: TaskType?) -> Unit = {

@@ -5,13 +5,13 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 
-class OpenAIClient(private val apiKey: String) {
+class OpenAIClient() {
 
     private val client = getHttpClient()
 
     suspend fun getResponse(prompt: String): String {
         val response = client.post("https://api.openai.com/v1/chat/completions") {
-            headers { bearerAuth(apiKey) }
+            headers { bearerAuth(openai_apikey) }
             contentType(ContentType.Application.Json)
             setBody(OpenAIRequest(
                 model = "gpt-3.5-turbo",
