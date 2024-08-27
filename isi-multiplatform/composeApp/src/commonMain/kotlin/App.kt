@@ -20,24 +20,10 @@ fun App() {
     Napier.base(DebugAntilog())
 
     PreComposeApp {
-        val colors = getColorsTheme()
-        /**
-         * use of the http client
-         *
-         * var data by remember { mutableStateOf<String?>(null) }
-         * val scope = rememberCoroutineScope()
-         *
-         * scope.launch {
-         *   val response = callIsiServer(ApiPath.COMMAND)
-         *   data = response.bodyAsText()
-         * }
-         */
-
         AppTheme {
             val navigator = rememberNavigator()
             Navigation(navigator)
         }
-
     }
 }
 
