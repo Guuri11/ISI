@@ -1,5 +1,6 @@
 package data
 
+import domain.Request
 import domain.api.ApiPath
 import domain.entity.Chat
 import domain.entity.Command
@@ -8,14 +9,7 @@ import getHttpClient
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
-import kotlinx.serialization.Serializable
 import utils.api
-
-@Serializable
-data class Request(
-    val request: String,
-    val chat: Chat? = null
-)
 
 class CommandRepositoryImpl : CommandRepository {
     private val client = getHttpClient()

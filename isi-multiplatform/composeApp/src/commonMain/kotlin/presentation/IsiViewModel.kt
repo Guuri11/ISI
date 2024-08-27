@@ -3,6 +3,7 @@ package presentation
 import domain.entity.Chat
 import domain.entity.Command
 import domain.entity.TaskType
+import domain.mapper.createCommandFromString
 import domain.repository.CommandRepository
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +23,7 @@ sealed class IsiUiState {
 }
 
 
-class IsiViewModel(private val repo: CommandRepository) : ViewModel() {
+class IsiViewModel(private val repo: CommandRepository, private val isLocal: Boolean) : ViewModel() {
     private val _uiState = MutableStateFlow<IsiUiState>(IsiUiState.Loading)
     val uiState = _uiState.asStateFlow()
     private var allCommands = emptyList<Command>()
@@ -73,13 +74,27 @@ class IsiViewModel(private val repo: CommandRepository) : ViewModel() {
                 val command = repo.create(prompt, chat)
                 Napier.i { "ISI response -> $command" }
 
-                // TODO do better
-                getAllCommands()
+                if (isLocal) {
+                    updateMessagesLocal(prompt, command)
+                } else {
+                    getAllCommands()
+                }
             } catch (e: Exception) {
-                // TODO: move error to enum or something like that
                 Napier.e { "Error creating commands -> $e" }
                 _uiState.value = IsiUiState.Error(e.message ?: "Unknown error occurred")
             }
         }
+    }
+
+    private fun updateMessagesLocal(prompt: String, command: Command) {
+        allCommands += createCommandFromString(prompt)
+        allCommands += command
+        val taskTypeSelected = (_uiState.value as? IsiUiState.Success)?.taskTypeSelected
+        val filteredCommands = if (taskTypeSelected == null) {
+            allCommands
+        } else {
+            allCommands.filter { it.task == taskTypeSelected }
+        }
+        _uiState.value = IsiUiState.Success(commands = filteredCommands, taskTypeSelected = taskTypeSelected)
     }
 }
