@@ -98,7 +98,7 @@ class MainViewModel(
         try {
             val triggerTime: Long = alarmService.parseTime(command)
             alarmService.setAlarm(triggerTime)
-            speak(true, "Alarma configurada.")
+            speak(false, "Alarma configurada")
         } catch (e: IllegalArgumentException) {
             speak(false, e.message.toString())
         }
