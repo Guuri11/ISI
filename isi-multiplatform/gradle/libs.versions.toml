@@ -18,9 +18,12 @@ ktor-client-core = "2.3.12"
 ktor-client-json = "2.3.1"
 kottie = "1.9.6"
 kotlinx-datetime = "0.6.0"
+kotlinx-coroutines-swing = "1.8.0"
 logbackClassic = "1.2.3"
 napier = "2.7.1"
 precompose = "1.5.10"
+coil = "2.7.0"
+coil-alpha = "3.0.0-alpha10"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -43,10 +46,14 @@ ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negoti
 ktor-client-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor-client-json" }
 kottie = { module = "io.github.ismai117:kottie", version.ref = "kottie" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
+kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines-swing" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logbackClassic" }
 napier = { module = "io.github.aakira:napier", version.ref = "napier" }
 precompose = { module = "moe.tlaster:precompose", version.ref = "precompose" }
 precompose-viewmodel = { module = "moe.tlaster:precompose-viewmodel", version.ref = "precompose" }
+io-coil-kt-coil3 = { module = "io.coil-kt.coil3:coil", version.ref = "coil-alpha" }
+io-coil-kt-coil3-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil-alpha" }
+io-coil-kt-coil3-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor2", version.ref = "coil-alpha" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

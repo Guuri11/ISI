@@ -48,6 +48,10 @@ kotlin {
                 // Napier Logging
                 implementation(libs.napier)
 
+                // Image loader
+                implementation(libs.io.coil.kt.coil3)
+                implementation(libs.io.coil.kt.coil3.compose)
+                implementation(libs.io.coil.kt.coil3.network.ktor)
             }
         }
         val androidMain by getting {

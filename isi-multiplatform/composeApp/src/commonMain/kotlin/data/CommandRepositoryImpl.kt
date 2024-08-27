@@ -9,7 +9,7 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.serialization.Serializable
-import utils.server
+import utils.api
 
 @Serializable
 data class Request(
@@ -22,7 +22,7 @@ class CommandRepositoryImpl : CommandRepository {
 
     override suspend fun findAll(): List<Command> {
 
-        val commandResponse = client.get("$server/${ApiPath.COMMAND.value}").body<List<Command>>()
+        val commandResponse = client.get("$api/${ApiPath.COMMAND.value}").body<List<Command>>()
 
         if (commandResponse.isEmpty()) return emptyList()
 
@@ -30,7 +30,7 @@ class CommandRepositoryImpl : CommandRepository {
     }
 
     override suspend fun create(prompt: String, chat: Chat?): Command {
-        val commandResponse = client.post("$server/${ApiPath.COMMAND.value}") {
+        val commandResponse = client.post("$api/${ApiPath.COMMAND.value}") {
             contentType(ContentType.Application.Json)
             setBody(Request(prompt, chat))
         }.body<Command>()

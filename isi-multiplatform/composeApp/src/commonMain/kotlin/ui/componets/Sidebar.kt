@@ -23,14 +23,16 @@ fun Sidebar(modifier: Modifier = Modifier, filterCommands: (taskType: TaskType?)
             })
         Spacer(modifier = Modifier.height(16.dp))
         for (taskType in TaskType.entries) {
-            Text(
-                text = taskType.value,
-                color = colors.TextColor,
-                fontSize = 18.sp,
-                modifier = Modifier.fillMaxWidth().clickable {
-                    filterCommands(taskType)
-                })
-            Spacer(modifier = Modifier.height(16.dp))
+            if (taskType.show) {
+                Text(
+                    text = taskType.value,
+                    color = colors.TextColor,
+                    fontSize = 18.sp,
+                    modifier = Modifier.fillMaxWidth().clickable {
+                        filterCommands(taskType)
+                    })
+                Spacer(modifier = Modifier.height(16.dp))
+            }
         }
     }
 }
