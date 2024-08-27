@@ -31,7 +31,8 @@ public class FavCreate {
         var screenDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         BufferedImage screenShot = robot.createScreenCapture(screenDevice.getDefaultConfiguration().getBounds());
         fileName = entity.getName().replace(" ", "-") + "_" + UUID.randomUUID() + ".jpg";
-        File file = new File("src/main/resources/static/" + fileName);
+        String externalDir = "/home/guuri11/Documents/dev/isi/static/";
+        File file = new File(externalDir + fileName);
         ImageIO.write(screenShot, "jpg", file);
 
         entity.setName(fileName);

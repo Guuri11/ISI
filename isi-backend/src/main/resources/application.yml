@@ -1,6 +1,4 @@
 spring:
-  resources:
-    static-locations: classpath:/static/
   application:
     name: isi
   datasource:
@@ -34,3 +32,6 @@ logging:
     org:
       springframework:
         cache: DEBUG
+external:
+  resources:
+    path: "/home/guuri11/Documents/dev/isi/static/"
