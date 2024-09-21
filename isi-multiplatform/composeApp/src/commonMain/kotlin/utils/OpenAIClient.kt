@@ -9,15 +9,13 @@ class OpenAIClient() {
 
     private val client = getHttpClient()
 
-    suspend fun getResponse(prompt: String): String {
+    suspend fun getResponse(messages: List<ChatMessage>): String {
         val response = client.post("https://api.openai.com/v1/chat/completions") {
             headers { bearerAuth(openai_apikey) }
             contentType(ContentType.Application.Json)
             setBody(OpenAIRequest(
                 model = "gpt-3.5-turbo",
-                messages = listOf(
-                    ChatMessage("user", prompt)
-                )
+                messages = messages
             ))
         }.body<OpenAIResponse>()
 

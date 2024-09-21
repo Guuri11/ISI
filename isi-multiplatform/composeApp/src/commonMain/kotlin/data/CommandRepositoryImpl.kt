@@ -23,12 +23,14 @@ class CommandRepositoryImpl : CommandRepository {
         return commandResponse
     }
 
-    override suspend fun create(prompt: String, chat: Chat?): Command {
+    override suspend fun create(messages: List<Command>, chat: Chat?): Command {
+        val prompt = messages.last().content
+
         val commandResponse = client.post("$api/${ApiPath.COMMAND.value}") {
             contentType(ContentType.Application.Json)
             setBody(Request(prompt, chat))
         }.body<Command>()
 
-        return commandResponse;
+        return commandResponse
     }
 }

@@ -2,6 +2,7 @@ package presentation
 
 import domain.entity.Chat
 import domain.entity.Command
+import domain.entity.MessageType
 import domain.entity.TaskType
 import domain.mapper.createCommandFromString
 import domain.repository.CommandRepository
@@ -71,11 +72,12 @@ class IsiViewModel(private val repo: CommandRepository, private val isLocal: Boo
         viewModelScope.launch {
             try {
                 Napier.i { "Sending command" }
-                val command = repo.create(prompt, chat)
+                allCommands += createCommandFromString(content = prompt, messageType = MessageType.USER)
+                val command = repo.create(allCommands, chat)
                 Napier.i { "ISI response -> $command" }
 
                 if (isLocal) {
-                    updateMessagesLocal(prompt, command)
+                    updateMessagesLocal(command)
                 } else {
                     getAllCommands()
                 }
@@ -86,8 +88,7 @@ class IsiViewModel(private val repo: CommandRepository, private val isLocal: Boo
         }
     }
 
-    private fun updateMessagesLocal(prompt: String, command: Command) {
-        allCommands += createCommandFromString(prompt)
+    private fun updateMessagesLocal(command: Command) {
         allCommands += command
         val taskTypeSelected = (_uiState.value as? IsiUiState.Success)?.taskTypeSelected
         val filteredCommands = if (taskTypeSelected == null) {

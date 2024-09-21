@@ -4,16 +4,10 @@ import domain.entity.Chat
 import domain.entity.Command
 import domain.entity.MessageType
 import domain.entity.TaskType
+import domain.mapper.createChatMessageFromCommand
 import domain.mapper.createCommandFromString
 import domain.repository.CommandRepository
-import io.ktor.client.call.*
-import io.ktor.client.request.*
-import io.ktor.http.*
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import utils.OpenAIClient
-import java.util.UUID
 
 class CommandRepositoryLocalImpl : CommandRepository {
     private fun createOpenAIClient(): OpenAIClient {
@@ -24,11 +18,16 @@ class CommandRepositoryLocalImpl : CommandRepository {
         return emptyList()
     }
 
-    override suspend fun create(prompt: String, chat: Chat?): Command {
+    override suspend fun create(messages: List<Command>, chat: Chat?): Command {
         val client = createOpenAIClient()
 
-        val response = client.getResponse(prompt)
+        val chatMessages = messages.map { createChatMessageFromCommand(it) }.toList()
+        val response = client.getResponse(chatMessages)
 
-        return createCommandFromString(content = response, messageType = MessageType.ASSISTANT, task =  TaskType.OTHER_TOPICS);
+        return createCommandFromString(
+            content = response,
+            messageType = MessageType.ASSISTANT,
+            task = TaskType.OTHER_TOPICS
+        )
     }
 }

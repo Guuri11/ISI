@@ -7,6 +7,7 @@ import domain.entity.TaskType
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import utils.ChatMessage
 import java.util.*
 
 fun createCommandFromString(content: String, favName: String? = null, messageType: MessageType = MessageType.USER, task: TaskType? = TaskType.OTHER_TOPICS): Command {
@@ -26,4 +27,8 @@ fun createCommandFromString(content: String, favName: String? = null, messageTyp
         createdAt = now,
         updatedAt = now
     )
+}
+
+fun createChatMessageFromCommand(command: Command): ChatMessage{
+    return ChatMessage(role = command.messageType.toString().lowercase(), content = command.content)
 }
