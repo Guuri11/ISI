@@ -128,7 +128,7 @@ fun Home(
                             SendMessage { it ->
                                 if (it.isNotEmpty()) {
                                     textState = TextFieldValue()
-                                    sendCommand(it, null)
+                                    sendCommand(it, uiState.chat)
                                 }
                             }
                         }

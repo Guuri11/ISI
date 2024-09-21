@@ -17,6 +17,7 @@ sealed class IsiUiState {
     data object Loading : IsiUiState()
     data class Success(
         val commands: List<Command>,
+        val chat: Chat? = null,
         val taskTypeSelected: TaskType? = null,
     ) : IsiUiState()
 
@@ -33,14 +34,14 @@ class IsiViewModel(private val repo: CommandRepository, private val isLocal: Boo
         getAllCommands()
     }
 
-    private fun getAllCommands() {
+    private fun getAllCommands(chat: Chat? = null) {
         viewModelScope.launch {
             try {
                 Napier.i { "Getting all commands" }
                 val commands = repo.findAll()
                 allCommands = commands
                 Napier.i { "Command list -> $commands" }
-                _uiState.value = IsiUiState.Success(commands)
+                _uiState.value = IsiUiState.Success(commands, chat)
             } catch (e: Exception) {
                 // TODO: move error to enum or something like that
                 Napier.e { "Error getting commands -> $e" }
@@ -79,7 +80,7 @@ class IsiViewModel(private val repo: CommandRepository, private val isLocal: Boo
                 if (isLocal) {
                     updateMessagesLocal(command)
                 } else {
-                    getAllCommands()
+                    getAllCommands(command.chat)
                 }
             } catch (e: Exception) {
                 Napier.e { "Error creating commands -> $e" }
