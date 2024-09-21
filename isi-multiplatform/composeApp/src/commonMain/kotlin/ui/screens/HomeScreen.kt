@@ -46,13 +46,12 @@ fun Home(
 
     when (uiState) {
         is IsiUiState.Loading -> {
-            IsiKottie(500.dp)
-            Text("Loading...")
+            LoadingScreen(isExpanded, filterCommands)
         }
 
         is IsiUiState.Error -> {
+            ErrorScreen(isExpanded, filterCommands, uiState.message)
             IsiKottie(size = 500.dp)
-            Text(uiState.message)
         }
 
         is IsiUiState.Success -> {
