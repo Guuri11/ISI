@@ -21,10 +21,7 @@ import domain.entity.TaskType
 import getPlatform
 import kotlinx.datetime.toJavaLocalDateTime
 import presentation.IsiUiState
-import ui.componets.AndroidFloatingButton
-import ui.componets.IsiKottie
-import ui.componets.SendMessage
-import ui.componets.Sidebar
+import ui.componets.*
 import ui.componets.message.AssistantMessage
 import ui.componets.message.UserMessage
 import ui.theme.getColorsTheme
@@ -35,6 +32,7 @@ fun Home(
     uiState: IsiUiState,
     filterCommands: (taskType: TaskType?) -> Unit,
     sendCommand: (prompt: String, chat: Chat?) -> Unit,
+    goTo: (String) -> Unit
 ) {
     val isExpanded = remember { mutableStateOf(false) }
     val colors = getColorsTheme()
@@ -46,12 +44,11 @@ fun Home(
 
     when (uiState) {
         is IsiUiState.Loading -> {
-            LoadingScreen(isExpanded, filterCommands)
+            LoadingScreen(filterCommands, goTo)
         }
 
         is IsiUiState.Error -> {
-            ErrorScreen(isExpanded, filterCommands, uiState.message)
-            IsiKottie(size = 500.dp)
+            ErrorScreen(filterCommands, uiState.message, goTo)
         }
 
         is IsiUiState.Success -> {
@@ -67,7 +64,8 @@ fun Home(
                             modifier = Modifier.weight(if (getPlatform().name.startsWith("Android")) 3f else 1f).fillMaxHeight()
                                 .background(Color(0xFF171717))
                                 .padding(top = if (getPlatform().name.startsWith("Android")) 80.dp else 0.dp),
-                            filterCommands = filterCommands
+                            filterCommands = filterCommands,
+                            goTo = goTo
                         )
                     }
                     Column(

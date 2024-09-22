@@ -5,6 +5,7 @@ import androidx.compose.runtime.getValue
 import data.CommandRepositoryImpl
 import data.CommandRepositoryLocalImpl
 import domain.entity.Chat
+import domain.entity.EnvironmentSetting
 import domain.entity.TaskType
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import moe.tlaster.precompose.navigation.NavHost
@@ -12,6 +13,7 @@ import moe.tlaster.precompose.navigation.Navigator
 import moe.tlaster.precompose.viewmodel.viewModel
 import presentation.IsiViewModel
 import ui.screens.Home
+import ui.screens.Settings
 import utils.isLocal
 
 @Composable
@@ -29,13 +31,25 @@ fun Navigation(navigator: Navigator) {
         viewModel.sendCommand(s, chat)
     }
 
+    val onEnvironmentChange: (environment: EnvironmentSetting) -> Unit = { e: EnvironmentSetting ->
+        viewModel.onEnvironmentChange(environment = e)
+    }
+
+    val goTo: (path: String) -> Unit = { p: String ->
+        navigator.navigate(p)
+    }
+
     NavHost(
         navigator = navigator,
         initialRoute = "/home"
     ) {
         scene(route = "/home") {
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-            Home(uiState = uiState, filterCommands = filterCommands, sendCommand = sendCommand)
+            Home(uiState = uiState, filterCommands = filterCommands, sendCommand = sendCommand, goTo = goTo)
+        }
+        scene(route = "/settings") {
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+            Settings(uiState = uiState, filterCommands = filterCommands, onEnvironmentChange = onEnvironmentChange, goTo = goTo)
         }
     }
 }

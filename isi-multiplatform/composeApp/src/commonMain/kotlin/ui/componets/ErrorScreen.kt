@@ -1,10 +1,11 @@
-package ui.screens
+package ui.componets
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -14,15 +15,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import domain.entity.TaskType
 import getPlatform
-import ui.componets.AndroidFloatingButton
-import ui.componets.IsiKottie
-import ui.componets.SendMessage
-import ui.componets.Sidebar
 import ui.theme.getColorsTheme
 
 @Composable
-fun ErrorScreen(isExpanded: MutableState<Boolean>, filterCommands: (taskType: TaskType?) -> Unit, message: String) {
+fun ErrorScreen(filterCommands: (taskType: TaskType?) -> Unit, message: String, goTo: (String) -> Unit) {
     val colors = getColorsTheme()
+    val isExpanded = remember { mutableStateOf(false) }
     Box(modifier = Modifier.fillMaxSize()) {
         Row {
             if (isExpanded.value || !getPlatform().name.startsWith("Android")) {
@@ -30,7 +28,8 @@ fun ErrorScreen(isExpanded: MutableState<Boolean>, filterCommands: (taskType: Ta
                     modifier = Modifier.weight(if (getPlatform().name.startsWith("Android")) 3f else 1f).fillMaxHeight()
                         .background(Color(0xFF171717))
                         .padding(top = if (getPlatform().name.startsWith("Android")) 80.dp else 0.dp),
-                    filterCommands = filterCommands
+                    filterCommands = filterCommands,
+                    goTo = goTo
                 )
             }
             Column(
