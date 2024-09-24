@@ -1,20 +1,21 @@
 package utils
 
+import domain.entity.GptSetting
 import getHttpClient
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 
-class OpenAIClient() {
+class OpenAIClient {
 
     private val client = getHttpClient()
 
-    suspend fun getResponse(messages: List<ChatMessage>): String {
+    suspend fun getResponse(messages: List<ChatMessage>, model: GptSetting): String {
         val response = client.post("https://api.openai.com/v1/chat/completions") {
             headers { bearerAuth(openai_apikey) }
             contentType(ContentType.Application.Json)
             setBody(OpenAIRequest(
-                model = "gpt-3.5-turbo",
+                model = model.value,
                 messages = messages
             ))
         }.body<OpenAIResponse>()

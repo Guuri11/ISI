@@ -12,6 +12,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import domain.entity.EnvironmentSetting
+import domain.entity.GptSetting
 import domain.entity.TaskType
 import presentation.IsiUiState
 import ui.componets.ErrorScreen
@@ -24,6 +25,7 @@ fun Settings(
     uiState: IsiUiState,
     filterCommands: (taskType: TaskType?) -> Unit,
     onEnvironmentChange: (EnvironmentSetting) -> Unit,
+    onGptChange: (GptSetting) -> Unit,
     goTo: (String) -> Unit,
 ) {
     val colors = getColorsTheme()
@@ -60,6 +62,12 @@ fun Settings(
                                     onEnvironmentChange(it)
                                 }
                             )
+                            LocalSetting(
+                                gpt = uiState.gpt,
+                                onGptChange = {
+                                    onGptChange(it)
+                                }
+                            )
                         }
                     }
                 }
@@ -69,7 +77,7 @@ fun Settings(
 }
 
 @Composable
-private fun EnvironmentSetting(
+fun EnvironmentSetting(
     environment: EnvironmentSetting,
     onEnvironmentChange: (EnvironmentSetting) -> Unit,
 ) {
@@ -93,11 +101,35 @@ private fun EnvironmentSetting(
 }
 
 @Composable
-fun MultiSelectOptions(
-    options: EnumEntries<EnvironmentSetting>,
-    selectedOption: EnvironmentSetting?,
-    onSelectionChange: (EnvironmentSetting?) -> Unit,
+fun LocalSetting(
+    gpt: GptSetting,
+    onGptChange: (GptSetting) -> Unit,
 ) {
+    val colors = getColorsTheme()
+    var selectedOption by remember { mutableStateOf<GptSetting?>(gpt) }
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(text = "Local Settings", fontSize = 20.sp, fontWeight = FontWeight.SemiBold, color = colors.TextColor)
+        Text(text = "GPT Model", fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = colors.TextColor)
+        MultiSelectOptions(options = GptSetting.entries, selectedOption = selectedOption) { gpt ->
+            if (gpt != null) {
+                onGptChange(gpt)
+            }
+            selectedOption = gpt
+        }
+        Divider(color = colors.TextColor, thickness = 2.dp)
+    }
+}
+
+@Composable
+fun <T> MultiSelectOptions(
+    options: EnumEntries<T>,
+    selectedOption: T?,
+    onSelectionChange: (T?) -> Unit,
+) where T : Enum<T> {
     val colors = getColorsTheme()
     Column(modifier = Modifier.padding(16.dp)) {
         options.forEach { option ->
@@ -106,9 +138,9 @@ fun MultiSelectOptions(
                     checked = selectedOption == option,
                     onCheckedChange = { isChecked ->
                         if (isChecked) {
-                            onSelectionChange(option)  // Marca esta opción y desactiva la otra
+                            onSelectionChange(option)
                         } else {
-                            onSelectionChange(null)  // Desmarca ambas opciones
+                            onSelectionChange(null)
                         }
                     },
                     colors = CheckboxDefaults.colors(
@@ -117,7 +149,7 @@ fun MultiSelectOptions(
                     )
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(option.value, color = colors.TextColor)
+                Text(option.name, color = colors.TextColor)
             }
         }
     }

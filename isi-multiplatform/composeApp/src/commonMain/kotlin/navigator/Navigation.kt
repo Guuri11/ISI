@@ -6,6 +6,7 @@ import data.CommandRepositoryImpl
 import data.CommandRepositoryLocalImpl
 import domain.entity.Chat
 import domain.entity.EnvironmentSetting
+import domain.entity.GptSetting
 import domain.entity.TaskType
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import moe.tlaster.precompose.navigation.NavHost
@@ -35,6 +36,11 @@ fun Navigation(navigator: Navigator) {
         viewModel.onEnvironmentChange(environment = e)
     }
 
+    val onGptChange: (gpt: GptSetting) -> Unit = { gpt: GptSetting ->
+        viewModel.onGptChange(gpt = gpt)
+    }
+
+
     val goTo: (path: String) -> Unit = { p: String ->
         navigator.navigate(p)
     }
@@ -49,7 +55,7 @@ fun Navigation(navigator: Navigator) {
         }
         scene(route = "/settings") {
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-            Settings(uiState = uiState, filterCommands = filterCommands, onEnvironmentChange = onEnvironmentChange, goTo = goTo)
+            Settings(uiState = uiState, filterCommands = filterCommands, onEnvironmentChange = onEnvironmentChange, goTo = goTo, onGptChange = onGptChange)
         }
     }
 }

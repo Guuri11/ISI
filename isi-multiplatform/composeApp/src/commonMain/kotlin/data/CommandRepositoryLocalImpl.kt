@@ -1,15 +1,18 @@
 package data
 
-import domain.entity.Chat
-import domain.entity.Command
-import domain.entity.MessageType
-import domain.entity.TaskType
+import domain.entity.*
 import domain.mapper.createChatMessageFromCommand
 import domain.mapper.createCommandFromString
 import domain.repository.CommandRepository
 import utils.OpenAIClient
 
-class CommandRepositoryLocalImpl : CommandRepository {
+class CommandRepositoryLocalImpl(model: GptSetting = GptSetting.GPT_4O_MINI) : CommandRepository {
+    private var currentModel: GptSetting = GptSetting.GPT_4O_MINI
+
+    init {
+        currentModel = model
+    }
+
     private fun createOpenAIClient(): OpenAIClient {
         return OpenAIClient()
     }
@@ -22,7 +25,7 @@ class CommandRepositoryLocalImpl : CommandRepository {
         val client = createOpenAIClient()
 
         val chatMessages = messages.map { createChatMessageFromCommand(it) }.toList()
-        val response = client.getResponse(chatMessages)
+        val response = client.getResponse(chatMessages, currentModel)
 
         return createCommandFromString(
             content = response,

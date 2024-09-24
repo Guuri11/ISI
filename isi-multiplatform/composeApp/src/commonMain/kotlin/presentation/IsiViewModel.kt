@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.viewmodel.ViewModel
 import moe.tlaster.precompose.viewmodel.viewModelScope
+import java.net.ConnectException
 
 sealed class IsiUiState {
     data object Loading : IsiUiState()
@@ -19,6 +20,7 @@ sealed class IsiUiState {
         val chat: Chat? = null,
         val taskTypeSelected: TaskType? = null,
         val enviroment: EnvironmentSetting? = EnvironmentSetting.LOCAL,
+        val gpt: GptSetting = GptSetting.GPT_4O_MINI,
     ) : IsiUiState()
 
     data class Error(val message: String) : IsiUiState()
@@ -30,6 +32,7 @@ class IsiViewModel(private var repo: CommandRepository, private val isLocal: Boo
     private var allCommands = emptyList<Command>()
     private var currentChat: Chat? = null
     private var currentEnvironment: EnvironmentSetting? = null
+    private var currentGpt: GptSetting = GptSetting.GPT_4O_MINI
 
     val uiState = _uiState.asStateFlow()
 
@@ -49,8 +52,15 @@ class IsiViewModel(private var repo: CommandRepository, private val isLocal: Boo
                 _uiState.value = IsiUiState.Success(commands, chat, enviroment = currentEnvironment)
             } catch (e: Exception) {
                 // TODO: move error to enum or something like that
-                Napier.e { "Error getting commands -> $e" }
-                _uiState.value = IsiUiState.Error(e.message ?: "Unknown error occurred")
+                Napier.e { "Error getting commands -> ${e.message}" }
+
+                if (e is ConnectException && currentEnvironment == EnvironmentSetting.PRODUCTION) {
+                    currentEnvironment = EnvironmentSetting.LOCAL
+                    repo = CommandRepositoryLocalImpl(currentGpt)
+                    getAllCommands()
+                } else {
+                    _uiState.value = IsiUiState.Error(e.message ?: "Unknown error occurred")
+                }
             }
         }
     }
@@ -101,7 +111,7 @@ class IsiViewModel(private var repo: CommandRepository, private val isLocal: Boo
     fun onEnvironmentChange(environment: EnvironmentSetting) {
         Napier.i { "New environment $environment" }
         repo = if (environment == EnvironmentSetting.LOCAL) {
-            CommandRepositoryLocalImpl()
+            CommandRepositoryLocalImpl(currentGpt)
         } else {
             CommandRepositoryImpl()
         }
@@ -111,6 +121,20 @@ class IsiViewModel(private var repo: CommandRepository, private val isLocal: Boo
         _uiState.value = IsiUiState.Success(
             commands = allCommands,
             enviroment = environment,
+            chat = currentChat,
+            taskTypeSelected = null
+        )
+    }
+
+    fun onGptChange(gpt: GptSetting) {
+        Napier.i { "New gpt $gpt" }
+        currentGpt = gpt
+        repo = CommandRepositoryLocalImpl(currentGpt)
+
+        _uiState.value = IsiUiState.Success(
+            commands = allCommands,
+            enviroment = currentEnvironment,
+            gpt = gpt,
             chat = currentChat,
             taskTypeSelected = null
         )
