@@ -42,39 +42,45 @@ fun Settings(
         viewModel.onGptChange(gpt)
     }
 
-    if (uiState.loading) {
-        LoadingScreen(filterCommands, goTo)
-    } else if (!uiState.errorMessage.isNullOrEmpty()) {
-        ErrorScreen(filterCommands, uiState.errorMessage!!, goTo)
-    } else {
-        Box(modifier = Modifier.fillMaxSize()) {
-            Row {
-                Column(
-                    modifier = Modifier.background(colors.BackgroundColor).weight(3f).fillMaxHeight().padding(16.dp)
-                ) {
-                    if (uiState.enviroment != null) {
-                        IconButton(onClick = {
-                            goTo("/home")
-                        }) {
-                            Icon(
-                                modifier = Modifier.padding(start = 16.dp),
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                tint = colors.TextColor,
-                                contentDescription = "Back"
+    when {
+        uiState.loading -> {
+            LoadingScreen(filterCommands, goTo)
+        }
+
+        !uiState.errorMessage.isNullOrEmpty() -> {
+            ErrorScreen(filterCommands, uiState.errorMessage!!, goTo)
+        }
+
+        else -> {
+            Box(modifier = Modifier.fillMaxSize()) {
+                Row {
+                    Column(
+                        modifier = Modifier.background(colors.BackgroundColor).weight(3f).fillMaxHeight().padding(16.dp)
+                    ) {
+                        if (uiState.enviroment != null) {
+                            IconButton(onClick = {
+                                goTo("/home")
+                            }) {
+                                Icon(
+                                    modifier = Modifier.padding(start = 16.dp),
+                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                    tint = colors.TextColor,
+                                    contentDescription = "Back"
+                                )
+                            }
+                            EnvironmentSetting(
+                                environment = uiState.enviroment!!,
+                                onEnvironmentChange = {
+                                    onEnvironmentChange(it)
+                                }
+                            )
+                            LocalSetting(
+                                gpt = uiState.gpt,
+                                onGptChange = {
+                                    onGptChange(it)
+                                }
                             )
                         }
-                        EnvironmentSetting(
-                            environment = uiState.enviroment!!,
-                            onEnvironmentChange = {
-                                onEnvironmentChange(it)
-                            }
-                        )
-                        LocalSetting(
-                            gpt = uiState.gpt,
-                            onGptChange = {
-                                onGptChange(it)
-                            }
-                        )
                     }
                 }
             }

@@ -49,102 +49,108 @@ fun Home(goTo: (String) -> Unit) {
         viewModel.sendCommand(prompt, chat)
     }
 
-    if (uiState.loading) {
-        LoadingScreen(filterCommands, goTo)
-    } else if (!uiState.errorMessage.isNullOrEmpty()) {
-        ErrorScreen(filterCommands, uiState.errorMessage!!, goTo)
-    } else {
-        val chatListState = rememberLazyListState()
-
-        LaunchedEffect(uiState.commands) {
-            chatListState.animateScrollToItem(chatListState.layoutInfo.totalItemsCount)
+    when {
+        uiState.loading -> {
+            LoadingScreen(filterCommands, goTo)
         }
-        Box(modifier = Modifier.fillMaxSize()) {
-            Row {
-                if (isExpanded.value || !getPlatform().name.startsWith("Android")) {
-                    Sidebar(
-                        modifier = Modifier.weight(if (getPlatform().name.startsWith("Android")) 3f else 1f)
-                            .fillMaxHeight()
-                            .background(Color(0xFF171717))
-                            .padding(top = if (getPlatform().name.startsWith("Android")) 80.dp else 0.dp),
-                        filterCommands = filterCommands,
-                        goTo = goTo
-                    )
-                }
-                Column(
-                    modifier = Modifier.background(colors.BackgroundColor).weight(3f).fillMaxHeight().padding(16.dp)
-                ) {
-                    // Logo centered
-                    Box(modifier = Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
-                        // TODO: If there is not messages, make isi bigger. If there are, keep this size. Check if it is possible
-                        // to make it with a animation
-                        IsiKottie(size = if (uiState.commands.isEmpty()) 500.dp else 300.dp)
+
+        !uiState.errorMessage.isNullOrEmpty() -> {
+            ErrorScreen(filterCommands, uiState.errorMessage!!, goTo)
+        }
+
+        else -> {
+            val chatListState = rememberLazyListState()
+
+            LaunchedEffect(uiState.commands) {
+                chatListState.animateScrollToItem(chatListState.layoutInfo.totalItemsCount)
+            }
+            Box(modifier = Modifier.fillMaxSize()) {
+                Row {
+                    if (isExpanded.value || !getPlatform().name.startsWith("Android")) {
+                        Sidebar(
+                            modifier = Modifier.weight(if (getPlatform().name.startsWith("Android")) 3f else 1f)
+                                .fillMaxHeight()
+                                .background(Color(0xFF171717))
+                                .padding(top = if (getPlatform().name.startsWith("Android")) 80.dp else 0.dp),
+                            filterCommands = filterCommands,
+                            goTo = goTo
+                        )
                     }
+                    Column(
+                        modifier = Modifier.background(colors.BackgroundColor).weight(3f).fillMaxHeight().padding(16.dp)
+                    ) {
+                        // Logo centered
+                        Box(modifier = Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
+                            // TODO: If there is not messages, make isi bigger. If there are, keep this size. Check if it is possible
+                            // to make it with a animation
+                            IsiKottie(size = if (uiState.commands.isEmpty()) 500.dp else 300.dp)
+                        }
 
-                    // Chat messages box
-                    if (uiState.commands.isNotEmpty()) {
-                        Box(modifier = Modifier.weight(8f).fillMaxWidth().padding(16.dp)) {
-                            LazyColumn(modifier = Modifier.fillMaxWidth().padding(16.dp), state = chatListState) {
-                                items(uiState.commands) { command ->
-                                    // Format the date
-                                    val formattedDate = command.createdAt.toJavaLocalDateTime().format(formatter)
+                        // Chat messages box
+                        if (uiState.commands.isNotEmpty()) {
+                            Box(modifier = Modifier.weight(8f).fillMaxWidth().padding(16.dp)) {
+                                LazyColumn(modifier = Modifier.fillMaxWidth().padding(16.dp), state = chatListState) {
+                                    items(uiState.commands) { command ->
+                                        // Format the date
+                                        val formattedDate = command.createdAt.toJavaLocalDateTime().format(formatter)
 
-                                    // Check if the date is different from the current message date
-                                    if (formattedDate != messageDate.value) {
-                                        messageDate.value = formattedDate
-                                        // Display formatted date TODO: replace lines by divider
-                                        Text(
-                                            text = "-------------$formattedDate-------------",
-                                            modifier = Modifier.fillMaxWidth(),
-                                            fontSize = 12.sp,
-                                            color = colors.TextColor,
-                                            textAlign = TextAlign.Center
-                                        )
-                                    }
-
-                                    // Show message based on role
-                                    if (command.messageType == MessageType.ASSISTANT) {
-                                        AssistantMessage(command)
-                                    } else {
-                                        Box(modifier = Modifier.fillMaxWidth()) {
-                                            UserMessage(
-                                                command, modifier = Modifier
-                                                    .padding(vertical = 8.dp)
-                                                    .background(
-                                                        color = colors.Purple,
-                                                        shape = RoundedCornerShape(24)
-                                                    )
-                                                    .align(alignment = Alignment.CenterEnd)
-                                                    .padding(all = 8.dp)
+                                        // Check if the date is different from the current message date
+                                        if (formattedDate != messageDate.value) {
+                                            messageDate.value = formattedDate
+                                            // Display formatted date TODO: replace lines by divider
+                                            Text(
+                                                text = "-------------$formattedDate-------------",
+                                                modifier = Modifier.fillMaxWidth(),
+                                                fontSize = 12.sp,
+                                                color = colors.TextColor,
+                                                textAlign = TextAlign.Center
                                             )
+                                        }
+
+                                        // Show message based on role
+                                        if (command.messageType == MessageType.ASSISTANT) {
+                                            AssistantMessage(command)
+                                        } else {
+                                            Box(modifier = Modifier.fillMaxWidth()) {
+                                                UserMessage(
+                                                    command, modifier = Modifier
+                                                        .padding(vertical = 8.dp)
+                                                        .background(
+                                                            color = colors.Purple,
+                                                            shape = RoundedCornerShape(24)
+                                                        )
+                                                        .align(alignment = Alignment.CenterEnd)
+                                                        .padding(all = 8.dp)
+                                                )
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
-                    }
 
-                    TaskTypeSelector()
+                        TaskTypeSelector()
 
-                    // Text input box
-                    Row(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-                        SendMessage { it ->
-                            if (it.isNotEmpty()) {
-                                textState = TextFieldValue()
-                                sendCommand(it, uiState.chat)
+                        // Text input box
+                        Row(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+                            SendMessage { it ->
+                                if (it.isNotEmpty()) {
+                                    textState = TextFieldValue()
+                                    sendCommand(it, uiState.chat)
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            // Button for mobile device to expand sidebar
-            AndroidFloatingButton(
-                isExpanded = isExpanded,
-                modifier = Modifier
-                    .align(alignment = Alignment.TopStart)
-                    .padding(16.dp)
-            )
+                // Button for mobile device to expand sidebar
+                AndroidFloatingButton(
+                    isExpanded = isExpanded,
+                    modifier = Modifier
+                        .align(alignment = Alignment.TopStart)
+                        .padding(16.dp)
+                )
+            }
         }
     }
 }
