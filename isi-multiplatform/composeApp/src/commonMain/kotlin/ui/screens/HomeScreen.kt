@@ -20,7 +20,9 @@ import domain.entity.MessageType
 import domain.entity.TaskType
 import getPlatform
 import kotlinx.datetime.toJavaLocalDateTime
+import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import presentation.IsiUiState
+import presentation.LocalIsiViewModel
 import ui.componets.*
 import ui.componets.message.AssistantMessage
 import ui.componets.message.UserMessage
@@ -28,12 +30,9 @@ import ui.theme.getColorsTheme
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun Home(
-    uiState: IsiUiState,
-    filterCommands: (taskType: TaskType?) -> Unit,
-    sendCommand: (prompt: String, chat: Chat?) -> Unit,
-    goTo: (String) -> Unit
-) {
+fun Home(goTo: (String) -> Unit) {
+    val viewModel = LocalIsiViewModel.current
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isExpanded = remember { mutableStateOf(false) }
     val colors = getColorsTheme()
     var textState by remember { mutableStateOf(TextFieldValue()) }
@@ -42,26 +41,38 @@ fun Home(
     val messageDate: MutableState<String?> = remember { mutableStateOf(null) }
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
+    val filterCommands: (TaskType?) -> Unit = {
+        viewModel.filterCommands(it)
+    }
+
+    val sendCommand: (String, Chat?) -> Unit = { prompt, chat ->
+        viewModel.sendCommand(prompt, chat)
+    }
+
+
     when (uiState) {
         is IsiUiState.Loading -> {
             LoadingScreen(filterCommands, goTo)
         }
 
         is IsiUiState.Error -> {
-            ErrorScreen(filterCommands, uiState.message, goTo)
+            val state = uiState as IsiUiState.Error
+            ErrorScreen(filterCommands, state.message, goTo)
         }
 
         is IsiUiState.Success -> {
             val chatListState = rememberLazyListState()
+            val state = uiState as IsiUiState.Success
 
-            LaunchedEffect(uiState.commands) {
+            LaunchedEffect(state.commands) {
                 chatListState.animateScrollToItem(chatListState.layoutInfo.totalItemsCount)
             }
             Box(modifier = Modifier.fillMaxSize()) {
                 Row {
                     if (isExpanded.value || !getPlatform().name.startsWith("Android")) {
                         Sidebar(
-                            modifier = Modifier.weight(if (getPlatform().name.startsWith("Android")) 3f else 1f).fillMaxHeight()
+                            modifier = Modifier.weight(if (getPlatform().name.startsWith("Android")) 3f else 1f)
+                                .fillMaxHeight()
                                 .background(Color(0xFF171717))
                                 .padding(top = if (getPlatform().name.startsWith("Android")) 80.dp else 0.dp),
                             filterCommands = filterCommands,
@@ -75,14 +86,14 @@ fun Home(
                         Box(modifier = Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
                             // TODO: If there is not messages, make isi bigger. If there are, keep this size. Check if it is possible
                             // to make it with a animation
-                            IsiKottie(size = if (uiState.commands.isEmpty()) 500.dp else 300.dp)
+                            IsiKottie(size = if (state.commands.isEmpty()) 500.dp else 300.dp)
                         }
 
                         // Chat messages box
-                        if (uiState.commands.isNotEmpty()) {
+                        if (state.commands.isNotEmpty()) {
                             Box(modifier = Modifier.weight(8f).fillMaxWidth().padding(16.dp)) {
                                 LazyColumn(modifier = Modifier.fillMaxWidth().padding(16.dp), state = chatListState) {
-                                    items(uiState.commands) { command ->
+                                    items(state.commands) { command ->
                                         // Format the date
                                         val formattedDate = command.createdAt.toJavaLocalDateTime().format(formatter)
 
@@ -121,12 +132,14 @@ fun Home(
                             }
                         }
 
+                        TaskTypeSelector()
+
                         // Text input box
                         Row(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
                             SendMessage { it ->
                                 if (it.isNotEmpty()) {
                                     textState = TextFieldValue()
-                                    sendCommand(it, uiState.chat)
+                                    sendCommand(it, state.chat)
                                 }
                             }
                         }

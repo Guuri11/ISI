@@ -14,7 +14,9 @@ import androidx.compose.ui.unit.sp
 import domain.entity.EnvironmentSetting
 import domain.entity.GptSetting
 import domain.entity.TaskType
+import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import presentation.IsiUiState
+import presentation.LocalIsiViewModel
 import ui.componets.ErrorScreen
 import ui.componets.LoadingScreen
 import ui.theme.getColorsTheme
@@ -22,30 +24,43 @@ import kotlin.enums.EnumEntries
 
 @Composable
 fun Settings(
-    uiState: IsiUiState,
-    filterCommands: (taskType: TaskType?) -> Unit,
-    onEnvironmentChange: (EnvironmentSetting) -> Unit,
-    onGptChange: (GptSetting) -> Unit,
     goTo: (String) -> Unit,
 ) {
+    val viewModel = LocalIsiViewModel.current
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     val colors = getColorsTheme()
 
+    val filterCommands: (taskType: TaskType?) -> Unit = {
+        viewModel.filterCommands(taskTypeSelected = it)
+    }
+
+    val onEnvironmentChange: (EnvironmentSetting) -> Unit = { env ->
+        viewModel.onEnvironmentChange(env)
+    }
+
+    val onGptChange: (GptSetting) -> Unit = { gpt ->
+        viewModel.onGptChange(gpt)
+    }
     when (uiState) {
         is IsiUiState.Loading -> {
             LoadingScreen(filterCommands, goTo)
         }
 
         is IsiUiState.Error -> {
-            ErrorScreen(filterCommands, uiState.message, goTo)
+            val state = uiState as IsiUiState.Error
+            ErrorScreen(filterCommands, state.message, goTo)
         }
 
         is IsiUiState.Success -> {
+            val state = uiState as IsiUiState.Success
+
             Box(modifier = Modifier.fillMaxSize()) {
                 Row {
                     Column(
                         modifier = Modifier.background(colors.BackgroundColor).weight(3f).fillMaxHeight().padding(16.dp)
                     ) {
-                        if (uiState.enviroment != null) {
+                        if (state.enviroment != null) {
                             IconButton(onClick = {
                                 goTo("/home")
                             }) {
@@ -57,13 +72,13 @@ fun Settings(
                                 )
                             }
                             EnvironmentSetting(
-                                environment = uiState.enviroment,
+                                environment = state.enviroment,
                                 onEnvironmentChange = {
                                     onEnvironmentChange(it)
                                 }
                             )
                             LocalSetting(
-                                gpt = uiState.gpt,
+                                gpt = state.gpt,
                                 onGptChange = {
                                     onGptChange(it)
                                 }

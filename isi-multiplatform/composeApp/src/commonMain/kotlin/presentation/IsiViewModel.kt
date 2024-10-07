@@ -1,5 +1,6 @@
 package presentation
 
+import androidx.compose.runtime.staticCompositionLocalOf
 import data.CommandRepositoryImpl
 import data.CommandRepositoryLocalImpl
 import domain.entity.*
@@ -12,6 +13,10 @@ import kotlinx.coroutines.launch
 import moe.tlaster.precompose.viewmodel.ViewModel
 import moe.tlaster.precompose.viewmodel.viewModelScope
 import java.net.ConnectException
+
+val LocalIsiViewModel = staticCompositionLocalOf<IsiViewModel> {
+    error("No IsiViewModel provided")
+}
 
 sealed class IsiUiState {
     data object Loading : IsiUiState()
