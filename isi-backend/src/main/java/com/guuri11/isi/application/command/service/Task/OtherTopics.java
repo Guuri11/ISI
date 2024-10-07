@@ -25,7 +25,7 @@ public class OtherTopics {
         List<Command> commands = getChatCommands(request, entity);
 
         logger.info("Getting all commands {}", commands);
-        return callAiClient.call(commands, AiClient.GPT);
+        return callAiClient.call(commands);
     }
 
     private @NotNull List<Command> getChatCommands(CommandRequest request, Command entity) {

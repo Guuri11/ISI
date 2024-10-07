@@ -19,10 +19,10 @@ public class Refactor {
 
     public ChatResponse refactor() {
 
-        ChatResponse response = callAiClient.call(Prompts.REFACTOR + clipboardRead.read(), AiClient.GPT);
+        ChatResponse response = callAiClient.call(Prompts.REFACTOR + clipboardRead.read());
         String output = response.getResult().getOutput().getContent();
         clipboardWrite.write(output);
 
-        return callAiClient.call(Prompts.REFACTOR_DONE, AiClient.GPT);
+        return callAiClient.call(Prompts.REFACTOR_DONE);
     }
 }

@@ -25,7 +25,7 @@ public class AddBookmark {
     public ChatResponse add() {
         try {
             favCreate.create(new FavRequest(clipboardRead.read()));
-            return callAiClient.call(Prompts.FAV_CREATED, AiClient.GPT);
+            return callAiClient.call(Prompts.FAV_CREATED);
         } catch (AWTException | IOException e) {
             throw new RuntimeException(e);
         }

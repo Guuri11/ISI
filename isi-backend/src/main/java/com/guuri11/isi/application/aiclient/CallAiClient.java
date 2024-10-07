@@ -22,52 +22,54 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class CallAiClient {
-    public final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final OpenAiChatClient openAiClient;
-    private final OllamaChatClient ollamaClient;
+  public final Logger logger = LoggerFactory.getLogger(this.getClass());
+  private final AiClient model = AiClient.OLLAMA;
+  private final OpenAiChatClient openAiClient;
+  private final OllamaChatClient ollamaClient;
 
-    public ChatResponse call(List<Command> commands, AiClient aiClient) {
-        if (aiClient.equals(AiClient.GPT)) {
-            return openAiClient.call(
-                    new Prompt(
-                            getMessageList(commands),
-                            OpenAiChatOptions.builder()
-                                    .withModel("gpt-3.5-turbo-0125")
-                                    .build()
-                    ));
-        } else {
-            // condition: aiClient.equals(AiClient.OLLAMA)
-            return ollamaClient.call(
-                    new Prompt(
-                            getMessageList(commands),
-                            OllamaOptions.create()
-                                    .withModel("llama3")
-                    ));
-        }
+  public ChatResponse call(List<Command> commands) {
+    if (isGptModel()) {
+      return openAiClient.call(
+              new Prompt(
+                      getMessageList(commands),
+                      OpenAiChatOptions.builder()
+                              .withModel("gpt-3.5-turbo-0125")
+                              .build()
+              ));
     }
+    return ollamaClient.call(
+            new Prompt(
+                    getMessageList(commands),
+                    OllamaOptions.create()
+                            .withModel("llama3")
+            ));
+  }
 
-    public ChatResponse call(String command, AiClient aiClient) {
-        if (aiClient.equals(AiClient.GPT)) {
-            return openAiClient.call(
-                    new Prompt(
-                            command,
-                            OpenAiChatOptions.builder()
-                                    .withModel("gpt-3.5-turbo-0125")
-                                    .build()
-                    ));
-        } else {
-            return ollamaClient.call(
-                    new Prompt(
-                            command,
-                            OllamaOptions.create()
-                                    .withModel("llama3")
-                    ));
-        }
+  public ChatResponse call(String command) {
+    if (isGptModel()) {
+      return openAiClient.call(
+              new Prompt(
+                      command,
+                      OpenAiChatOptions.builder()
+                              .withModel("gpt-3.5-turbo-0125")
+                              .build()
+              ));
     }
+    return ollamaClient.call(
+            new Prompt(
+                    command,
+                    OllamaOptions.create()
+                            .withModel("llama3")
+            ));
+  }
 
-    private static @NotNull List<Message> getMessageList(List<Command> commands) {
-        return commands.stream()
-                .map(c -> new ChatMessage(c.getMessageType(), c.getContent()))
-                .collect(Collectors.toList());
-    }
+  private boolean isGptModel() {
+    return model.equals(AiClient.GPT);
+  }
+
+  private static @NotNull List<Message> getMessageList(List<Command> commands) {
+    return commands.stream()
+            .map(c -> new ChatMessage(c.getMessageType(), c.getContent()))
+            .collect(Collectors.toList());
+  }
 }

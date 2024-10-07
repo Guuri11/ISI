@@ -46,6 +46,10 @@ public class CommandCreate {
         entity.setCreatedAt(LocalDateTime.now());
         entity.setUpdatedAt(LocalDateTime.now());
         entity.setChat(getChat(request));
+        if (request.task() != null) {
+            entity.setTask(request.task());
+        }
+
         repository.save(entity);
 
         return entity;
