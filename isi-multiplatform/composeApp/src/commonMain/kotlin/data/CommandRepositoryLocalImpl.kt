@@ -21,7 +21,7 @@ class CommandRepositoryLocalImpl(model: GptSetting = GptSetting.GPT_4O_MINI) : C
         return emptyList()
     }
 
-    override suspend fun create(messages: List<Command>, chat: Chat?): Command {
+    override suspend fun create(messages: List<Command>, chat: Chat?, task: TaskType?): Command {
         val client = createOpenAIClient()
 
         val chatMessages = messages.map { createChatMessageFromCommand(it) }.toList()

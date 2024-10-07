@@ -4,26 +4,28 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import domain.entity.TaskType
+import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
+import presentation.LocalIsiViewModel
 import ui.theme.getColorsTheme
 
 @Composable
 fun TaskTypeSelector() {
+    val viewModel = LocalIsiViewModel.current
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val state = uiState
+
     val colors = getColorsTheme()
     val showList: MutableState<Boolean> = remember { mutableStateOf(false) }
-    val taskType: MutableState<TaskType> = remember { mutableStateOf(TaskType.OTHER_TOPICS) }
 
     Column(modifier = Modifier.padding(16.dp)) {
         Text(
-            "Task Type: ${taskType.value.value}",
+            "Task Type: ${state.taskTypeToRequest?.value}",
             color = colors.TextColor,
             fontWeight = FontWeight.SemiBold,
             fontSize = 18.sp,
@@ -40,7 +42,7 @@ fun TaskTypeSelector() {
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 16.sp,
                     modifier = Modifier.clickable {
-                        taskType.value = it
+                        viewModel.setTaskType(it)
                         showList.value = false
                     }
                 )

@@ -4,6 +4,7 @@ import domain.Request
 import domain.api.ApiPath
 import domain.entity.Chat
 import domain.entity.Command
+import domain.entity.TaskType
 import domain.repository.CommandRepository
 import getHttpClient
 import io.ktor.client.call.*
@@ -23,12 +24,12 @@ class CommandRepositoryImpl : CommandRepository {
         return commandResponse
     }
 
-    override suspend fun create(messages: List<Command>, chat: Chat?): Command {
+    override suspend fun create(messages: List<Command>, chat: Chat?, task: TaskType?): Command {
         val prompt = messages.last().content
 
         val commandResponse = client.post("$api/${ApiPath.COMMAND.value}") {
             contentType(ContentType.Application.Json)
-            setBody(Request(prompt, chat))
+            setBody(Request(prompt, chat, task))
         }.body<Command>()
 
         return commandResponse
