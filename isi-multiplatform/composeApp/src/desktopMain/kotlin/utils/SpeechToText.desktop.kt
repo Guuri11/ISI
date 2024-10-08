@@ -38,3 +38,7 @@ class SpeechToTextDesktop : SpeechToText {
         targetDataLine = null
     }
 }
+
+actual fun createSpeechToText(): SpeechToText {
+    return SpeechToTextDesktop()
+}

@@ -50,3 +50,7 @@ class SpeechToTextAndroid(private val context: AppContext) : SpeechToText {
         speechRecognizer.stopListening()
     }
 }
+
+actual fun createSpeechToText(): SpeechToText {
+    return SpeechToTextAndroid(context = AppContext)
+}
