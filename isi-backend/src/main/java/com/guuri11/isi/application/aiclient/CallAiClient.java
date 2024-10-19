@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class CallAiClient {
   public final Logger logger = LoggerFactory.getLogger(this.getClass());
-  private final AiClient model = AiClient.OLLAMA;
+  private final AiClient model = AiClient.GPT;
   private final OpenAiChatClient openAiClient;
   private final OllamaChatClient ollamaClient;
 

@@ -19,10 +19,10 @@ public class LinkedinRejection {
 
     public ChatResponse reject() {
 
-        ChatResponse response = callAiClient.call(Prompts.LINKEDIN_OFFER_REJECTION + clipboardRead.read(), AiClient.GPT);
+        ChatResponse response = callAiClient.call(Prompts.LINKEDIN_OFFER_REJECTION + clipboardRead.read());
         String output = response.getResult().getOutput().getContent();
         clipboardWrite.write(output);
 
-        return callAiClient.call(Prompts.LINKEDIN_OFFER_REJECTION_DONE + output, AiClient.GPT);
+        return callAiClient.call(Prompts.LINKEDIN_OFFER_REJECTION_DONE + output);
     }
 }
