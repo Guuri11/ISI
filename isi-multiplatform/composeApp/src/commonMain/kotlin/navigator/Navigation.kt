@@ -11,24 +11,31 @@ import presentation.IsiViewModel
 import presentation.LocalIsiViewModel
 import ui.screens.Home
 import ui.screens.Settings
+import ui.screens.VoiceCommand
+import utils.IntentSpeechToText
 import utils.isLocal
 
 @Composable
-fun Navigation(navigator: Navigator) {
+fun Navigation(navigator: Navigator, intentSpeechToText: IntentSpeechToText? = null) {
     val viewModel = viewModel(modelClass = IsiViewModel::class) {
         IsiViewModel(if (isLocal) CommandRepositoryLocalImpl() else CommandRepositoryImpl(), isLocal)
     }
 
+    val initialRoute: String = if (intentSpeechToText != null && intentSpeechToText.equals(IntentSpeechToText.ACTION)) "/voice-command" else "/home"
+
     CompositionLocalProvider(LocalIsiViewModel provides viewModel) {
         NavHost(
             navigator = navigator,
-            initialRoute = "/home"
+            initialRoute = initialRoute
         ) {
             scene(route = "/home") {
                 Home(goTo = navigator::navigate)
             }
             scene(route = "/settings") {
                 Settings(goTo = navigator::navigate)
+            }
+            scene(route = "/voice-command") {
+                VoiceCommand(goTo = navigator::navigate)
             }
         }
     }

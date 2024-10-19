@@ -21,7 +21,7 @@ fun AppTheme(content : @Composable () -> Unit ) {
     )
     {
         Surface(
-            color = MaterialTheme.colors.background,
+            color = MaterialTheme.colors.primary.copy(alpha = 0.5f),
             modifier = Modifier.fillMaxSize()
         ) {
             content()
@@ -38,7 +38,7 @@ fun getColorsTheme(): DarkModeColors {
     val BackgroundColor = if (isDarkMode) Color(0xFF212121) else Color.White
     val TextColor = if (isDarkMode) Color(0xFFECECEC) else Color.Black
     val AddIconColor = if (isDarkMode) Purple else Color.Black
-    val ColorArrowRound = if (isDarkMode) Purple else Color.Gray.copy(alpha = .2f)
+    val ColorArrowRound = if (isDarkMode) Purple else Color.Gray.copy(alpha = .8f)
 
     return DarkModeColors(
         Purple, ColorExpenseItem, BackgroundColor, TextColor, AddIconColor, ColorArrowRound

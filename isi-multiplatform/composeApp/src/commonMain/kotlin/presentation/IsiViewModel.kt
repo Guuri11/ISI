@@ -37,7 +37,7 @@ class IsiViewModel(private var repo: CommandRepository, private val isLocal: Boo
     private var currentChat: Chat? = null
     private var currentEnvironment: EnvironmentSetting? = null
     private var currentGpt: GptSetting = GptSetting.GPT_4O_MINI
-    private var taskType: TaskType = TaskType.OTHER_TOPICS
+    private var taskType: TaskType? = null
 
     val uiState = _uiState.asStateFlow()
 
@@ -74,7 +74,7 @@ class IsiViewModel(private var repo: CommandRepository, private val isLocal: Boo
         }
     }
 
-    fun setTaskType(taskType: TaskType) {
+    fun setTaskType(taskType: TaskType?) {
         this.taskType = taskType
         _uiState.update {
             it.copy(

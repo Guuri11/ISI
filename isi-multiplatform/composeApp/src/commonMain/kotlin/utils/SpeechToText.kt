@@ -5,4 +5,8 @@ interface SpeechToText {
     fun stopListening()
 }
 
+enum class IntentSpeechToText {
+    NORMAL, ACTION
+}
+
 expect fun createSpeechToText(): SpeechToText

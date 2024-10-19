@@ -16,7 +16,7 @@
             android:roundIcon="@mipmap/ic_isi"
             android:usesCleartextTraffic="true"
             android:supportsRtl="true"
-            android:theme="@android:style/Theme.Material.Light.NoActionBar">
+            android:theme="@style/AppTheme.Transparent">
         <activity
                 android:exported="true"
                 android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|mnc|colorMode|density|fontScale|fontWeightAdjustment|keyboard|layoutDirection|locale|mcc|navigation|smallestScreenSize|touchscreen|uiMode"
@@ -25,12 +25,11 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-            <intent-filter>
+            <intent-filter>c
                 <action android:name="android.intent.action.ASSIST"/>
                 <action android:name="android.intent.action.VOICE_COMMAND"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

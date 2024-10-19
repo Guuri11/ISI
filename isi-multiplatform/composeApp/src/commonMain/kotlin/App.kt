@@ -13,16 +13,17 @@ import navigator.Navigation
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import ui.theme.AppTheme
 import ui.theme.getColorsTheme
+import utils.IntentSpeechToText
 
 @Composable
 @Preview
-fun App() {
+fun App(intentSpeechToText: IntentSpeechToText? = null) {
     Napier.base(DebugAntilog())
 
     PreComposeApp {
         AppTheme {
             val navigator = rememberNavigator()
-            Navigation(navigator)
+            Navigation(navigator, intentSpeechToText)
         }
     }
 }
