@@ -16,18 +16,19 @@ import domain.entity.GptSetting
 import domain.entity.TaskType
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import presentation.LocalIsiViewModel
-import ui.componets.ErrorScreen
-import ui.componets.LoadingScreen
+import ui.componets.ErrorText
+import ui.componets.LoadingText
 import ui.theme.getColorsTheme
 import kotlin.enums.EnumEntries
 
 @Composable
-fun Settings(
-    goTo: (String) -> Unit,
-) {
+fun Settings(goTo: (String) -> Unit) {
+
+    // COMPOSABLE PADRE
     val viewModel = LocalIsiViewModel.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    // COMPOSABLE PADRE
     val colors = getColorsTheme()
 
     val filterCommands: (taskType: TaskType?) -> Unit = {
@@ -42,46 +43,35 @@ fun Settings(
         viewModel.onGptChange(gpt)
     }
 
-    when {
-        uiState.loading -> {
-            LoadingScreen(filterCommands, goTo)
-        }
 
-        !uiState.errorMessage.isNullOrEmpty() -> {
-            ErrorScreen(filterCommands, uiState.errorMessage!!, goTo)
-        }
-
-        else -> {
-            Box(modifier = Modifier.fillMaxSize()) {
-                Row {
-                    Column(
-                        modifier = Modifier.background(colors.BackgroundColor).weight(3f).fillMaxHeight().padding(16.dp)
-                    ) {
-                        if (uiState.enviroment != null) {
-                            IconButton(onClick = {
-                                goTo("/home")
-                            }) {
-                                Icon(
-                                    modifier = Modifier.padding(start = 16.dp),
-                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                    tint = colors.TextColor,
-                                    contentDescription = "Back"
-                                )
-                            }
-                            EnvironmentSetting(
-                                environment = uiState.enviroment!!,
-                                onEnvironmentChange = {
-                                    onEnvironmentChange(it)
-                                }
-                            )
-                            LocalSetting(
-                                gpt = uiState.gpt,
-                                onGptChange = {
-                                    onGptChange(it)
-                                }
-                            )
-                        }
+    Box(modifier = Modifier.fillMaxSize()) {
+        Row {
+            Column(
+                modifier = Modifier.background(colors.BackgroundColor).weight(3f).fillMaxHeight().padding(16.dp)
+            ) {
+                if (uiState.enviroment != null) {
+                    IconButton(onClick = {
+                        goTo("/home")
+                    }) {
+                        Icon(
+                            modifier = Modifier.padding(start = 16.dp),
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            tint = colors.TextColor,
+                            contentDescription = "Back"
+                        )
                     }
+                    EnvironmentSetting(
+                        environment = uiState.enviroment!!,
+                        onEnvironmentChange = {
+                            onEnvironmentChange(it)
+                        }
+                    )
+                    LocalSetting(
+                        gpt = uiState.gpt,
+                        onGptChange = {
+                            onGptChange(it)
+                        }
+                    )
                 }
             }
         }

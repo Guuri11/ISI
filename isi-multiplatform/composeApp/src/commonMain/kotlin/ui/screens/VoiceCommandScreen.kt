@@ -10,7 +10,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -18,26 +17,26 @@ import androidx.compose.ui.unit.sp
 import domain.entity.Chat
 import domain.entity.MessageType
 import domain.entity.TaskType
-import getPlatform
 import kotlinx.datetime.toJavaLocalDateTime
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import presentation.LocalIsiViewModel
-import ui.componets.*
+import ui.componets.ErrorText
+import ui.componets.IsiKottie
+import ui.componets.LoadingText
+import ui.componets.VoiceCommandInput
 import ui.componets.message.AssistantMessage
 import ui.componets.message.UserMessage
 import ui.theme.getColorsTheme
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun Home(goTo: (String) -> Unit) {
+fun VoiceCommandScreen(goTo: (String) -> Unit) {
     val viewModel = LocalIsiViewModel.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    val isExpanded = remember { mutableStateOf(false) }
     val colors = getColorsTheme()
     var textState by remember { mutableStateOf(TextFieldValue()) }
 
-    // COMPOSABLE PADRE
     // used to mark messages by date
     val messageDate: MutableState<String?> = remember { mutableStateOf(null) }
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
@@ -50,6 +49,11 @@ fun Home(goTo: (String) -> Unit) {
         viewModel.sendCommand(prompt, chat)
     }
 
+    LaunchedEffect(Unit) {
+        viewModel.setTaskType(null)
+    }
+
+
     val chatListState = rememberLazyListState()
 
     LaunchedEffect(uiState.commands) {
@@ -57,18 +61,8 @@ fun Home(goTo: (String) -> Unit) {
     }
     Box(modifier = Modifier.fillMaxSize()) {
         Row {
-            if (isExpanded.value || !getPlatform().name.startsWith("Android")) {
-                Sidebar(
-                    modifier = Modifier.weight(if (getPlatform().name.startsWith("Android")) 3f else 1f)
-                        .fillMaxHeight()
-                        .background(Color(0xFF171717))
-                        .padding(top = if (getPlatform().name.startsWith("Android")) 80.dp else 0.dp),
-                    filterCommands = filterCommands,
-                    goTo = goTo
-                )
-            }
             Column(
-                modifier = Modifier.background(colors.BackgroundColor).weight(3f).fillMaxHeight().padding(16.dp)
+                modifier = Modifier.weight(3f).fillMaxHeight().padding(16.dp)
             ) {
                 // Logo centered
                 Box(modifier = Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
@@ -94,14 +88,10 @@ fun Home(goTo: (String) -> Unit) {
                         // Chat messages box
                         if (uiState.commands.isNotEmpty()) {
                             Box(modifier = Modifier.weight(8f).fillMaxWidth().padding(16.dp)) {
-                                LazyColumn(
-                                    modifier = Modifier.fillMaxWidth().padding(16.dp),
-                                    state = chatListState
-                                ) {
+                                LazyColumn(modifier = Modifier.fillMaxWidth().padding(16.dp), state = chatListState) {
                                     items(uiState.commands) { command ->
                                         // Format the date
-                                        val formattedDate =
-                                            command.createdAt.toJavaLocalDateTime().format(formatter)
+                                        val formattedDate = command.createdAt.toJavaLocalDateTime().format(formatter)
 
                                         // Check if the date is different from the current message date
                                         if (formattedDate != messageDate.value) {
@@ -137,29 +127,18 @@ fun Home(goTo: (String) -> Unit) {
                                 }
                             }
                         }
-
-                        TaskTypeSelector()
                     }
                 }
-
                 // Text input box
-                Row(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-                    SendMessage { it ->
-                        if (it.isNotEmpty()) {
-                            textState = TextFieldValue()
-                            sendCommand(it, uiState.chat)
-                        }
+                VoiceCommandInput { it ->
+                    if (it.isNotEmpty()) {
+                        textState = TextFieldValue()
+                        sendCommand(it, uiState.chat)
                     }
                 }
             }
-        }
 
-        // Button for mobile device to expand sidebar
-        AndroidFloatingButton(
-            isExpanded = isExpanded,
-            modifier = Modifier
-                .align(alignment = Alignment.TopStart)
-                .padding(16.dp)
-        )
+
+        }
     }
 }

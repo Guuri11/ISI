@@ -12,7 +12,6 @@ import moe.tlaster.precompose.navigation.rememberNavigator
 import navigator.Navigation
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import ui.theme.AppTheme
-import ui.theme.getColorsTheme
 import utils.IntentSpeechToText
 
 @Composable

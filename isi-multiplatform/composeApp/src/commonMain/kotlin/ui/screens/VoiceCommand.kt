@@ -20,9 +20,9 @@ import domain.entity.TaskType
 import kotlinx.datetime.toJavaLocalDateTime
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import presentation.LocalIsiViewModel
-import ui.componets.ErrorScreen
+import ui.componets.ErrorText
 import ui.componets.IsiKottie
-import ui.componets.LoadingScreen
+import ui.componets.LoadingText
 import ui.componets.VoiceCommandInput
 import ui.componets.message.AssistantMessage
 import ui.componets.message.UserMessage
@@ -53,33 +53,38 @@ fun VoiceCommand(goTo: (String) -> Unit) {
         viewModel.setTaskType(null)
     }
 
-    when {
-        uiState.loading -> {
-            LoadingScreen(filterCommands, goTo)
-        }
 
-        !uiState.errorMessage.isNullOrEmpty() -> {
-            ErrorScreen(filterCommands, uiState.errorMessage!!, goTo)
-        }
+    val chatListState = rememberLazyListState()
 
-        else -> {
-            val chatListState = rememberLazyListState()
+    LaunchedEffect(uiState.commands) {
+        chatListState.animateScrollToItem(chatListState.layoutInfo.totalItemsCount)
+    }
+    Box(modifier = Modifier.fillMaxSize()) {
+        Row {
+            Column(
+                modifier = Modifier.weight(3f).fillMaxHeight().padding(16.dp)
+            ) {
+                // Logo centered
+                Box(modifier = Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
+                    // TODO: If there is not messages, make isi bigger. If there are, keep this size. Check if it is possible
+                    // to make it with a animation
+                    IsiKottie(size = if (uiState.commands.isEmpty()) 500.dp else 300.dp)
+                }
 
-            LaunchedEffect(uiState.commands) {
-                chatListState.animateScrollToItem(chatListState.layoutInfo.totalItemsCount)
-            }
-            Box(modifier = Modifier.fillMaxSize()) {
-                Row {
-                    Column(
-                        modifier = Modifier.weight(3f).fillMaxHeight().padding(16.dp)
-                    ) {
-                        // Logo centered
-                        Box(modifier = Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
-                            // TODO: If there is not messages, make isi bigger. If there are, keep this size. Check if it is possible
-                            // to make it with a animation
-                            IsiKottie(size = if (uiState.commands.isEmpty()) 500.dp else 300.dp)
+                when {
+                    uiState.loading -> {
+                        Box(modifier = Modifier.weight(1f).fillMaxWidth().padding(16.dp)) {
+                            LoadingText()
                         }
+                    }
 
+                    !uiState.errorMessage.isNullOrEmpty() -> {
+                        Box(modifier = Modifier.weight(1f).fillMaxWidth().padding(16.dp)) {
+                            ErrorText(uiState.errorMessage!!)
+                        }
+                    }
+
+                    else -> {
                         // Chat messages box
                         if (uiState.commands.isNotEmpty()) {
                             Box(modifier = Modifier.weight(8f).fillMaxWidth().padding(16.dp)) {
@@ -122,17 +127,18 @@ fun VoiceCommand(goTo: (String) -> Unit) {
                                 }
                             }
                         }
-
-                        // Text input box
-                        VoiceCommandInput { it ->
-                            if (it.isNotEmpty()) {
-                                textState = TextFieldValue()
-                                sendCommand(it, uiState.chat)
-                            }
-                        }
+                    }
+                }
+                // Text input box
+                VoiceCommandInput { it ->
+                    if (it.isNotEmpty()) {
+                        textState = TextFieldValue()
+                        sendCommand(it, uiState.chat)
                     }
                 }
             }
+
+
         }
     }
 }
