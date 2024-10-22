@@ -16,15 +16,17 @@ import domain.entity.GptSetting
 import domain.entity.TaskType
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import presentation.LocalIsiViewModel
-import ui.componets.ErrorText
-import ui.componets.LoadingText
 import ui.theme.getColorsTheme
 import kotlin.enums.EnumEntries
 
-@Composable
-fun Settings(goTo: (String) -> Unit) {
+/**
+ * TODO: ESTABA CREANDO LA VISTA PARA HACER LAS COORDENADAS DEL COCHE, TENÍA PENDIENTE CREAR UN COMPONENTE PADRE PARA REUTILIZAR CÓDIGO Y USAR EL PATRÓN SINGLETON SI TENÍA SENTIDO
+ * https://compass.jordond.dev/docs/geolocation/geolocator
+ */
 
-    // COMPOSABLE PADRE
+@Composable
+fun SettingsScreen(goTo: (String) -> Unit) {
+
     val viewModel = LocalIsiViewModel.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 

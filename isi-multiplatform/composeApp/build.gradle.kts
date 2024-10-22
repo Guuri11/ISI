@@ -52,6 +52,11 @@ kotlin {
                 implementation(libs.io.coil.kt.coil3)
                 implementation(libs.io.coil.kt.coil3.compose)
                 implementation(libs.io.coil.kt.coil3.network.ktor)
+
+                // Geocoding
+                implementation(libs.compass.geocoder)
+                implementation(libs.compass.geolocation)
+
             }
         }
         val androidMain by getting {
@@ -61,6 +66,12 @@ kotlin {
 
                 // Ktor Android engine
                 implementation(libs.ktor.client.android)
+
+                // Geolocation
+                implementation(libs.compass.geocoder.mobile)
+                implementation(libs.compass.geolocation.mobile)
+                implementation(libs.compass.permissions.mobile)
+
             }
         }
         val desktopMain by getting {

@@ -7,6 +7,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.LocalTaxi
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -41,15 +42,20 @@ fun Sidebar(modifier: Modifier = Modifier, filterCommands: (taskType: TaskType?)
         }
 
         Divider(color = colors.TextColor, thickness = 2.dp)
-
-        IconButton(onClick = {
-            goTo("/settings")
-        }) {
-            Icon(
-                imageVector = Icons.Filled.Settings,
-                tint = colors.TextColor,
-                contentDescription = "Back"
-            )
-        }
+        Text(
+            text = "Settings",
+            color = colors.TextColor,
+            fontSize = 18.sp,
+            modifier = Modifier.fillMaxWidth().clickable {
+                goTo("/settings")
+            })
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = "Car coords",
+            color = colors.TextColor,
+            fontSize = 18.sp,
+            modifier = Modifier.fillMaxWidth().clickable {
+                goTo("/car-coords")
+            })
     }
 }

@@ -9,9 +9,10 @@ import moe.tlaster.precompose.navigation.Navigator
 import moe.tlaster.precompose.viewmodel.viewModel
 import presentation.IsiViewModel
 import presentation.LocalIsiViewModel
-import ui.screens.Home
-import ui.screens.Settings
-import ui.screens.VoiceCommand
+import ui.screens.CarCoordsScreen
+import ui.screens.HomeScreen
+import ui.screens.SettingsScreen
+import ui.screens.VoiceCommandScreen
 import utils.IntentSpeechToText
 import utils.isLocal
 
@@ -21,7 +22,8 @@ fun Navigation(navigator: Navigator, intentSpeechToText: IntentSpeechToText? = n
         IsiViewModel(if (isLocal) CommandRepositoryLocalImpl() else CommandRepositoryImpl(), isLocal)
     }
 
-    val initialRoute: String = if (intentSpeechToText != null && intentSpeechToText.equals(IntentSpeechToText.ACTION)) "/voice-command" else "/home"
+    val initialRoute: String =
+        if (intentSpeechToText != null && intentSpeechToText.equals(IntentSpeechToText.ACTION)) "/voice-command" else "/home"
 
     CompositionLocalProvider(LocalIsiViewModel provides viewModel) {
         NavHost(
@@ -29,13 +31,16 @@ fun Navigation(navigator: Navigator, intentSpeechToText: IntentSpeechToText? = n
             initialRoute = initialRoute
         ) {
             scene(route = "/home") {
-                Home(goTo = navigator::navigate)
+                HomeScreen(goTo = navigator::navigate)
             }
             scene(route = "/settings") {
-                Settings(goTo = navigator::navigate)
+                SettingsScreen(goTo = navigator::navigate)
             }
             scene(route = "/voice-command") {
-                VoiceCommand(goTo = navigator::navigate)
+                VoiceCommandScreen(goTo = navigator::navigate)
+            }
+            scene(route = "/car-coords") {
+                CarCoordsScreen(goTo = navigator::navigate)
             }
         }
     }
