@@ -29,7 +29,7 @@ import ui.theme.getColorsTheme
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun Home(goTo: (String) -> Unit) {
+fun HomeScreen(goTo: (String) -> Unit) {
     val viewModel = LocalIsiViewModel.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
