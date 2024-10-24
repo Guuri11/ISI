@@ -31,7 +31,8 @@ fun SendMessage(sendMessage: (String) -> Unit) {
         TextField(
             modifier = Modifier
                 .background(Color(0xFF2F2F2F), shape = RoundedCornerShape(24.dp))
-                .padding(10.dp),
+                .padding(10.dp)
+                .fillMaxWidth(),
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = Color(0xFF2F2F2F),
                 placeholderColor = colors.TextColor,

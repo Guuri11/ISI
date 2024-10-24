@@ -141,7 +141,6 @@ fun HomeScreen(goTo: (String) -> Unit) {
                         TaskTypeSelector()
                     }
                 }
-
                 // Text input box
                 Row(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
                     SendMessage { it ->
