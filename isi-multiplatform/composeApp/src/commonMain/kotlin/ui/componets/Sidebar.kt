@@ -41,7 +41,8 @@ fun Sidebar(modifier: Modifier = Modifier, filterCommands: (taskType: TaskType?)
             }
         }
 
-        Divider(color = colors.TextColor, thickness = 2.dp)
+        Divider(color = colors.TextColor, thickness = 2.dp, modifier = Modifier.padding(bottom = 16.dp))
+
         Text(
             text = "Settings",
             color = colors.TextColor,
