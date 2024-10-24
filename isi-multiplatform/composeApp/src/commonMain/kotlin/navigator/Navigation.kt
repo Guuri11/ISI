@@ -2,8 +2,8 @@ package navigator
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import data.CommandRepositoryImpl
-import data.CommandRepositoryLocalImpl
+import data.repository.CommandRepositoryImpl
+import data.repository.CommandRepositoryLocalImpl
 import moe.tlaster.precompose.navigation.NavHost
 import moe.tlaster.precompose.navigation.Navigator
 import moe.tlaster.precompose.viewmodel.viewModel

@@ -1,55 +1,68 @@
 package ui.screens
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.Checkbox
+import androidx.compose.material.CheckboxDefaults
+import androidx.compose.material.Divider
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.guuri11.isi.Settings
 import domain.entity.EnvironmentSetting
 import domain.entity.GptSetting
-import domain.entity.TaskType
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import presentation.LocalIsiViewModel
 import ui.theme.getColorsTheme
 import kotlin.enums.EnumEntries
-
-/**
- * TODO: ESTABA CREANDO LA VISTA PARA HACER LAS COORDENADAS DEL COCHE, TENÍA PENDIENTE CREAR UN COMPONENTE PADRE PARA REUTILIZAR CÓDIGO Y USAR EL PATRÓN SINGLETON SI TENÍA SENTIDO
- * https://compass.jordond.dev/docs/geolocation/geolocator
- */
 
 @Composable
 fun SettingsScreen(goTo: (String) -> Unit) {
 
     val viewModel = LocalIsiViewModel.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-    // COMPOSABLE PADRE
     val colors = getColorsTheme()
-
-    val filterCommands: (taskType: TaskType?) -> Unit = {
-        viewModel.filterCommands(taskTypeSelected = it)
-    }
 
     val onEnvironmentChange: (EnvironmentSetting) -> Unit = { env ->
         viewModel.onEnvironmentChange(env)
     }
 
-    val onGptChange: (GptSetting) -> Unit = { gpt ->
-        viewModel.onGptChange(gpt)
+    val onGptChange: (Settings) -> Unit = { settings ->
+        viewModel.onGptChange(GptSetting.fromValue(settings.modelAI))
     }
 
+    val onApiKeyChange: (Settings) -> Unit = { settings ->
+        viewModel.onApiKeyChange(settings.modelAIApiKey)
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Row {
             Column(
-                modifier = Modifier.background(colors.BackgroundColor).weight(3f).fillMaxHeight().padding(16.dp)
+                modifier = Modifier.background(colors.BackgroundColor).weight(3f).fillMaxHeight()
+                    .padding(16.dp)
             ) {
                 if (uiState.enviroment != null) {
                     IconButton(onClick = {
@@ -69,9 +82,15 @@ fun SettingsScreen(goTo: (String) -> Unit) {
                         }
                     )
                     LocalSetting(
-                        gpt = uiState.gpt,
-                        onGptChange = {
+                        settings = uiState.settings,
+                        onSettingChange = {
                             onGptChange(it)
+                        }
+                    )
+                    AIModelKeySetting(
+                        settings = uiState.settings,
+                        onSettingChange = {
+                            onApiKeyChange(it)
                         }
                     )
                 }
@@ -92,8 +111,16 @@ fun EnvironmentSetting(
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(text = "Environment", fontSize = 20.sp, fontWeight = FontWeight.SemiBold, color = colors.TextColor)
-        MultiSelectOptions(options = EnvironmentSetting.entries, selectedOption = selectedOption) { environment ->
+        Text(
+            text = "Environment",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = colors.TextColor
+        )
+        MultiSelectOptions(
+            options = EnvironmentSetting.entries,
+            selectedOption = selectedOption
+        ) { environment ->
             if (environment != null) {
                 onEnvironmentChange(environment)
             }
@@ -106,24 +133,66 @@ fun EnvironmentSetting(
 
 @Composable
 fun LocalSetting(
-    gpt: GptSetting,
-    onGptChange: (GptSetting) -> Unit,
+    settings: Settings,
+    onSettingChange: (Settings) -> Unit,
 ) {
     val colors = getColorsTheme()
-    var selectedOption by remember { mutableStateOf<GptSetting?>(gpt) }
+    var selectedOption by remember { mutableStateOf<GptSetting?>(GptSetting.fromValue(settings.modelAI)) }
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(text = "Local Settings", fontSize = 20.sp, fontWeight = FontWeight.SemiBold, color = colors.TextColor)
-        Text(text = "GPT Model", fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = colors.TextColor)
+        Text(
+            text = "Local Settings",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = colors.TextColor
+        )
+        Text(
+            text = "GPT Model",
+            fontSize = 18.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = colors.TextColor
+        )
         MultiSelectOptions(options = GptSetting.entries, selectedOption = selectedOption) { gpt ->
             if (gpt != null) {
-                onGptChange(gpt)
+                onSettingChange(settings.copy(modelAI = gpt.value))
             }
             selectedOption = gpt
         }
+        Divider(color = colors.TextColor, thickness = 2.dp)
+    }
+}
+
+@Composable
+fun AIModelKeySetting(
+    settings: Settings,
+    onSettingChange: (Settings) -> Unit,
+) {
+    val colors = getColorsTheme()
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = "AI Model API Key",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = colors.TextColor
+        )
+        TextField(
+            value = settings.modelAIApiKey,
+            onValueChange = {
+                onSettingChange(
+                    settings.copy(
+                        modelAIApiKey = it
+                    )
+                )
+            },
+            textStyle = TextStyle(color = colors.TextColor),
+        )
         Divider(color = colors.TextColor, thickness = 2.dp)
     }
 }

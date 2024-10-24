@@ -1,0 +1,19 @@
+CREATE TABLE Settings (
+    id INTEGER NOT NULL,
+    modelAI TEXT NOT NULL DEFAULT "gpt-3.5-turbo",
+    modelAIApiKey TEXT NOT NULL,
+    wifis TEXT,
+    server TEXT NOT NULL DEFAULT "http://192.168.1.76:8080"
+);
+
+insertSetting:
+INSERT INTO Settings (id, modelAI, modelAIApiKey, wifis, server)
+VALUES(?,?, ?, ?, ?);
+
+removeAllSettings:
+DELETE FROM Settings;
+
+getSettings:
+SELECT Settings.*
+FROM Settings
+WHERE id = 1;

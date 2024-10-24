@@ -1,6 +1,10 @@
-package data
+package data.repository
 
-import domain.entity.*
+import domain.entity.Chat
+import domain.entity.Command
+import domain.entity.GptSetting
+import domain.entity.MessageType
+import domain.entity.TaskType
 import domain.mapper.createChatMessageFromCommand
 import domain.mapper.createCommandFromString
 import domain.repository.CommandRepository
@@ -21,11 +25,11 @@ class CommandRepositoryLocalImpl(model: GptSetting = GptSetting.GPT_4O_MINI) : C
         return emptyList()
     }
 
-    override suspend fun create(messages: List<Command>, chat: Chat?, task: TaskType?): Command {
+    override suspend fun create(messages: List<Command>, chat: Chat?, task: TaskType?, apiKey: String?): Command {
         val client = createOpenAIClient()
 
         val chatMessages = messages.map { createChatMessageFromCommand(it) }.toList()
-        val response = client.getResponse(chatMessages, currentModel)
+        val response = client.getResponse(chatMessages, currentModel, apiKey!!)
 
         return createCommandFromString(
             content = response,
