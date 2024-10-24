@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
 import moe.tlaster.precompose.viewmodel.ViewModel
 import moe.tlaster.precompose.viewmodel.viewModelScope
 import java.net.ConnectException
+import utils.isLocal
 
 val LocalIsiViewModel = staticCompositionLocalOf<IsiViewModel> {
     error("No IsiViewModel provided")
@@ -46,8 +47,9 @@ data class IsiUiState(
 )
 
 
-class IsiViewModel(private var repo: CommandRepository, isLocal: Boolean) :
+class IsiViewModel() :
     ViewModel() {
+    private var repo: CommandRepository
     private val _uiState = MutableStateFlow<IsiUiState>(IsiUiState())
     private var settings: Settings
     private var allCommands = emptyList<Command>()
@@ -60,10 +62,6 @@ class IsiViewModel(private var repo: CommandRepository, isLocal: Boolean) :
     val uiState = _uiState.asStateFlow()
 
     init {
-        getAllCommands()
-        currentEnvironment =
-            if (isLocal) EnvironmentSetting.LOCAL else EnvironmentSetting.PRODUCTION
-
         settings = settingsRepository.get()
         currentGpt = GptSetting.fromValue(settings.modelAI)
 
@@ -73,6 +71,16 @@ class IsiViewModel(private var repo: CommandRepository, isLocal: Boolean) :
                 settings = settings,
             )
         }
+
+        if (settings.wifis.isNullOrBlank() || isLocal(settings.wifis!!)) {
+            currentEnvironment = EnvironmentSetting.LOCAL
+            repo = CommandRepositoryLocalImpl()
+        } else {
+            currentEnvironment = EnvironmentSetting.PRODUCTION
+            repo = CommandRepositoryImpl(settings.server)
+        }
+
+        getAllCommands()
     }
 
     private fun getAllCommands(chat: Chat? = null) {
@@ -164,7 +172,7 @@ class IsiViewModel(private var repo: CommandRepository, isLocal: Boolean) :
         repo = if (environment == EnvironmentSetting.LOCAL) {
             CommandRepositoryLocalImpl(currentGpt)
         } else {
-            CommandRepositoryImpl()
+            CommandRepositoryImpl(settings.server)
         }
         currentEnvironment = environment
         getAllCommands()
@@ -191,10 +199,10 @@ class IsiViewModel(private var repo: CommandRepository, isLocal: Boolean) :
         }
     }
 
-    fun onApiKeyChange(apiKey: String) {
-        Napier.i { "New api key $apiKey" }
-        settings = settings.copy(modelAIApiKey = apiKey)
-        settingsRepository.save(settings)
+    fun onSettingsChange(newSettings: Settings) {
+        Napier.i { "New settings key $settings" }
+        settings = newSettings
+        settingsRepository.save(newSettings)
 
         _uiState.update {
             it.copy(

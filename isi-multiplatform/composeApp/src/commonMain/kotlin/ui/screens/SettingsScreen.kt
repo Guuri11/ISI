@@ -50,12 +50,12 @@ fun SettingsScreen(goTo: (String) -> Unit) {
         viewModel.onEnvironmentChange(env)
     }
 
-    val onGptChange: (Settings) -> Unit = { settings ->
-        viewModel.onGptChange(GptSetting.fromValue(settings.modelAI))
+    val onWifiChange: (String) -> Unit = { wifis ->
+        viewModel.onSettingsChange(uiState.settings.copy(wifis = wifis))
     }
 
-    val onApiKeyChange: (Settings) -> Unit = { settings ->
-        viewModel.onApiKeyChange(settings.modelAIApiKey)
+    val onSettingChange: (Settings) -> Unit = { settings ->
+        viewModel.onSettingsChange(settings)
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -84,13 +84,25 @@ fun SettingsScreen(goTo: (String) -> Unit) {
                     LocalSetting(
                         settings = uiState.settings,
                         onSettingChange = {
-                            onGptChange(it)
+                            onSettingChange(it)
                         }
                     )
                     AIModelKeySetting(
                         settings = uiState.settings,
                         onSettingChange = {
-                            onApiKeyChange(it)
+                            onSettingChange(it)
+                        }
+                    )
+                    WifisSetting(
+                        settings = uiState.settings,
+                        onSettingChange = {
+                            onWifiChange(it)
+                        }
+                    )
+                    ServerSetting(
+                        settings = uiState.settings,
+                        onSettingChange = {
+                            onSettingChange(it)
                         }
                     )
                 }
@@ -196,6 +208,67 @@ fun AIModelKeySetting(
         Divider(color = colors.TextColor, thickness = 2.dp)
     }
 }
+
+@Composable
+fun WifisSetting(
+    settings: Settings,
+    onSettingChange: (String) -> Unit,
+) {
+    val colors = getColorsTheme()
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = "List of Wifis splitted by ++",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = colors.TextColor
+        )
+        TextField(
+            value = if (settings.wifis.isNullOrBlank()) "" else settings.wifis,
+            onValueChange = {
+                onSettingChange(it)
+            },
+            textStyle = TextStyle(color = colors.TextColor),
+        )
+        Divider(color = colors.TextColor, thickness = 2.dp)
+    }
+}
+
+@Composable
+fun ServerSetting(
+    settings: Settings,
+    onSettingChange: (Settings) -> Unit,
+) {
+    val colors = getColorsTheme()
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = "Server for production",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = colors.TextColor
+        )
+        TextField(
+            value = settings.server,
+            onValueChange = {
+                onSettingChange(
+                    settings.copy(
+                        server = it
+                    )
+                )
+            },
+            textStyle = TextStyle(color = colors.TextColor),
+        )
+        Divider(color = colors.TextColor, thickness = 2.dp)
+    }
+}
+
 
 @Composable
 fun <T> MultiSelectOptions(

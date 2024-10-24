@@ -19,7 +19,7 @@ import utils.isLocal
 @Composable
 fun Navigation(navigator: Navigator, intentSpeechToText: IntentSpeechToText? = null) {
     val viewModel = viewModel(modelClass = IsiViewModel::class) {
-        IsiViewModel(if (isLocal) CommandRepositoryLocalImpl() else CommandRepositoryImpl(), isLocal)
+        IsiViewModel()
     }
 
     val initialRoute: String =

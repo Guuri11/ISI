@@ -9,19 +9,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import domain.entity.Command
+import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
+import presentation.LocalIsiViewModel
 import ui.componets.FullScreenImageDialog
 import ui.theme.getColorsTheme
-import utils.static
 
 @Composable
 fun AssistantMessage(command: Command) {
+    val viewModel = LocalIsiViewModel.current
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val colors = getColorsTheme()
     var showDialog by remember { mutableStateOf(false) }
 
     // Show the image in fullscreen when clicked
     if (showDialog) {
         FullScreenImageDialog(
-            imageUrl = "$static/${command.favName}",
+            imageUrl = "${uiState.settings.server}/static/${command.favName}",
             onDismiss = { showDialog = false }
         )
     }
@@ -30,7 +33,7 @@ fun AssistantMessage(command: Command) {
     Column {
         if (command.favName != null) {
             AsyncImage(
-                model = "$static/${command.favName}",
+                model = "${uiState.settings.server}/static/${command.favName}",
                 contentDescription = command.favName,
                 modifier = Modifier
                     .clickable { showDialog = true }

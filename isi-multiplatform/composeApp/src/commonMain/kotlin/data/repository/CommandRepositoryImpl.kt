@@ -13,9 +13,9 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
-import utils.api
 
-class CommandRepositoryImpl : CommandRepository {
+class CommandRepositoryImpl(server: String) : CommandRepository {
+    private val api = "$server/api/v1"
     private val client = getHttpClient()
 
     override suspend fun findAll(): List<Command> {
