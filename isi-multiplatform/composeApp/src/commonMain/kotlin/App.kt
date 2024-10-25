@@ -20,7 +20,7 @@ fun App(intentSpeechToText: IntentSpeechToText? = null) {
     Napier.base(DebugAntilog())
 
     PreComposeApp {
-        AppTheme {
+        AppTheme(intentSpeechToText = intentSpeechToText) {
             val navigator = rememberNavigator()
             Navigation(navigator, intentSpeechToText)
         }

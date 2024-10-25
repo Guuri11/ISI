@@ -1,16 +1,13 @@
 package ui.screens
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -25,7 +22,6 @@ import presentation.LocalIsiViewModel
 import ui.componets.*
 import ui.componets.message.AssistantMessage
 import ui.componets.message.UserMessage
-import ui.theme.getColorsTheme
 import java.time.format.DateTimeFormatter
 
 @Composable
@@ -34,7 +30,6 @@ fun HomeScreen(goTo: (String) -> Unit) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     val isExpanded = remember { mutableStateOf(false) }
-    val colors = getColorsTheme()
     var textState by remember { mutableStateOf(TextFieldValue()) }
 
     // COMPOSABLE PADRE
@@ -61,14 +56,13 @@ fun HomeScreen(goTo: (String) -> Unit) {
                 Sidebar(
                     modifier = Modifier.weight(if (getPlatform().name.startsWith("Android")) 3f else 1f)
                         .fillMaxHeight()
-                        .background(Color(0xFF171717))
                         .padding(top = if (getPlatform().name.startsWith("Android")) 80.dp else 0.dp),
                     filterCommands = filterCommands,
                     goTo = goTo
                 )
             }
             Column(
-                modifier = Modifier.background(colors.BackgroundColor).weight(3f).fillMaxHeight().padding(16.dp)
+                modifier = Modifier.weight(3f).fillMaxHeight().padding(16.dp)
             ) {
                 // Logo centered
                 Box(modifier = Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
@@ -111,7 +105,6 @@ fun HomeScreen(goTo: (String) -> Unit) {
                                                 text = "-------------$formattedDate-------------",
                                                 modifier = Modifier.fillMaxWidth(),
                                                 fontSize = 12.sp,
-                                                color = colors.TextColor,
                                                 textAlign = TextAlign.Center
                                             )
                                         }
@@ -124,10 +117,6 @@ fun HomeScreen(goTo: (String) -> Unit) {
                                                 UserMessage(
                                                     command, modifier = Modifier
                                                         .padding(vertical = 8.dp)
-                                                        .background(
-                                                            color = colors.Purple,
-                                                            shape = RoundedCornerShape(24)
-                                                        )
                                                         .align(alignment = Alignment.CenterEnd)
                                                         .padding(all = 8.dp)
                                                 )

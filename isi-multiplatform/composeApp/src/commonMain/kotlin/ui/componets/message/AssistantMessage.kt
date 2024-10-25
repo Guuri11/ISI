@@ -12,13 +12,11 @@ import domain.entity.Command
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import presentation.LocalIsiViewModel
 import ui.componets.FullScreenImageDialog
-import ui.theme.getColorsTheme
 
 @Composable
 fun AssistantMessage(command: Command) {
     val viewModel = LocalIsiViewModel.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val colors = getColorsTheme()
     var showDialog by remember { mutableStateOf(false) }
 
     // Show the image in fullscreen when clicked
@@ -41,7 +39,6 @@ fun AssistantMessage(command: Command) {
         }
         Text(
             text = command.content,
-            color = colors.TextColor,
             fontSize = 16.sp,
             modifier = Modifier.padding(vertical = 8.dp)
                 .padding(all = 8.dp)

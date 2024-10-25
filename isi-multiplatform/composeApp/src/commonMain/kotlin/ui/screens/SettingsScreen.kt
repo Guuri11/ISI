@@ -36,7 +36,6 @@ import domain.entity.EnvironmentSetting
 import domain.entity.GptSetting
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import presentation.LocalIsiViewModel
-import ui.theme.getColorsTheme
 import kotlin.enums.EnumEntries
 
 @Composable
@@ -44,7 +43,6 @@ fun SettingsScreen(goTo: (String) -> Unit) {
 
     val viewModel = LocalIsiViewModel.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val colors = getColorsTheme()
 
     val onEnvironmentChange: (EnvironmentSetting) -> Unit = { env ->
         viewModel.onEnvironmentChange(env)
@@ -61,7 +59,7 @@ fun SettingsScreen(goTo: (String) -> Unit) {
     Box(modifier = Modifier.fillMaxSize()) {
         Row {
             Column(
-                modifier = Modifier.background(colors.BackgroundColor).weight(3f).fillMaxHeight()
+                modifier = Modifier.weight(3f).fillMaxHeight()
                     .padding(16.dp)
             ) {
                 if (uiState.enviroment != null) {
@@ -71,7 +69,6 @@ fun SettingsScreen(goTo: (String) -> Unit) {
                         Icon(
                             modifier = Modifier.padding(start = 16.dp),
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            tint = colors.TextColor,
                             contentDescription = "Back"
                         )
                     }
@@ -116,7 +113,6 @@ fun EnvironmentSetting(
     environment: EnvironmentSetting,
     onEnvironmentChange: (EnvironmentSetting) -> Unit,
 ) {
-    val colors = getColorsTheme()
     var selectedOption by remember { mutableStateOf<EnvironmentSetting?>(environment) }
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -126,8 +122,7 @@ fun EnvironmentSetting(
         Text(
             text = "Environment",
             fontSize = 20.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = colors.TextColor
+            fontWeight = FontWeight.SemiBold
         )
         MultiSelectOptions(
             options = EnvironmentSetting.entries,
@@ -139,7 +134,7 @@ fun EnvironmentSetting(
 
             selectedOption = environment
         }
-        Divider(color = colors.TextColor, thickness = 2.dp)
+        Divider(thickness = 2.dp)
     }
 }
 
@@ -148,7 +143,6 @@ fun LocalSetting(
     settings: Settings,
     onSettingChange: (Settings) -> Unit,
 ) {
-    val colors = getColorsTheme()
     var selectedOption by remember { mutableStateOf<GptSetting?>(GptSetting.fromValue(settings.modelAI)) }
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -159,13 +153,11 @@ fun LocalSetting(
             text = "Local Settings",
             fontSize = 20.sp,
             fontWeight = FontWeight.SemiBold,
-            color = colors.TextColor
         )
         Text(
             text = "GPT Model",
             fontSize = 18.sp,
             fontWeight = FontWeight.SemiBold,
-            color = colors.TextColor
         )
         MultiSelectOptions(options = GptSetting.entries, selectedOption = selectedOption) { gpt ->
             if (gpt != null) {
@@ -173,7 +165,7 @@ fun LocalSetting(
             }
             selectedOption = gpt
         }
-        Divider(color = colors.TextColor, thickness = 2.dp)
+        Divider(thickness = 2.dp)
     }
 }
 
@@ -182,7 +174,6 @@ fun AIModelKeySetting(
     settings: Settings,
     onSettingChange: (Settings) -> Unit,
 ) {
-    val colors = getColorsTheme()
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.Start,
@@ -191,8 +182,7 @@ fun AIModelKeySetting(
         Text(
             text = "AI Model API Key",
             fontSize = 20.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = colors.TextColor
+            fontWeight = FontWeight.SemiBold
         )
         TextField(
             value = settings.modelAIApiKey,
@@ -202,10 +192,9 @@ fun AIModelKeySetting(
                         modelAIApiKey = it
                     )
                 )
-            },
-            textStyle = TextStyle(color = colors.TextColor),
+            }
         )
-        Divider(color = colors.TextColor, thickness = 2.dp)
+        Divider(thickness = 2.dp)
     }
 }
 
@@ -214,7 +203,6 @@ fun WifisSetting(
     settings: Settings,
     onSettingChange: (String) -> Unit,
 ) {
-    val colors = getColorsTheme()
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.Start,
@@ -223,17 +211,15 @@ fun WifisSetting(
         Text(
             text = "List of Wifis splitted by ++",
             fontSize = 20.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = colors.TextColor
+            fontWeight = FontWeight.SemiBold
         )
         TextField(
             value = if (settings.wifis.isNullOrBlank()) "" else settings.wifis,
             onValueChange = {
                 onSettingChange(it)
             },
-            textStyle = TextStyle(color = colors.TextColor),
         )
-        Divider(color = colors.TextColor, thickness = 2.dp)
+        Divider(thickness = 2.dp)
     }
 }
 
@@ -242,7 +228,6 @@ fun ServerSetting(
     settings: Settings,
     onSettingChange: (Settings) -> Unit,
 ) {
-    val colors = getColorsTheme()
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.Start,
@@ -252,7 +237,6 @@ fun ServerSetting(
             text = "Server for production",
             fontSize = 20.sp,
             fontWeight = FontWeight.SemiBold,
-            color = colors.TextColor
         )
         TextField(
             value = settings.server,
@@ -262,10 +246,9 @@ fun ServerSetting(
                         server = it
                     )
                 )
-            },
-            textStyle = TextStyle(color = colors.TextColor),
+            }
         )
-        Divider(color = colors.TextColor, thickness = 2.dp)
+        Divider(thickness = 2.dp)
     }
 }
 
@@ -276,7 +259,6 @@ fun <T> MultiSelectOptions(
     selectedOption: T?,
     onSelectionChange: (T?) -> Unit,
 ) where T : Enum<T> {
-    val colors = getColorsTheme()
     Column(modifier = Modifier.padding(16.dp)) {
         options.forEach { option ->
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -288,14 +270,10 @@ fun <T> MultiSelectOptions(
                         } else {
                             onSelectionChange(null)
                         }
-                    },
-                    colors = CheckboxDefaults.colors(
-                        uncheckedColor = colors.TextColor
-
-                    )
+                    }
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(option.name, color = colors.TextColor)
+                Text(option.name)
             }
         }
     }

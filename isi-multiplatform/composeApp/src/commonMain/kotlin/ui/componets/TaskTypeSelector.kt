@@ -12,7 +12,6 @@ import androidx.compose.ui.unit.sp
 import domain.entity.TaskType
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import presentation.LocalIsiViewModel
-import ui.theme.getColorsTheme
 
 @Composable
 fun TaskTypeSelector() {
@@ -20,13 +19,11 @@ fun TaskTypeSelector() {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val state = uiState
 
-    val colors = getColorsTheme()
     val showList: MutableState<Boolean> = remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.padding(16.dp)) {
         Text(
             "Task Type: ${state.taskTypeToRequest?.value}",
-            color = colors.TextColor,
             fontWeight = FontWeight.SemiBold,
             fontSize = 18.sp,
             modifier = Modifier.clickable {
@@ -38,7 +35,6 @@ fun TaskTypeSelector() {
             TaskType.entries.map {
                 Text(
                     it.value,
-                    color = colors.TextColor,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 16.sp,
                     modifier = Modifier.clickable {

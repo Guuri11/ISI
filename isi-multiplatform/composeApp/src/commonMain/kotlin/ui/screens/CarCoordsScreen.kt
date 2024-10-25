@@ -17,7 +17,6 @@ import dev.jordond.compass.geocoder.placeOrNull
 import dev.jordond.compass.geolocation.currentLocationOrNull
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import presentation.LocalIsiViewModel
-import ui.theme.getColorsTheme
 import getGeoLocator
 import getGeocoding
 import openMaps
@@ -27,7 +26,6 @@ import getPlatform
 fun CarCoordsScreen(goTo: (String) -> Unit) {
     val viewModel = LocalIsiViewModel.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val colors = getColorsTheme()
     var location by remember { mutableStateOf<Location?>(null) }
     var street by remember { mutableStateOf<Place?>(null) }
 
@@ -43,7 +41,7 @@ fun CarCoordsScreen(goTo: (String) -> Unit) {
     Box(modifier = Modifier.fillMaxSize()) {
         Row {
             Column(
-                modifier = Modifier.background(colors.BackgroundColor).weight(3f).fillMaxHeight().padding(16.dp)
+                modifier = Modifier.weight(3f).fillMaxHeight().padding(16.dp)
             ) {
                 if (uiState.enviroment != null) {
                     IconButton(onClick = {
@@ -52,7 +50,6 @@ fun CarCoordsScreen(goTo: (String) -> Unit) {
                         Icon(
                             modifier = Modifier.padding(start = 16.dp),
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            tint = colors.TextColor,
                             contentDescription = "Back"
                         )
                     }
@@ -66,27 +63,22 @@ fun CarCoordsScreen(goTo: (String) -> Unit) {
                                 text = "Car Coordinates",
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.SemiBold,
-                                color = colors.TextColor
                             )
                             Text(
                                 text = location?.coordinates?.latitude.toString() + ", " + location?.coordinates?.longitude.toString(),
-                                color = colors.TextColor
                             )
                             if (street?.street !== null) {
                                 Text(
                                     text = street?.street!!,
-                                    color = colors.TextColor
                                 )
                                 Button(
                                     onClick = {
                                         openMaps(location?.coordinates!!.latitude, location?.coordinates?.longitude!!)
                                     },
-                                    colors = ButtonDefaults.buttonColors(backgroundColor = colors.Purple),
                                     modifier = Modifier.padding(top = 16.dp)
                                 ) {
                                     Text(
                                         text = "Open in Google Maps",
-                                        color = colors.TextColor,
                                         fontSize = 16.sp,
                                         modifier = Modifier.padding(start = 16.dp, end = 16.dp)
                                     )
@@ -97,11 +89,9 @@ fun CarCoordsScreen(goTo: (String) -> Unit) {
                                 text = "Car Coordinates",
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.SemiBold,
-                                color = colors.TextColor
                             )
                             Text(
                                 text = "Feature only available on Android",
-                                color = colors.TextColor
                             )
                         }
                     }

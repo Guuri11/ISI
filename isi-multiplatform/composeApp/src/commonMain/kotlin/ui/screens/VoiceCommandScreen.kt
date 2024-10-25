@@ -26,7 +26,6 @@ import ui.componets.LoadingText
 import ui.componets.VoiceCommandInput
 import ui.componets.message.AssistantMessage
 import ui.componets.message.UserMessage
-import ui.theme.getColorsTheme
 import java.time.format.DateTimeFormatter
 
 @Composable
@@ -34,7 +33,6 @@ fun VoiceCommandScreen(goTo: (String) -> Unit) {
     val viewModel = LocalIsiViewModel.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    val colors = getColorsTheme()
     var textState by remember { mutableStateOf(TextFieldValue()) }
 
     // used to mark messages by date
@@ -101,7 +99,6 @@ fun VoiceCommandScreen(goTo: (String) -> Unit) {
                                                 text = "-------------$formattedDate-------------",
                                                 modifier = Modifier.fillMaxWidth(),
                                                 fontSize = 12.sp,
-                                                color = colors.TextColor,
                                                 textAlign = TextAlign.Center
                                             )
                                         }
@@ -114,10 +111,6 @@ fun VoiceCommandScreen(goTo: (String) -> Unit) {
                                                 UserMessage(
                                                     command, modifier = Modifier
                                                         .padding(vertical = 8.dp)
-                                                        .background(
-                                                            color = colors.Purple,
-                                                            shape = RoundedCornerShape(24)
-                                                        )
                                                         .align(alignment = Alignment.CenterEnd)
                                                         .padding(all = 8.dp)
                                                 )
