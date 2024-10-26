@@ -34,6 +34,9 @@ data class IsiUiState(
         modelAI = GptSetting.GPT_4O_MINI.value,
         modelAIApiKey = "",
         wifis = "",
+        carLatitude = null,
+        carLongitude = null,
+        carStreet = null,
         server = "http://192.168.1.76:8080"
     ),
     val commands: List<Command> = emptyList(),
@@ -184,24 +187,12 @@ class IsiViewModel() :
         }
     }
 
-    fun onGptChange(gpt: GptSetting) {
-        Napier.i { "New gpt $gpt" }
-        currentGpt = gpt
-        repo = CommandRepositoryLocalImpl(currentGpt)
-        settings = settings.copy(modelAI = gpt.value)
-        currentGpt = GptSetting.fromValue(settings.modelAI)
-        settingsRepository.save(settings)
-
-        _uiState.update {
-            it.copy(
-                settings = settings
-            )
-        }
-    }
-
     fun onSettingsChange(newSettings: Settings) {
         Napier.i { "New settings key $settings" }
+        val gptSetting = GptSetting.fromValue(newSettings.modelAI)
         settings = newSettings
+        currentGpt = gptSetting
+        repo = CommandRepositoryLocalImpl(gptSetting)
         settingsRepository.save(newSettings)
 
         _uiState.update {

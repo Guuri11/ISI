@@ -6,7 +6,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import domain.entity.Chat
 import domain.entity.MessageType
-import domain.entity.TaskType
 import kotlinx.datetime.toJavaLocalDateTime
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import presentation.LocalIsiViewModel
@@ -39,10 +39,6 @@ fun VoiceCommandScreen(goTo: (String) -> Unit) {
     val messageDate: MutableState<String?> = remember { mutableStateOf(null) }
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
-    val filterCommands: (TaskType?) -> Unit = {
-        viewModel.filterCommands(it)
-    }
-
     val sendCommand: (String, Chat?) -> Unit = { prompt, chat ->
         viewModel.sendCommand(prompt, chat)
     }
@@ -64,9 +60,7 @@ fun VoiceCommandScreen(goTo: (String) -> Unit) {
             ) {
                 // Logo centered
                 Box(modifier = Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
-                    // TODO: If there is not messages, make isi bigger. If there are, keep this size. Check if it is possible
-                    // to make it with a animation
-                    IsiKottie(size = if (uiState.commands.isEmpty()) 500.dp else 300.dp)
+                    IsiKottie(size = if (uiState.commands.isEmpty()) 300.dp else 100.dp)
                 }
 
                 when {
@@ -111,6 +105,10 @@ fun VoiceCommandScreen(goTo: (String) -> Unit) {
                                                 UserMessage(
                                                     command, modifier = Modifier
                                                         .padding(vertical = 8.dp)
+                                                        .background(
+                                                            color = MaterialTheme.colorScheme.secondary,
+                                                            shape = RoundedCornerShape(12)
+                                                        )
                                                         .align(alignment = Alignment.CenterEnd)
                                                         .padding(all = 8.dp)
                                                 )

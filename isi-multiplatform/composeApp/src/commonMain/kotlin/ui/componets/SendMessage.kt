@@ -4,10 +4,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,7 +25,7 @@ fun SendMessage(sendMessage: (String) -> Unit) {
         TextField(
             modifier = Modifier
                 .padding(10.dp)
-                .fillMaxWidth(),
+                .weight(1f),
             value = inputText,
             placeholder = {
                 Text("Type message...")
@@ -47,6 +47,7 @@ fun SendMessage(sendMessage: (String) -> Unit) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.Send,
                             contentDescription = "Send",
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
                 }
@@ -54,14 +55,16 @@ fun SendMessage(sendMessage: (String) -> Unit) {
         )
 
         if (getPlatform().name.startsWith("Android")) {
-            IconButton(onClick = {
+            IconButton(
+                onClick = {
                 speechToText.startListening { result ->
                     inputText = result
                 }
             }) {
                 Icon(
                     imageVector = Icons.Filled.Mic,
-                    contentDescription = "Mic"
+                    contentDescription = "Mic",
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
         }

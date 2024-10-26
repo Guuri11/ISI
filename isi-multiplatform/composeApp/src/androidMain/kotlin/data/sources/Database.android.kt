@@ -2,7 +2,6 @@ package data.sources
 
 import com.guuri11.isi.AppDatabase
 import com.guuri11.isi.Settings
-import data.sources.DatabaseDriverFactory
 import domain.entity.GptSetting
 import utils.AppContext
 
@@ -22,6 +21,9 @@ actual class Database {
                 modelAI = GptSetting.GPT_4O_MINI.value,
                 modelAIApiKey = "",
                 wifis = null,
+                carLatitude = null,
+                carLongitude = null,
+                carStreet = null,
                 server = "http://192.168.1.76:8080"
             )
             getSettings()
@@ -36,6 +38,9 @@ actual class Database {
                 modelAI = settings.modelAI,
                 modelAIApiKey = settings.modelAIApiKey,
                 wifis = settings.wifis,
+                carLatitude = settings.carLatitude,
+                carLongitude = settings.carLongitude,
+                carStreet = settings.carStreet,
                 server = settings.server
             )
         }

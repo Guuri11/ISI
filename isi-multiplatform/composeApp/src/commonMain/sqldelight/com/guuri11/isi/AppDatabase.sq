@@ -3,12 +3,15 @@ CREATE TABLE Settings(
     modelAI TEXT NOT NULL DEFAULT "gpt-3.5-turbo",
     modelAIApiKey TEXT NOT NULL,
     wifis TEXT,
+    carLatitude REAL,
+    carLongitude REAL,
+    carStreet TEXT,
     server TEXT NOT NULL DEFAULT "http://192.168.1.76:8080"
 );
 
 insertSetting:
-INSERT INTO Settings (id, modelAI, modelAIApiKey, wifis, server)
-VALUES(?,?, ?, ?, ?);
+INSERT INTO Settings (id, modelAI, modelAIApiKey, wifis, carLatitude, carLongitude, carStreet, server)
+VALUES(?,?, ?, ?, ?, ?, ?, ?);
 
 removeAllSettings:
 DELETE FROM Settings;

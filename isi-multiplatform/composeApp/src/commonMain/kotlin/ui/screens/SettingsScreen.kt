@@ -1,36 +1,14 @@
 package ui.screens
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.material.Checkbox
-import androidx.compose.material.CheckboxDefaults
-import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.guuri11.isi.Settings
 import domain.entity.EnvironmentSetting
 import domain.entity.GptSetting
@@ -39,7 +17,7 @@ import presentation.LocalIsiViewModel
 import kotlin.enums.EnumEntries
 
 @Composable
-fun SettingsScreen(goTo: (String) -> Unit) {
+fun SettingsScreen() {
 
     val viewModel = LocalIsiViewModel.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -56,54 +34,43 @@ fun SettingsScreen(goTo: (String) -> Unit) {
         viewModel.onSettingsChange(settings)
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        Row {
-            Column(
-                modifier = Modifier.weight(3f).fillMaxHeight()
-                    .padding(16.dp)
-            ) {
-                if (uiState.enviroment != null) {
-                    IconButton(onClick = {
-                        goTo("/home")
-                    }) {
-                        Icon(
-                            modifier = Modifier.padding(start = 16.dp),
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
-                        )
-                    }
-                    EnvironmentSetting(
-                        environment = uiState.enviroment!!,
-                        onEnvironmentChange = {
-                            onEnvironmentChange(it)
-                        }
-                    )
-                    LocalSetting(
-                        settings = uiState.settings,
-                        onSettingChange = {
-                            onSettingChange(it)
-                        }
-                    )
-                    AIModelKeySetting(
-                        settings = uiState.settings,
-                        onSettingChange = {
-                            onSettingChange(it)
-                        }
-                    )
-                    WifisSetting(
-                        settings = uiState.settings,
-                        onSettingChange = {
-                            onWifiChange(it)
-                        }
-                    )
-                    ServerSetting(
-                        settings = uiState.settings,
-                        onSettingChange = {
-                            onSettingChange(it)
-                        }
-                    )
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp),
+    ) {
+        if (uiState.enviroment != null) {
+            EnvironmentSetting(
+                environment = uiState.enviroment!!,
+                onEnvironmentChange = {
+                    onEnvironmentChange(it)
                 }
-            }
+            )
+            LocalSetting(
+                settings = uiState.settings,
+                onSettingChange = {
+                    onSettingChange(it)
+                }
+            )
+            AIModelKeySetting(
+                settings = uiState.settings,
+                onSettingChange = {
+                    onSettingChange(it)
+                }
+            )
+            WifisSetting(
+                settings = uiState.settings,
+                onSettingChange = {
+                    onWifiChange(it)
+                }
+            )
+            ServerSetting(
+                settings = uiState.settings,
+                onSettingChange = {
+                    onSettingChange(it)
+                }
+            )
         }
     }
 }
@@ -121,8 +88,7 @@ fun EnvironmentSetting(
     ) {
         Text(
             text = "Environment",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.SemiBold
+            style = MaterialTheme.typography.titleMedium
         )
         MultiSelectOptions(
             options = EnvironmentSetting.entries,
@@ -134,7 +100,7 @@ fun EnvironmentSetting(
 
             selectedOption = environment
         }
-        Divider(thickness = 2.dp)
+        HorizontalDivider(thickness = 2.dp, modifier = Modifier.padding(vertical = 16.dp).padding(bottom = 16.dp))
     }
 }
 
@@ -150,14 +116,8 @@ fun LocalSetting(
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "Local Settings",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.SemiBold,
-        )
-        Text(
-            text = "GPT Model",
-            fontSize = 18.sp,
-            fontWeight = FontWeight.SemiBold,
+            text = "AI Model",
+            style = MaterialTheme.typography.titleMedium
         )
         MultiSelectOptions(options = GptSetting.entries, selectedOption = selectedOption) { gpt ->
             if (gpt != null) {
@@ -165,7 +125,7 @@ fun LocalSetting(
             }
             selectedOption = gpt
         }
-        Divider(thickness = 2.dp)
+        HorizontalDivider(thickness = 2.dp, modifier = Modifier.padding(vertical = 16.dp).padding(bottom = 16.dp))
     }
 }
 
@@ -181,8 +141,7 @@ fun AIModelKeySetting(
     ) {
         Text(
             text = "AI Model API Key",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.SemiBold
+            style = MaterialTheme.typography.titleMedium
         )
         TextField(
             value = settings.modelAIApiKey,
@@ -194,7 +153,7 @@ fun AIModelKeySetting(
                 )
             }
         )
-        Divider(thickness = 2.dp)
+        HorizontalDivider(thickness = 2.dp, modifier = Modifier.padding(vertical = 16.dp).padding(bottom = 16.dp))
     }
 }
 
@@ -209,9 +168,8 @@ fun WifisSetting(
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "List of Wifis splitted by ++",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.SemiBold
+            text = "WiFi List",
+            style = MaterialTheme.typography.titleMedium
         )
         TextField(
             value = if (settings.wifis.isNullOrBlank()) "" else settings.wifis,
@@ -219,7 +177,7 @@ fun WifisSetting(
                 onSettingChange(it)
             },
         )
-        Divider(thickness = 2.dp)
+        HorizontalDivider(thickness = 2.dp, modifier = Modifier.padding(vertical = 16.dp).padding(bottom = 16.dp))
     }
 }
 
@@ -234,9 +192,8 @@ fun ServerSetting(
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "Server for production",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.SemiBold,
+            text = "Server",
+            style = MaterialTheme.typography.titleMedium
         )
         TextField(
             value = settings.server,
@@ -248,7 +205,7 @@ fun ServerSetting(
                 )
             }
         )
-        Divider(thickness = 2.dp)
+        /** TODO: add divider if a new setting is created **/
     }
 }
 

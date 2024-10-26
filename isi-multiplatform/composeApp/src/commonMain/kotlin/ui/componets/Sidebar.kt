@@ -2,8 +2,8 @@ package ui.componets
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Divider
-import androidx.compose.material.Text
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -32,7 +32,7 @@ fun Sidebar(modifier: Modifier = Modifier, filterCommands: (taskType: TaskType?)
             }
         }
 
-        Divider(thickness = 2.dp, modifier = Modifier.padding(bottom = 16.dp))
+        HorizontalDivider(modifier = Modifier.padding(bottom = 16.dp), thickness = 2.dp)
 
         Text(
             text = "Settings",
