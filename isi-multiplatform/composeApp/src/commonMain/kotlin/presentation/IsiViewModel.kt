@@ -37,7 +37,8 @@ data class IsiUiState(
         carLatitude = null,
         carLongitude = null,
         carStreet = null,
-        server = "http://192.168.1.76:8080"
+        server = "http://192.168.1.76:8080",
+        showOnboarding = 1,
     ),
     val commands: List<Command> = emptyList(),
     val chat: Chat? = null,

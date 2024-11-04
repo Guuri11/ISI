@@ -19,7 +19,8 @@ actual class Database {
                 carLatitude = null,
                 carLongitude = null,
                 carStreet = null,
-                server = "http://192.168.1.76:8080"
+                server = "http://192.168.1.76:8080",
+                showOnboarding = 1,
             )
             getSettings()
         }
@@ -36,7 +37,8 @@ actual class Database {
                 carLatitude = settings.carLatitude,
                 carLongitude = settings.carLongitude,
                 carStreet = settings.carStreet,
-                server = settings.server
+                server = settings.server,
+                showOnboarding = settings.showOnboarding
             )
         }
     }

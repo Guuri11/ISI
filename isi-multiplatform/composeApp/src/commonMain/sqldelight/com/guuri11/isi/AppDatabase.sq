@@ -6,12 +6,13 @@ CREATE TABLE Settings(
     carLatitude REAL,
     carLongitude REAL,
     carStreet TEXT,
-    server TEXT NOT NULL DEFAULT "http://192.168.1.76:8080"
+    server TEXT NOT NULL DEFAULT "http://192.168.1.76:8080",
+    showOnboarding INTEGER NOT NULL DEFAULT 1
 );
 
 insertSetting:
-INSERT INTO Settings (id, modelAI, modelAIApiKey, wifis, carLatitude, carLongitude, carStreet, server)
-VALUES(?,?, ?, ?, ?, ?, ?, ?);
+INSERT INTO Settings (id, modelAI, modelAIApiKey, wifis, carLatitude, carLongitude, carStreet, server, showOnboarding)
+VALUES(?,?, ?, ?, ?, ?, ?, ?, ?);
 
 removeAllSettings:
 DELETE FROM Settings;

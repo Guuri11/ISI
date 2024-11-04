@@ -30,6 +30,7 @@ fun IsiKottie(size: Dp) {
         iterations = KottieConstants.IterateForever
     )
 
+    // TODO: Handle play & pause
     KottieAnimation(
         composition = composition,
         progress = { animationState.progress },

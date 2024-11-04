@@ -6,7 +6,10 @@ import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Chat
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.DirectionsCar
+import androidx.compose.material.icons.filled.Explore
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -31,6 +34,7 @@ sealed class Screen(val route: String, val icon: ImageVector, val label: String)
 
     object CarCoords : Screen("/car-coords", Icons.Default.DirectionsCar, "Car coords")
     object VoiceCommands : Screen("/voice-command", Icons.Default.Settings, "ISI")
+    object Onboarding : Screen("/onboarding", Icons.Default.Home, "Onboarding")
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -42,8 +46,7 @@ fun Navigation(navigator: Navigator, intentSpeechToText: IntentSpeechToText? = n
 
     val canGoBack by navigator.canGoBack.collectAsState(initial = false)
 
-    val initialRoute: String =
-        if (intentSpeechToText != null && intentSpeechToText.equals(IntentSpeechToText.ACTION)) Screen.VoiceCommands.route else Screen.Home.route
+    val initialRoute: String = getInitialRoute(viewModel.uiState.value.settings.showOnboarding.toInt() == 1, intentSpeechToText)
 
 
     var currentRoute by remember { mutableStateOf<String>("") }
@@ -88,9 +91,29 @@ fun Navigation(navigator: Navigator, intentSpeechToText: IntentSpeechToText? = n
                 scene(route = Screen.Isi.route) {
                     IsiChatScreen()
                 }
+                scene(route = Screen.Onboarding.route) {
+                    OnboardingScreen {
+                        viewModel.onSettingsChange(viewModel.uiState.value.settings.copy(
+                            showOnboarding = 0
+                        ))
+                        navigator.navigate(Screen.Home.route)
+                    }
+                }
             }
         }
     }
+}
+
+private fun getInitialRoute(showOnboarding: Boolean, intentSpeechToText: IntentSpeechToText?): String {
+    if (showOnboarding) {
+        return Screen.Onboarding.route
+    }
+
+    if (intentSpeechToText != null && intentSpeechToText.equals(IntentSpeechToText.ACTION)) {
+        return Screen.VoiceCommands.route
+    }
+
+    return Screen.Home.route
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -114,7 +137,7 @@ private fun TopNavigationBar(canGoBack: Boolean, navigator: Navigator) {
 
 @Composable
 private fun BottomNavigationBar(navigator: Navigator, currentRoute: String) {
-    if (currentRoute == Screen.Isi.route) {
+    if (currentRoute == Screen.Isi.route || currentRoute == Screen.Onboarding.route || currentRoute == Screen.VoiceCommands.route) {
         return
     }
     BottomNavigation(
