@@ -62,6 +62,10 @@ kotlin {
                 // SQLDelight
                 implementation(libs.runtime)
 
+                // Markdown Renderer
+                implementation(libs.markdown.renderer)
+                implementation(libs.markdown.renderer.m3)
+                implementation(libs.markdown.renderer.code)
             }
         }
         val androidMain by getting {
@@ -80,6 +84,9 @@ kotlin {
                 // SQLDelight
                 implementation(libs.android.driver)
 
+                // Markdown Renderer
+                implementation(libs.markdown.renderer.android)
+
             }
         }
         val desktopMain by getting {
@@ -95,6 +102,9 @@ kotlin {
 
                 // SQLDelight
                 implementation(libs.sqlite.driver)
+
+                // Markdown Renderer
+                implementation(libs.markdown.renderer.jvm)
             }
         }
     }

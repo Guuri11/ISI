@@ -2,14 +2,19 @@ package ui.componets.message
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.mikepenz.markdown.compose.components.markdownComponents
+import com.mikepenz.markdown.compose.elements.highlightedCodeBlock
+import com.mikepenz.markdown.compose.elements.highlightedCodeFence
+import com.mikepenz.markdown.m3.Markdown
 import domain.entity.Command
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import presentation.LocalIsiViewModel
@@ -39,17 +44,21 @@ fun AssistantMessage(command: Command) {
                     .clickable { showDialog = true }
             )
         }
-        Text(
-            text = command.content,
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier
-                .padding(vertical = 8.dp)
-                .background(
-                    color = MaterialTheme.colorScheme.surfaceContainerHigh,
-                    shape = RoundedCornerShape(12)
-                )
-                .padding(all = 12.dp)
-
-        )
+        SelectionContainer {
+            Markdown(
+                command.content,
+                components = markdownComponents(
+                    codeBlock = highlightedCodeBlock,
+                    codeFence = highlightedCodeFence,
+                ),
+                modifier = Modifier
+                    .padding(vertical = 8.dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                        shape = RoundedCornerShape(12)
+                    )
+                    .padding(all = 12.dp)
+            )
+        }
     }
 }
