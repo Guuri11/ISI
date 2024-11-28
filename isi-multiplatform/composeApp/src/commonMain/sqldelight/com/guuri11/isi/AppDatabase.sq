@@ -1,4 +1,4 @@
-CREATE TABLE Settings(
+CREATE TABLE IF NOT EXISTS Settings(
     id INTEGER NOT NULL,
     modelAI TEXT NOT NULL DEFAULT "gpt-3.5-turbo",
     modelAIApiKey TEXT NOT NULL,

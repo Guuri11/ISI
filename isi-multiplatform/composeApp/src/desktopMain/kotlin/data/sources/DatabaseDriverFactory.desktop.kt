@@ -6,7 +6,7 @@ import com.guuri11.isi.AppDatabase
 
 actual class DatabaseDriverFactory : DatabaseDriverFactoryI {
     override fun createDriver(): SqlDriver {
-        val driver: SqlDriver = JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY)
+        val driver: SqlDriver = JdbcSqliteDriver(url = "jdbc:sqlite:../../AppDatabase.db")
         AppDatabase.Schema.create(driver)
         return driver
     }
