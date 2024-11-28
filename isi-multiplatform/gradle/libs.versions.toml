@@ -3,14 +3,14 @@ agp = "8.2.2"
 android-compileSdk = "34"
 android-minSdk = "24"
 android-targetSdk = "34"
-androidx-activityCompose = "1.9.0"
+androidx-activityCompose = "1.9.3"
 androidx-appcompat = "1.7.0"
-androidx-constraintlayout = "2.1.4"
-androidx-core-ktx = "1.13.1"
+androidx-constraintlayout = "2.2.0"
+androidx-core-ktx = "1.15.0"
 androidx-espresso-core = "3.6.1"
 androidx-material = "1.12.0"
 androidx-test-junit = "1.2.1"
-compose-plugin = "1.6.11"
+compose-plugin = "1.7.1"
 junit = "4.13.2"
 kotlin = "2.0.0"
 ktor-client-android = "2.3.12"
@@ -18,13 +18,15 @@ ktor-client-core = "2.3.12"
 ktor-client-json = "2.3.1"
 kottie = "1.9.6"
 kotlinx-datetime = "0.6.0"
-kotlinx-coroutines-swing = "1.8.0"
-logbackClassic = "1.2.3"
+kotlinx-coroutines-swing = "1.8.1"
+logbackClassic = "1.4.14"
 napier = "2.7.1"
 precompose = "1.5.10"
 coil = "2.7.0"
 coil-alpha = "3.0.0-alpha10"
 compass = "1.2.2"
+sqlDelight = "2.0.1"
+markdown-renderer = "0.27.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -63,6 +65,14 @@ compass-geocoder-web = { module = "dev.jordond.compass:geocoder-web", version.re
 compass-geocoder-web-googlemaps = { module = "dev.jordond.compass:geocoder-googlemaps", version.ref = "compass" }
 compass-geocoder-web-mapbox = { module = "dev.jordond.compass:geocoder-mapbox", version.ref = "compass" }
 compass-permissions-mobile = { module = "dev.jordond.compass:permissions-mobile", version.ref = "compass" }
+android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqlDelight" }
+sqlite-driver = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqlDelight" }
+runtime = { module = "app.cash.sqldelight:runtime", version.ref = "sqlDelight" }
+markdown-renderer = { module = "com.mikepenz:multiplatform-markdown-renderer", version.ref = "markdown-renderer" }
+markdown-renderer-m3 = { module = "com.mikepenz:multiplatform-markdown-renderer-m3", version.ref = "markdown-renderer" }
+markdown-renderer-jvm = { module = "com.mikepenz:multiplatform-markdown-renderer-jvm", version.ref = "markdown-renderer" }
+markdown-renderer-android = { module = "com.mikepenz:multiplatform-markdown-renderer-android", version.ref = "markdown-renderer" }
+markdown-renderer-code = { module = "com.mikepenz:multiplatform-markdown-renderer-code", version.ref = "markdown-renderer" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -70,3 +80,4 @@ androidLibrary = { id = "com.android.library", version.ref = "agp" }
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+sqldelight = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }

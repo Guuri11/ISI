@@ -1,9 +1,17 @@
 package presentation
 
 import androidx.compose.runtime.staticCompositionLocalOf
-import data.CommandRepositoryImpl
-import data.CommandRepositoryLocalImpl
-import domain.entity.*
+import com.guuri11.isi.Settings
+import data.repository.CommandRepositoryImpl
+import data.repository.CommandRepositoryLocalImpl
+import data.sources.Database
+import data.repository.SettingsRepository
+import domain.entity.Chat
+import domain.entity.Command
+import domain.entity.EnvironmentSetting
+import domain.entity.GptSetting
+import domain.entity.MessageType
+import domain.entity.TaskType
 import domain.mapper.createCommandFromString
 import domain.repository.CommandRepository
 import io.github.aakira.napier.Napier
@@ -14,37 +22,69 @@ import kotlinx.coroutines.launch
 import moe.tlaster.precompose.viewmodel.ViewModel
 import moe.tlaster.precompose.viewmodel.viewModelScope
 import java.net.ConnectException
+import utils.isLocal
 
 val LocalIsiViewModel = staticCompositionLocalOf<IsiViewModel> {
     error("No IsiViewModel provided")
 }
 
 data class IsiUiState(
+    val settings: Settings = Settings(
+        id = 1,
+        modelAI = GptSetting.GPT_4O_MINI.value,
+        modelAIApiKey = "",
+        wifis = "",
+        carLatitude = null,
+        carLongitude = null,
+        carStreet = null,
+        server = "http://192.168.1.76:8080",
+        showOnboarding = 1,
+    ),
     val commands: List<Command> = emptyList(),
     val chat: Chat? = null,
     val taskTypeToFilter: TaskType? = null,
     val taskTypeToRequest: TaskType? = TaskType.OTHER_TOPICS,
     val enviroment: EnvironmentSetting? = EnvironmentSetting.LOCAL,
-    val gpt: GptSetting = GptSetting.GPT_4O_MINI,
     val errorMessage: String? = null,
     val loading: Boolean = true,
+    val settingsRepository: SettingsRepository = SettingsRepository(Database())
 )
 
 
-class IsiViewModel(private var repo: CommandRepository, private val isLocal: Boolean) : ViewModel() {
+class IsiViewModel() :
+    ViewModel() {
+    private var repo: CommandRepository
     private val _uiState = MutableStateFlow<IsiUiState>(IsiUiState())
+    private var settings: Settings
     private var allCommands = emptyList<Command>()
     private var currentChat: Chat? = null
     private var currentEnvironment: EnvironmentSetting? = null
-    private var currentGpt: GptSetting = GptSetting.GPT_4O_MINI
+    private var currentGpt: GptSetting
     private var taskType: TaskType? = null
+    private var settingsRepository: SettingsRepository = SettingsRepository(Database())
 
     val uiState = _uiState.asStateFlow()
 
     init {
+        settings = settingsRepository.get()
+        currentGpt = GptSetting.fromValue(settings.modelAI)
+
+        _uiState.update {
+            it.copy(
+                loading = false,
+                settings = settings,
+            )
+        }
+
+        if (settings.wifis.isNullOrBlank() || isLocal(settings.wifis!!)) {
+            currentEnvironment = EnvironmentSetting.LOCAL
+            repo = CommandRepositoryLocalImpl()
+        } else {
+            currentEnvironment = EnvironmentSetting.PRODUCTION
+            repo = CommandRepositoryImpl(settings.server)
+        }
+
         getAllCommands()
-        currentEnvironment = if (isLocal) EnvironmentSetting.LOCAL else EnvironmentSetting.PRODUCTION
-        _uiState.update { it.copy(loading = false) }
     }
 
     private fun getAllCommands(chat: Chat? = null) {
@@ -56,7 +96,7 @@ class IsiViewModel(private var repo: CommandRepository, private val isLocal: Boo
                 currentChat = chat
                 _uiState.update {
                     it.copy(
-                        commands
+                        commands = commands
                     )
                 }
             } catch (e: Exception) {
@@ -68,7 +108,11 @@ class IsiViewModel(private var repo: CommandRepository, private val isLocal: Boo
                     repo = CommandRepositoryLocalImpl(currentGpt)
                     getAllCommands()
                 } else {
-                    _uiState.update { it.copy(errorMessage = e.message ?: "Unknown error occurred") }
+                    _uiState.update {
+                        it.copy(
+                            errorMessage = e.message ?: "Unknown error occurred"
+                        )
+                    }
                 }
             }
         }
@@ -83,47 +127,29 @@ class IsiViewModel(private var repo: CommandRepository, private val isLocal: Boo
         }
     }
 
-    fun filterCommands(taskTypeSelected: TaskType?) {
+    fun sendCommand(prompt: String, chat: Chat?) {
+        _uiState.update { it.copy(errorMessage = "") }
         viewModelScope.launch {
             try {
-                Napier.i { "Filtering commands" }
+                Napier.i { "Sending command" }
+                val commandFromString = createCommandFromString(content = prompt, messageType = MessageType.USER)
+                updateCommandsList(commandFromString)
+                val command = repo.create(allCommands, chat, taskType, settings.modelAIApiKey)
+                Napier.i { "ISI response -> $command" }
 
-                val filteredCommands = if (taskTypeSelected == null) {
-                    allCommands
-                } else {
-                    allCommands.filter { it.task == taskTypeSelected }
-                }
-
-                _uiState.update {
-                    it.copy(
-                        commands = filteredCommands,
-                        taskTypeToFilter = taskTypeSelected
-                    )
-                }
+                updateCommandsList(command)
             } catch (e: Exception) {
-                Napier.e { "Error filtering -> $e" }
+                Napier.e { "Error creating commands -> $e" }
                 _uiState.update { it.copy(errorMessage = e.message ?: "Unknown error occurred") }
             }
         }
     }
 
-    fun sendCommand(prompt: String, chat: Chat?) {
-        viewModelScope.launch {
-            try {
-                Napier.i { "Sending command" }
-                allCommands += createCommandFromString(content = prompt, messageType = MessageType.USER)
-                val command = repo.create(allCommands, chat, taskType)
-                Napier.i { "ISI response -> $command" }
-
-                if (currentEnvironment?.equals(EnvironmentSetting.LOCAL) == true) {
-                    updateMessagesLocal(command)
-                } else {
-                    getAllCommands(command.chat)
-                }
-            } catch (e: Exception) {
-                Napier.e { "Error creating commands -> $e" }
-                _uiState.update { it.copy(errorMessage = e.message ?: "Unknown error occurred") }
-            }
+    private fun updateCommandsList(command: Command) {
+        if (currentEnvironment?.equals(EnvironmentSetting.LOCAL) == true) {
+            updateMessagesLocal(command)
+        } else {
+            getAllCommands(command.chat)
         }
     }
 
@@ -132,7 +158,7 @@ class IsiViewModel(private var repo: CommandRepository, private val isLocal: Boo
         repo = if (environment == EnvironmentSetting.LOCAL) {
             CommandRepositoryLocalImpl(currentGpt)
         } else {
-            CommandRepositoryImpl()
+            CommandRepositoryImpl(settings.server)
         }
         currentEnvironment = environment
         getAllCommands()
@@ -144,14 +170,17 @@ class IsiViewModel(private var repo: CommandRepository, private val isLocal: Boo
         }
     }
 
-    fun onGptChange(gpt: GptSetting) {
-        Napier.i { "New gpt $gpt" }
-        currentGpt = gpt
-        repo = CommandRepositoryLocalImpl(currentGpt)
+    fun onSettingsChange(newSettings: Settings) {
+        Napier.i { "New settings key $settings" }
+        val gptSetting = GptSetting.fromValue(newSettings.modelAI)
+        settings = newSettings
+        currentGpt = gptSetting
+        repo = CommandRepositoryLocalImpl(gptSetting)
+        settingsRepository.save(newSettings)
 
         _uiState.update {
             it.copy(
-                gpt = gpt
+                settings = settings
             )
         }
     }

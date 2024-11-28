@@ -1,81 +1,76 @@
 package ui.screens
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.guuri11.isi.Settings
 import domain.entity.EnvironmentSetting
 import domain.entity.GptSetting
-import domain.entity.TaskType
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import presentation.LocalIsiViewModel
-import ui.theme.getColorsTheme
 import kotlin.enums.EnumEntries
 
-/**
- * TODO: ESTABA CREANDO LA VISTA PARA HACER LAS COORDENADAS DEL COCHE, TENÍA PENDIENTE CREAR UN COMPONENTE PADRE PARA REUTILIZAR CÓDIGO Y USAR EL PATRÓN SINGLETON SI TENÍA SENTIDO
- * https://compass.jordond.dev/docs/geolocation/geolocator
- */
-
 @Composable
-fun SettingsScreen(goTo: (String) -> Unit) {
+fun SettingsScreen() {
 
     val viewModel = LocalIsiViewModel.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-    // COMPOSABLE PADRE
-    val colors = getColorsTheme()
-
-    val filterCommands: (taskType: TaskType?) -> Unit = {
-        viewModel.filterCommands(taskTypeSelected = it)
-    }
 
     val onEnvironmentChange: (EnvironmentSetting) -> Unit = { env ->
         viewModel.onEnvironmentChange(env)
     }
 
-    val onGptChange: (GptSetting) -> Unit = { gpt ->
-        viewModel.onGptChange(gpt)
+    val onWifiChange: (String) -> Unit = { wifis ->
+        viewModel.onSettingsChange(uiState.settings.copy(wifis = wifis))
     }
 
+    val onSettingChange: (Settings) -> Unit = { settings ->
+        viewModel.onSettingsChange(settings)
+    }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        Row {
-            Column(
-                modifier = Modifier.background(colors.BackgroundColor).weight(3f).fillMaxHeight().padding(16.dp)
-            ) {
-                if (uiState.enviroment != null) {
-                    IconButton(onClick = {
-                        goTo("/home")
-                    }) {
-                        Icon(
-                            modifier = Modifier.padding(start = 16.dp),
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            tint = colors.TextColor,
-                            contentDescription = "Back"
-                        )
-                    }
-                    EnvironmentSetting(
-                        environment = uiState.enviroment!!,
-                        onEnvironmentChange = {
-                            onEnvironmentChange(it)
-                        }
-                    )
-                    LocalSetting(
-                        gpt = uiState.gpt,
-                        onGptChange = {
-                            onGptChange(it)
-                        }
-                    )
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp),
+    ) {
+        if (uiState.enviroment != null) {
+            EnvironmentSetting(
+                environment = uiState.enviroment!!,
+                onEnvironmentChange = {
+                    onEnvironmentChange(it)
                 }
-            }
+            )
+            LocalSetting(
+                settings = uiState.settings,
+                onSettingChange = {
+                    onSettingChange(it)
+                }
+            )
+            AIModelKeySetting(
+                settings = uiState.settings,
+                onSettingChange = {
+                    onSettingChange(it)
+                }
+            )
+            WifisSetting(
+                settings = uiState.settings,
+                onSettingChange = {
+                    onWifiChange(it)
+                }
+            )
+            ServerSetting(
+                settings = uiState.settings,
+                onSettingChange = {
+                    onSettingChange(it)
+                }
+            )
         }
     }
 }
@@ -85,48 +80,135 @@ fun EnvironmentSetting(
     environment: EnvironmentSetting,
     onEnvironmentChange: (EnvironmentSetting) -> Unit,
 ) {
-    val colors = getColorsTheme()
     var selectedOption by remember { mutableStateOf<EnvironmentSetting?>(environment) }
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(text = "Environment", fontSize = 20.sp, fontWeight = FontWeight.SemiBold, color = colors.TextColor)
-        MultiSelectOptions(options = EnvironmentSetting.entries, selectedOption = selectedOption) { environment ->
+        Text(
+            text = "Environment",
+            style = MaterialTheme.typography.titleMedium
+        )
+        MultiSelectOptions(
+            options = EnvironmentSetting.entries,
+            selectedOption = selectedOption
+        ) { environment ->
             if (environment != null) {
                 onEnvironmentChange(environment)
             }
 
             selectedOption = environment
         }
-        Divider(color = colors.TextColor, thickness = 2.dp)
+        HorizontalDivider(thickness = 2.dp, modifier = Modifier.padding(vertical = 16.dp).padding(bottom = 16.dp))
     }
 }
 
 @Composable
 fun LocalSetting(
-    gpt: GptSetting,
-    onGptChange: (GptSetting) -> Unit,
+    settings: Settings,
+    onSettingChange: (Settings) -> Unit,
 ) {
-    val colors = getColorsTheme()
-    var selectedOption by remember { mutableStateOf<GptSetting?>(gpt) }
+    var selectedOption by remember { mutableStateOf<GptSetting?>(GptSetting.fromValue(settings.modelAI)) }
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(text = "Local Settings", fontSize = 20.sp, fontWeight = FontWeight.SemiBold, color = colors.TextColor)
-        Text(text = "GPT Model", fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = colors.TextColor)
+        Text(
+            text = "AI Model",
+            style = MaterialTheme.typography.titleMedium
+        )
         MultiSelectOptions(options = GptSetting.entries, selectedOption = selectedOption) { gpt ->
             if (gpt != null) {
-                onGptChange(gpt)
+                onSettingChange(settings.copy(modelAI = gpt.value))
             }
             selectedOption = gpt
         }
-        Divider(color = colors.TextColor, thickness = 2.dp)
+        HorizontalDivider(thickness = 2.dp, modifier = Modifier.padding(vertical = 16.dp).padding(bottom = 16.dp))
     }
 }
+
+@Composable
+fun AIModelKeySetting(
+    settings: Settings,
+    onSettingChange: (Settings) -> Unit,
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = "AI Model API Key",
+            style = MaterialTheme.typography.titleMedium
+        )
+        TextField(
+            value = settings.modelAIApiKey,
+            onValueChange = {
+                onSettingChange(
+                    settings.copy(
+                        modelAIApiKey = it
+                    )
+                )
+            }
+        )
+        HorizontalDivider(thickness = 2.dp, modifier = Modifier.padding(vertical = 16.dp).padding(bottom = 16.dp))
+    }
+}
+
+@Composable
+fun WifisSetting(
+    settings: Settings,
+    onSettingChange: (String) -> Unit,
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = "WiFi List",
+            style = MaterialTheme.typography.titleMedium
+        )
+        TextField(
+            value = if (settings.wifis.isNullOrBlank()) "" else settings.wifis,
+            onValueChange = {
+                onSettingChange(it)
+            },
+        )
+        HorizontalDivider(thickness = 2.dp, modifier = Modifier.padding(vertical = 16.dp).padding(bottom = 16.dp))
+    }
+}
+
+@Composable
+fun ServerSetting(
+    settings: Settings,
+    onSettingChange: (Settings) -> Unit,
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = "Server",
+            style = MaterialTheme.typography.titleMedium
+        )
+        TextField(
+            value = settings.server,
+            onValueChange = {
+                onSettingChange(
+                    settings.copy(
+                        server = it
+                    )
+                )
+            }
+        )
+        /** TODO: add divider if a new setting is created **/
+    }
+}
+
 
 @Composable
 fun <T> MultiSelectOptions(
@@ -134,7 +216,6 @@ fun <T> MultiSelectOptions(
     selectedOption: T?,
     onSelectionChange: (T?) -> Unit,
 ) where T : Enum<T> {
-    val colors = getColorsTheme()
     Column(modifier = Modifier.padding(16.dp)) {
         options.forEach { option ->
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -146,14 +227,10 @@ fun <T> MultiSelectOptions(
                         } else {
                             onSelectionChange(null)
                         }
-                    },
-                    colors = CheckboxDefaults.colors(
-                        uncheckedColor = colors.TextColor
-
-                    )
+                    }
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(option.name, color = colors.TextColor)
+                Text(option.name)
             }
         }
     }

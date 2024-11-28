@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
     kotlin("plugin.serialization") version "2.0.0"
+    alias(libs.plugins.sqldelight)
 }
 
 kotlin {
@@ -26,6 +27,7 @@ kotlin {
                 implementation(compose.runtime)
                 implementation(compose.foundation)
                 implementation(compose.material)
+                implementation(compose.material3)
                 implementation(compose.ui)
                 implementation(compose.components.resources)
                 implementation(compose.components.uiToolingPreview)
@@ -57,6 +59,13 @@ kotlin {
                 implementation(libs.compass.geocoder)
                 implementation(libs.compass.geolocation)
 
+                // SQLDelight
+                implementation(libs.runtime)
+
+                // Markdown Renderer
+                implementation(libs.markdown.renderer)
+                implementation(libs.markdown.renderer.m3)
+                implementation(libs.markdown.renderer.code)
             }
         }
         val androidMain by getting {
@@ -72,6 +81,12 @@ kotlin {
                 implementation(libs.compass.geolocation.mobile)
                 implementation(libs.compass.permissions.mobile)
 
+                // SQLDelight
+                implementation(libs.android.driver)
+
+                // Markdown Renderer
+                implementation(libs.markdown.renderer.android)
+
             }
         }
         val desktopMain by getting {
@@ -84,6 +99,12 @@ kotlin {
                 // Logging
                 implementation(libs.logback.classic)
 
+
+                // SQLDelight
+                implementation(libs.sqlite.driver)
+
+                // Markdown Renderer
+                implementation(libs.markdown.renderer.jvm)
             }
         }
     }
@@ -134,6 +155,14 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "org.guuri11.isimultiplatform"
             packageVersion = "1.0.0"
+        }
+    }
+}
+
+sqldelight {
+    databases {
+        create("AppDatabase") {
+            packageName.set("com.guuri11.isi")
         }
     }
 }

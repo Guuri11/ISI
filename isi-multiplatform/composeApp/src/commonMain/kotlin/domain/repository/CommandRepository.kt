@@ -6,5 +6,5 @@ import domain.entity.TaskType
 
 interface CommandRepository {
     suspend fun findAll(): List<Command>
-    suspend fun create(messages: List<Command>, chat: Chat?, task: TaskType?): Command
+    suspend fun create(messages: List<Command>, chat: Chat?, task: TaskType?, apiKey: String?): Command
 }

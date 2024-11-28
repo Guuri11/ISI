@@ -17,8 +17,8 @@ import utils.KottieConstants
 fun IsiKottie(size: Dp) {
     var animation by remember { mutableStateOf("") }
 
-    LaunchedEffect(Unit){
-        animation = Res.readBytes("files/robot.json").decodeToString()
+    LaunchedEffect(Unit) {
+        animation = Res.readBytes("files/Animation - 1729879190243.json").decodeToString()
     }
 
     val composition = rememberKottieComposition(
@@ -30,6 +30,7 @@ fun IsiKottie(size: Dp) {
         iterations = KottieConstants.IterateForever
     )
 
+    // TODO: Handle play & pause
     KottieAnimation(
         composition = composition,
         progress = { animationState.progress },
