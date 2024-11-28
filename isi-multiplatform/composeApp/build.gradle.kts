@@ -153,8 +153,9 @@ compose.desktop {
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "org.guuri11.isimultiplatform"
-            packageVersion = "1.0.0"
+            packageName = "ISI"
+            packageVersion = "1.1.4"
+            modules("java.sql")
         }
     }
 }

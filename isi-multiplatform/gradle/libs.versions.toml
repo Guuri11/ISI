@@ -25,7 +25,7 @@ precompose = "1.5.10"
 coil = "2.7.0"
 coil-alpha = "3.0.0-alpha10"
 compass = "1.2.2"
-sqlDelight = "2.0.1"
+sqlDelight = "2.0.2"
 markdown-renderer = "0.27.0"
 
 [libraries]
