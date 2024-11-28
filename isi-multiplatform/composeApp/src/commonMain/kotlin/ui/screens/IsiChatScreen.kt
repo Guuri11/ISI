@@ -36,10 +36,6 @@ fun IsiChatScreen() {
     val messageDate: MutableState<String?> = remember { mutableStateOf(null) }
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
-    val filterCommands: (TaskType?) -> Unit = {
-        viewModel.filterCommands(it)
-    }
-
     val sendCommand: (String, Chat?) -> Unit = { prompt, chat ->
         viewModel.sendCommand(prompt, chat)
     }
@@ -124,7 +120,7 @@ fun IsiChatScreen() {
         Column {
             TaskTypeSelector()
             Row(modifier = Modifier.fillMaxWidth()) {
-                SendMessage { it ->
+                SendMessage {
                     if (it.isNotEmpty()) {
                         textState = TextFieldValue()
                         sendCommand(it, uiState.chat)

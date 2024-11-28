@@ -127,47 +127,28 @@ class IsiViewModel() :
         }
     }
 
-    fun filterCommands(taskTypeSelected: TaskType?) {
+    fun sendCommand(prompt: String, chat: Chat?) {
         viewModelScope.launch {
             try {
-                Napier.i { "Filtering commands" }
+                Napier.i { "Sending command" }
+                val commandFromString = createCommandFromString(content = prompt, messageType = MessageType.USER)
+                updateCommandsList(commandFromString)
+                val command = repo.create(allCommands, chat, taskType, settings.modelAIApiKey)
+                Napier.i { "ISI response -> $command" }
 
-                val filteredCommands = if (taskTypeSelected == null) {
-                    allCommands
-                } else {
-                    allCommands.filter { it.task == taskTypeSelected }
-                }
-
-                _uiState.update {
-                    it.copy(
-                        commands = filteredCommands,
-                        taskTypeToFilter = taskTypeSelected
-                    )
-                }
+                updateCommandsList(command)
             } catch (e: Exception) {
-                Napier.e { "Error filtering -> $e" }
+                Napier.e { "Error creating commands -> $e" }
                 _uiState.update { it.copy(errorMessage = e.message ?: "Unknown error occurred") }
             }
         }
     }
 
-    fun sendCommand(prompt: String, chat: Chat?) {
-        viewModelScope.launch {
-            try {
-                Napier.i { "Sending command" }
-                allCommands += createCommandFromString(content = prompt, messageType = MessageType.USER)
-                val command = repo.create(allCommands, chat, taskType, settings.modelAIApiKey)
-                Napier.i { "ISI response -> $command" }
-
-                if (currentEnvironment?.equals(EnvironmentSetting.LOCAL) == true) {
-                    updateMessagesLocal(command)
-                } else {
-                    getAllCommands(command.chat)
-                }
-            } catch (e: Exception) {
-                Napier.e { "Error creating commands -> $e" }
-                _uiState.update { it.copy(errorMessage = e.message ?: "Unknown error occurred") }
-            }
+    private fun updateCommandsList(command: Command) {
+        if (currentEnvironment?.equals(EnvironmentSetting.LOCAL) == true) {
+            updateMessagesLocal(command)
+        } else {
+            getAllCommands(command.chat)
         }
     }
 
