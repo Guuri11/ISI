@@ -1,12 +1,9 @@
 package ui.screens
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -101,18 +98,7 @@ fun VoiceCommandScreen(goTo: (String) -> Unit) {
                                         if (command.messageType == MessageType.ASSISTANT) {
                                             AssistantMessage(command)
                                         } else {
-                                            Box(modifier = Modifier.fillMaxWidth()) {
-                                                UserMessage(
-                                                    command, modifier = Modifier
-                                                        .padding(vertical = 8.dp)
-                                                        .background(
-                                                            color = MaterialTheme.colorScheme.secondary,
-                                                            shape = RoundedCornerShape(12)
-                                                        )
-                                                        .align(alignment = Alignment.CenterEnd)
-                                                        .padding(all = 8.dp)
-                                                )
-                                            }
+                                            UserMessage(command)
                                         }
                                     }
                                 }

@@ -1,11 +1,9 @@
 package ui.screens
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -16,7 +14,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import domain.entity.Chat
 import domain.entity.MessageType
-import domain.entity.TaskType
 import kotlinx.datetime.toJavaLocalDateTime
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import presentation.LocalIsiViewModel
@@ -97,18 +94,7 @@ fun IsiChatScreen() {
                             if (command.messageType == MessageType.ASSISTANT) {
                                 AssistantMessage(command)
                             } else {
-                                Box(modifier = Modifier.fillMaxWidth()) {
-                                    UserMessage(
-                                        command, modifier = Modifier
-                                            .padding(vertical = 8.dp)
-                                            .background(
-                                                color = MaterialTheme.colorScheme.secondary,
-                                                shape = RoundedCornerShape(12)
-                                            )
-                                            .align(alignment = Alignment.CenterEnd)
-                                            .padding(all = 8.dp)
-                                    )
-                                }
+                                UserMessage(command)
                             }
                         }
                     }
