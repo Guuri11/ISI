@@ -128,6 +128,7 @@ class IsiViewModel() :
     }
 
     fun sendCommand(prompt: String, chat: Chat?) {
+        _uiState.update { it.copy(errorMessage = "") }
         viewModelScope.launch {
             try {
                 Napier.i { "Sending command" }
