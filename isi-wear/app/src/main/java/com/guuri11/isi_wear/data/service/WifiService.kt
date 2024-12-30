@@ -1,4 +1,4 @@
-package com.guuri11.isi_wear.utils
+package com.guuri11.isi_wear.data.service
 
 import android.content.Context
 import android.net.wifi.WifiManager

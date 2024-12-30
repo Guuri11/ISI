@@ -8,19 +8,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.guuri11.isi_wear.utils.NetworkManager
-import com.guuri11.isi_wear.domain.ErrorMessage
-import com.guuri11.isi_wear.domain.Emoji
-import com.guuri11.isi_wear.domain.Task
-import com.guuri11.isi_wear.utils.alarm.AlarmService
+import com.guuri11.isi_wear.data.service.NetworkManager
+import com.guuri11.isi_wear.data.service.WearAlarmService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.isi.domain.models.Emoji
+import org.isi.domain.models.ErrorMessage
+import org.isi.domain.models.TaskType
 import java.util.Locale
 import kotlin.system.exitProcess
 
 class MainViewModel(
-    private val alarmService: AlarmService,
+    private val wearAlarmService: WearAlarmService,
     private val networkManager: NetworkManager,
     var textToSpeech: TextToSpeech,
     private val applicationContext: Context
@@ -56,10 +56,10 @@ class MainViewModel(
     fun handleCommand(command: String) {
         val lowerCaseCommand = command.lowercase(Locale.getDefault())
         when {
-            Task.EXIT.options.contains(lowerCaseCommand) -> exitApp()
-            Task.ACTIVATE_LOCAL_ASSISTANT.options.contains(lowerCaseCommand) -> activateLocalAssistant()
-            Task.ACTIVATE_REMOTE_ASSISTANT.options.contains(lowerCaseCommand) -> activateRemoteAssistant()
-            command.length > 16 && Task.CREATE_ALARM.options.contains(
+            TaskType.EXIT.options.contains(lowerCaseCommand) -> exitApp()
+            TaskType.ACTIVATE_LOCAL_ASSISTANT.options.contains(lowerCaseCommand) -> activateLocalAssistant()
+            TaskType.ACTIVATE_REMOTE_ASSISTANT.options.contains(lowerCaseCommand) -> activateRemoteAssistant()
+            command.length > 16 && TaskType.CREATE_ALARM.options.contains(
                 lowerCaseCommand.substring(
                     0,
                     17
@@ -71,7 +71,7 @@ class MainViewModel(
     }
 
     private fun speak(mic: Boolean, content: String) {
-        viewModelScope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.IO) {
             isiText = if (mic) Emoji.MIC_EMOJI else content
             isiIsTalking = true
             textToSpeech.speak(content, TextToSpeech.QUEUE_FLUSH, null, null)
@@ -96,8 +96,8 @@ class MainViewModel(
 
     private fun createAlarm(command: String) {
         try {
-            val triggerTime: Long = alarmService.parseTime(command)
-            alarmService.setAlarm(triggerTime)
+            val triggerTime: Long = wearAlarmService.parseTime(command)
+            wearAlarmService.setAlarm(triggerTime)
             speak(false, "Alarma configurada")
         } catch (e: IllegalArgumentException) {
             speak(false, e.message.toString())
@@ -110,11 +110,11 @@ class MainViewModel(
                 val response =
                     networkManager.sendCommand(command, object : NetworkManager.NetworkCallback {
                         override fun onCommandSuccess(response: String) {
-                            viewModelScope.launch(Dispatchers.Main) { speak(false, response) }
+                            viewModelScope.launch(Dispatchers.IO) { speak(false, response) }
                         }
 
                         override fun onCommandError(error: String) {
-                            viewModelScope.launch(Dispatchers.Main) {
+                            viewModelScope.launch(Dispatchers.IO) {
                                 handleCommandError(error, command)
                             }
                         }

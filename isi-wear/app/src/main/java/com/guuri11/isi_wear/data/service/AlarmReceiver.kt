@@ -1,4 +1,4 @@
-package com.guuri11.isi_wear.utils.alarm
+package com.guuri11.isi_wear.data.service
 
 import android.content.BroadcastReceiver
 import android.content.Context

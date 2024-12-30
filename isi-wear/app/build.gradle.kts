@@ -102,4 +102,7 @@ dependencies {
     androidTestImplementation(libs.ui.test.junit4)
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
+
+    // ISI Library which contains domain & business logic
+    implementation(libs.isi.lib)
 }

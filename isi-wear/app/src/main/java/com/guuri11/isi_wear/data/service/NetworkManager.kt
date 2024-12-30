@@ -1,13 +1,13 @@
-package com.guuri11.isi_wear.utils
+package com.guuri11.isi_wear.data.service
 
 import android.content.Context
 import android.util.Log
 import com.guuri11.isi_wear.BuildConfig
-import com.guuri11.isi_wear.domain.Command
 import dev.ai4j.openai4j.chat.AssistantMessage
 import dev.ai4j.openai4j.chat.Message
 import dev.ai4j.openai4j.chat.UserMessage
 import kotlinx.serialization.json.Json
+import org.isi.domain.models.Command
 import java.util.*
 
 class NetworkManager(private val context: Context) {

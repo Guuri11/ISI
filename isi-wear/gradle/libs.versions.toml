@@ -5,6 +5,7 @@ kotlinxCoroutinesCore = "1.9.0-RC"
 kotlinxSerializationJson = "1.5.1"
 ktorClientCio = "2.3.12"
 ktorSerializationKotlinxJson = "2.3.1"
+isi-lib = "1.0.0"
 lottie = "3.4.0"
 lottieCompose = "4.0.0"
 openai4j = "0.17.0"
@@ -25,6 +26,7 @@ ktor-client-json = { module = "io.ktor:ktor-client-json", version.ref = "ktorSer
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktorSerializationKotlinxJson" }
 ktor-client-serialization = { module = "io.ktor:ktor-client-serialization", version.ref = "ktorSerializationKotlinxJson" }
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktorSerializationKotlinxJson" }
+isi-lib = { module = "com.isi:lib", version.ref = "isi-lib" }
 lottie = { module = "com.airbnb.android:lottie", version.ref = "lottie" }
 lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottieCompose" }
 openai4j = { module = "dev.ai4j:openai4j", version.ref = "openai4j" }

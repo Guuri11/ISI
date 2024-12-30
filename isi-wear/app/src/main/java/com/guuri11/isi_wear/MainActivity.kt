@@ -9,8 +9,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.guuri11.isi_wear.presentation.MainViewModel
 import com.guuri11.isi_wear.presentation.MainViewModelFactory
 import com.guuri11.isi_wear.ui.WearApp
-import com.guuri11.isi_wear.utils.NetworkManager
-import com.guuri11.isi_wear.utils.alarm.AlarmService
+import com.guuri11.isi_wear.data.service.NetworkManager
+import com.guuri11.isi_wear.data.service.WearAlarmService
 import kotlin.system.exitProcess
 
 class MainActivity : ComponentActivity() {
@@ -22,7 +22,7 @@ class MainActivity : ComponentActivity() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val factory = MainViewModelFactory(
-                AlarmService(this),
+                WearAlarmService(this),
                 NetworkManager(this),
                 TextToSpeech(applicationContext, null),
                 applicationContext

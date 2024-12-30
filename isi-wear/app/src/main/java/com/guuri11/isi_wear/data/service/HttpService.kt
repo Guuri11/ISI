@@ -1,10 +1,7 @@
-package com.guuri11.isi_wear.utils
+package com.guuri11.isi_wear.data.service
 
 import android.util.Log
 import com.guuri11.isi_wear.BuildConfig
-import com.guuri11.isi_wear.domain.Chat
-import com.guuri11.isi_wear.domain.ErrorMessage
-import com.guuri11.isi_wear.domain.Request
 import dev.ai4j.openai4j.OpenAiClient
 import dev.ai4j.openai4j.chat.ChatCompletionModel
 import dev.ai4j.openai4j.chat.ChatCompletionRequest
@@ -25,6 +22,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.encodeToString
+import org.isi.domain.api.Request
+import org.isi.domain.models.Chat
+import org.isi.domain.models.ErrorMessage
 import java.util.*
 
 // TODO better error logging with more context
