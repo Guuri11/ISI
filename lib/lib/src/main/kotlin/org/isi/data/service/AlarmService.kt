@@ -13,7 +13,7 @@ interface AlarmServiceI {
     fun parseTime(command: String): Long
 }
 
-class AlarmService: AlarmServiceI {
+open class AlarmService: AlarmServiceI {
     private val wordToNumber = WordToNumber()
 
     override fun setAlarm() {
