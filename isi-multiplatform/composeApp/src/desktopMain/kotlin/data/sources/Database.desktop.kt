@@ -2,7 +2,7 @@ package data.sources
 
 import com.guuri11.isi.AppDatabase
 import com.guuri11.isi.Settings
-import domain.entity.GptSetting
+import org.isi.domain.models.GptSetting
 
 actual class Database {
     val database = AppDatabase(DatabaseDriverFactory().createDriver())

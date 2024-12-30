@@ -10,8 +10,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.guuri11.isi.Settings
-import domain.entity.EnvironmentSetting
-import domain.entity.GptSetting
+import org.isi.domain.models.EnvironmentSetting
+import org.isi.domain.models.GptSetting
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import presentation.LocalIsiViewModel
 import kotlin.enums.EnumEntries

@@ -3,7 +3,7 @@ import dev.jordond.compass.geocoder.Geocoder
 import dev.jordond.compass.geocoder.mobile
 import dev.jordond.compass.geolocation.Geolocator
 import dev.jordond.compass.geolocation.mobile
-import utils.AppContext
+import platform.AppContext
 import utils.openGoogleMapsWithCoordinates
 
 class AndroidPlatform : Platform {

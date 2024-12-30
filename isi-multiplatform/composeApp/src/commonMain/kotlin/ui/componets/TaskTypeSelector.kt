@@ -11,7 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import domain.entity.TaskType
+import org.isi.domain.models.TaskType
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import presentation.LocalIsiViewModel
 

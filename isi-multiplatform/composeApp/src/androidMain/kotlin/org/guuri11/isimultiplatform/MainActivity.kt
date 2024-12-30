@@ -3,13 +3,12 @@ package org.guuri11.isimultiplatform
 import App
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import utils.AppContext
-import utils.IntentSpeechToText
+import platform.AppContext
+import platform.IntentSpeechToText
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

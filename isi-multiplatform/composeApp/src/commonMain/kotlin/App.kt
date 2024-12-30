@@ -12,7 +12,7 @@ import moe.tlaster.precompose.navigation.rememberNavigator
 import navigator.Navigation
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import ui.theme.AppTheme
-import utils.IntentSpeechToText
+import platform.IntentSpeechToText
 
 @Composable
 @Preview
@@ -29,6 +29,7 @@ fun App(intentSpeechToText: IntentSpeechToText? = null) {
 
 
 expect fun getHttpClient(): HttpClient
+
 fun createHttpClient(engine: HttpClientEngine): HttpClient {
     val json = Json { ignoreUnknownKeys = true }
     return HttpClient(engine) {

@@ -1,4 +1,6 @@
-package utils
+package domain.network
+
+import platform.AppContext
 
 expect fun getSSID(context: AppContext): String?
 

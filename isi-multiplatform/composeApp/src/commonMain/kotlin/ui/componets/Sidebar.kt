@@ -8,8 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import domain.entity.TaskType
+import org.isi.domain.models.TaskType
 
+// TODO: review why is unused
 @Composable
 fun Sidebar(modifier: Modifier = Modifier, filterCommands: (taskType: TaskType?) -> Unit, goTo: (String) -> Unit) {
     Column(modifier = modifier.padding(16.dp)) {

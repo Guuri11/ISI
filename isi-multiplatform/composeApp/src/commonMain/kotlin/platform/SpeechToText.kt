@@ -1,4 +1,4 @@
-package utils
+package platform
 
 interface SpeechToText {
     fun startListening(onResult: (String) -> Unit)

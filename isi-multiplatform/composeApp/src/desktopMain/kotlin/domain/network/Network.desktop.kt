@@ -1,4 +1,6 @@
-package utils
+package domain.network
+
+import platform.AppContext
 
 actual fun getSSID(context: AppContext): String? {
     val os = System.getProperty("os.name").lowercase()

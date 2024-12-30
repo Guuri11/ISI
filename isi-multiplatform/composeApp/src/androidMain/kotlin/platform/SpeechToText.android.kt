@@ -1,4 +1,4 @@
-package utils
+package platform
 
 import android.content.Intent
 import android.os.Bundle

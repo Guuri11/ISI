@@ -1,7 +1,7 @@
 package ui.componets
 
 import androidx.compose.runtime.*
-import utils.createSpeechToText
+import platform.createSpeechToText
 
 @Composable
 fun VoiceCommandInput(sendMessage: (String) -> Unit) {

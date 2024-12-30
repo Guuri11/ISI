@@ -2,6 +2,7 @@ package utils
 
 import android.content.Intent
 import android.net.Uri
+import platform.AppContext
 
 fun openGoogleMapsWithCoordinates(context: AppContext, latitude: Double, longitude: Double) {
 

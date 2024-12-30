@@ -21,7 +21,7 @@ import moe.tlaster.precompose.viewmodel.viewModel
 import presentation.IsiViewModel
 import presentation.LocalIsiViewModel
 import ui.screens.*
-import utils.IntentSpeechToText
+import platform.IntentSpeechToText
 
 sealed class Screen(val route: String, val icon: ImageVector, val label: String) {
     /** Bottom Bar access **/

@@ -2,18 +2,10 @@ package presentation
 
 import androidx.compose.runtime.staticCompositionLocalOf
 import com.guuri11.isi.Settings
-import data.repository.CommandRepositoryImpl
-import data.repository.CommandRepositoryLocalImpl
-import data.sources.Database
 import data.repository.SettingsRepository
-import domain.entity.Chat
-import domain.entity.Command
-import domain.entity.EnvironmentSetting
-import domain.entity.GptSetting
-import domain.entity.MessageType
-import domain.entity.TaskType
-import domain.mapper.createCommandFromString
-import domain.repository.CommandRepository
+import data.sources.Database
+import domain.network.isLocal
+import getHttpClient
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,8 +13,12 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.viewmodel.ViewModel
 import moe.tlaster.precompose.viewmodel.viewModelScope
+import org.isi.data.repository.CommandRepositoryImpl
+import org.isi.data.repository.CommandRepositoryLocalImpl
+import org.isi.domain.mapper.createCommandFromString
+import org.isi.domain.models.*
+import org.isi.domain.repository.CommandRepository
 import java.net.ConnectException
-import utils.isLocal
 
 val LocalIsiViewModel = staticCompositionLocalOf<IsiViewModel> {
     error("No IsiViewModel provided")
@@ -78,10 +74,10 @@ class IsiViewModel() :
 
         if (settings.wifis.isNullOrBlank() || isLocal(settings.wifis!!)) {
             currentEnvironment = EnvironmentSetting.LOCAL
-            repo = CommandRepositoryLocalImpl()
+            repo = CommandRepositoryLocalImpl(httpClient = getHttpClient())
         } else {
             currentEnvironment = EnvironmentSetting.PRODUCTION
-            repo = CommandRepositoryImpl(settings.server)
+            repo = CommandRepositoryImpl(settings.server, getHttpClient())
         }
 
         getAllCommands()
@@ -105,7 +101,7 @@ class IsiViewModel() :
 
                 if (e is ConnectException && currentEnvironment == EnvironmentSetting.PRODUCTION) {
                     currentEnvironment = EnvironmentSetting.LOCAL
-                    repo = CommandRepositoryLocalImpl(currentGpt)
+                    repo = CommandRepositoryLocalImpl(currentGpt, getHttpClient())
                     getAllCommands()
                 } else {
                     _uiState.update {
@@ -156,9 +152,9 @@ class IsiViewModel() :
     fun onEnvironmentChange(environment: EnvironmentSetting) {
         Napier.i { "New environment $environment" }
         repo = if (environment == EnvironmentSetting.LOCAL) {
-            CommandRepositoryLocalImpl(currentGpt)
+            CommandRepositoryLocalImpl(currentGpt, getHttpClient())
         } else {
-            CommandRepositoryImpl(settings.server)
+            CommandRepositoryImpl(settings.server, getHttpClient())
         }
         currentEnvironment = environment
         getAllCommands()
@@ -175,7 +171,7 @@ class IsiViewModel() :
         val gptSetting = GptSetting.fromValue(newSettings.modelAI)
         settings = newSettings
         currentGpt = gptSetting
-        repo = CommandRepositoryLocalImpl(gptSetting)
+        repo = CommandRepositoryLocalImpl(gptSetting, getHttpClient())
         settingsRepository.save(newSettings)
 
         _uiState.update {

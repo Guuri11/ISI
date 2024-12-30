@@ -15,7 +15,7 @@ import com.mikepenz.markdown.compose.components.markdownComponents
 import com.mikepenz.markdown.compose.elements.highlightedCodeBlock
 import com.mikepenz.markdown.compose.elements.highlightedCodeFence
 import com.mikepenz.markdown.m3.Markdown
-import domain.entity.Command
+import org.isi.domain.models.Command
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import presentation.LocalIsiViewModel
 import ui.componets.FullScreenImageDialog

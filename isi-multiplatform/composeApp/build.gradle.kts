@@ -36,6 +36,9 @@ kotlin {
                 api(libs.precompose)
                 api(libs.precompose.viewmodel)
 
+                // ISI Library which contains domain & business logic
+                implementation(libs.isi.lib)
+
                 // Ktor dependencies
                 implementation(libs.ktor.client.core)
                 implementation(libs.ktor.client.json)

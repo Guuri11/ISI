@@ -11,6 +11,7 @@ pluginManagement {
             }
         }
         mavenCentral()
+        mavenLocal()
         gradlePluginPortal()
     }
 }
@@ -25,6 +26,7 @@ dependencyResolutionManagement {
             }
         }
         mavenCentral()
+        mavenLocal()
         maven( "https://dl.bintray.com/ekito/koin")
     }
 }

@@ -1,3 +1,3 @@
-package utils
+package platform
 
 actual object AppContext
