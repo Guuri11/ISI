@@ -1,14 +1,15 @@
 package ui.componets
 
 import androidx.compose.material.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import getPlatform
 
+// TODO: review why is unused
 @Composable
 fun AndroidFloatingButton(isExpanded: MutableState<Boolean>, modifier: Modifier) {
     if (getPlatform().name.startsWith("Android")) {
