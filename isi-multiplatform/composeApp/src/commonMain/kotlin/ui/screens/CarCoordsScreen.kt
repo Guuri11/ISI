@@ -10,14 +10,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import data.service.storeCarCoordinatesService
 import dev.jordond.compass.Location
 import dev.jordond.compass.Place
-import dev.jordond.compass.geocoder.placeOrNull
-import dev.jordond.compass.geolocation.GeolocatorResult
-import dev.jordond.compass.geolocation.TrackingStatus
-import dev.jordond.compass.geolocation.isPermissionDeniedForever
-import getGeoLocator
-import getGeocoding
 import getPlatform
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import openMaps
@@ -31,36 +26,13 @@ fun CarCoordsScreen() {
     var location by remember { mutableStateOf<Location?>(null) }
     var street by remember { mutableStateOf<Place?>(null) }
 
-    val geolocator = getGeoLocator()
 
     LaunchedEffect(Unit) {
-        if (getPlatform().name.startsWith("Android")) {
-            try {
-                geolocator.startTracking()
-
-                geolocator.trackingStatus.collect { trackingStatus ->
-                    when (trackingStatus) {
-                        is TrackingStatus.Update -> {
-                            location = trackingStatus.location
-                            street = getGeocoding().placeOrNull(trackingStatus.location.coordinates)
-                        }
-
-                        is TrackingStatus.Error -> {
-                            val error: GeolocatorResult.Error = trackingStatus.cause
-                            if (error.isPermissionDeniedForever()) {
-                                // TODO: handle error
-                                println("Permission denied forever")
-                            }
-                        }
-
-                        else -> {}
-                    }
-                }
-            } finally {
-                // Para el tracking al salir del composable
-                geolocator.stopTracking()
-            }
-        }
+        storeCarCoordinatesService(
+            viewModel,
+            updateLocation = { newLocation -> location = newLocation },
+            updateStreet = { newStreet -> street = newStreet }
+        )
     }
 
     Column(

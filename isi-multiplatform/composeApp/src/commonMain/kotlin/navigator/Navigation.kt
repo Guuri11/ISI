@@ -17,11 +17,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import moe.tlaster.precompose.navigation.NavHost
 import moe.tlaster.precompose.navigation.Navigator
-import moe.tlaster.precompose.viewmodel.viewModel
+import platform.IntentSpeechToText
 import presentation.IsiViewModel
 import presentation.LocalIsiViewModel
 import ui.screens.*
-import platform.IntentSpeechToText
 
 sealed class Screen(val route: String, val icon: ImageVector, val label: String) {
     /** Bottom Bar access **/
@@ -37,19 +36,13 @@ sealed class Screen(val route: String, val icon: ImageVector, val label: String)
     object Onboarding : Screen("/onboarding", Icons.Default.Home, "Onboarding")
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Navigation(navigator: Navigator, intentSpeechToText: IntentSpeechToText? = null) {
-    val viewModel = viewModel(modelClass = IsiViewModel::class) {
-        IsiViewModel()
-    }
-
+fun Navigation(navigator: Navigator, intentSpeechToText: IntentSpeechToText? = null, viewModel: IsiViewModel) {
     val canGoBack by navigator.canGoBack.collectAsState(initial = false)
 
     val initialRoute: String = getInitialRoute(viewModel.uiState.value.settings.showOnboarding.toInt() == 1, intentSpeechToText)
 
-
-    var currentRoute by remember { mutableStateOf<String>("") }
+    var currentRoute by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
         navigator.currentEntry.collect { entry ->

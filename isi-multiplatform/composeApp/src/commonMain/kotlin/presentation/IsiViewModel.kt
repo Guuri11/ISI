@@ -4,7 +4,9 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import com.guuri11.isi.Settings
 import data.repository.SettingsRepository
 import data.sources.Database
+import dev.jordond.compass.geolocation.Geolocator
 import domain.network.isLocal
+import getGeoLocator
 import getHttpClient
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,7 +45,8 @@ data class IsiUiState(
     val enviroment: EnvironmentSetting? = EnvironmentSetting.LOCAL,
     val errorMessage: String? = null,
     val loading: Boolean = true,
-    val settingsRepository: SettingsRepository = SettingsRepository(Database())
+    val settingsRepository: SettingsRepository = SettingsRepository(Database()),
+    val geolocator: Geolocator = getGeoLocator()
 )
 
 
