@@ -40,9 +40,9 @@ fun SettingsScreen() {
             .verticalScroll(rememberScrollState())
             .padding(16.dp),
     ) {
-        if (uiState.enviroment != null) {
+        if (uiState.environment != null) {
             EnvironmentSetting(
-                environment = uiState.enviroment!!,
+                environment = uiState.environment!!,
                 onEnvironmentChange = {
                     onEnvironmentChange(it)
                 }

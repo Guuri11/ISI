@@ -42,7 +42,7 @@ data class IsiUiState(
     val chat: Chat? = null,
     val taskTypeToFilter: TaskType? = null,
     val taskTypeToRequest: TaskType? = TaskType.OTHER_TOPICS,
-    val enviroment: EnvironmentSetting? = EnvironmentSetting.LOCAL,
+    val environment: EnvironmentSetting? = EnvironmentSetting.LOCAL,
     val errorMessage: String? = null,
     val loading: Boolean = true,
     val settingsRepository: SettingsRepository = SettingsRepository(Database()),
@@ -53,7 +53,7 @@ data class IsiUiState(
 class IsiViewModel() :
     ViewModel() {
     private var repo: CommandRepository
-    private val _uiState = MutableStateFlow<IsiUiState>(IsiUiState())
+    private val _uiState = MutableStateFlow(IsiUiState())
     private var settings: Settings
     private var allCommands = emptyList<Command>()
     private var currentChat: Chat? = null
@@ -164,7 +164,7 @@ class IsiViewModel() :
 
         _uiState.update {
             it.copy(
-                enviroment = environment
+                environment = environment
             )
         }
     }

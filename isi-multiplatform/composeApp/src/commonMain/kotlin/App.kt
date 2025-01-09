@@ -21,7 +21,7 @@ import ui.theme.AppTheme
 
 @Composable
 @Preview
-fun App(intentSpeechToText: IntentSpeechToText? = null, saveCarCoords: Boolean = false) {
+fun App(intentSpeechToText: IntentSpeechToText? = null, saveCarCoordinates: Boolean = false) {
     Napier.base(DebugAntilog())
 
     PreComposeApp {
@@ -33,8 +33,8 @@ fun App(intentSpeechToText: IntentSpeechToText? = null, saveCarCoords: Boolean =
                 IsiViewModel()
             }
 
-            LaunchedEffect(saveCarCoords) {
-                if (saveCarCoords) {
+            LaunchedEffect(saveCarCoordinates) {
+                if (saveCarCoordinates) {
                     storeCarCoordinatesService(
                         viewModel,
                         updateLocation = { newLocation -> location = newLocation },
