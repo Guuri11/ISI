@@ -1,7 +1,6 @@
-import androidx.compose.runtime.*
-import data.service.storeCarCoordinatesService
-import dev.jordond.compass.Location
-import dev.jordond.compass.Place
+
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import io.ktor.client.*
@@ -26,27 +25,13 @@ fun App(intentSpeechToText: IntentSpeechToText? = null, saveCarCoordinates: Bool
 
     PreComposeApp {
         AppTheme(intentSpeechToText = intentSpeechToText) {
-            var location by remember { mutableStateOf<Location?>(null) }
-            var street by remember { mutableStateOf<Place?>(null) }
-
             val viewModel = viewModel(modelClass = IsiViewModel::class) {
                 IsiViewModel()
             }
 
             LaunchedEffect(saveCarCoordinates) {
                 if (saveCarCoordinates) {
-                    storeCarCoordinatesService(
-                        viewModel,
-                        updateLocation = { newLocation -> location = newLocation },
-                        updateStreet = { newStreet -> street = newStreet }
-                    )
-                    viewModel.onSettingsChange(
-                        viewModel.uiState.value.settings.copy(
-                            carLatitude = location?.coordinates?.latitude,
-                            carLongitude = location?.coordinates?.longitude,
-                            carStreet = street?.street
-                        )
-                    )
+                    viewModel.saveCarCoordinates()
                 }
             }
 

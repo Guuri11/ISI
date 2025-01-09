@@ -76,5 +76,14 @@ enum class TaskType(val onlyLocal: Boolean, val value: String, val show: Boolean
         "apágate",
         "apagate",
         "cierra el sistema"
+    )),
+
+    /**
+     * Save car coordinates
+     */
+    SAVE_CAR_COORDINATES(true, "Save car coordinates", false, listOf(
+    "guarda la ubicación",
+    "aparca",
+    "guarda las coordenadas",
     ))
 }

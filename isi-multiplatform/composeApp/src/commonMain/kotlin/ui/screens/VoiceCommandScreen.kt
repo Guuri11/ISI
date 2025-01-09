@@ -12,10 +12,10 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.isi.domain.models.Chat
-import org.isi.domain.models.MessageType
 import kotlinx.datetime.toJavaLocalDateTime
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
+import org.isi.domain.models.Chat
+import org.isi.domain.models.MessageType
 import presentation.LocalIsiViewModel
 import ui.componets.ErrorText
 import ui.componets.IsiKottie
@@ -37,7 +37,7 @@ fun VoiceCommandScreen(goTo: (String) -> Unit) {
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
     val sendCommand: (String, Chat?) -> Unit = { prompt, chat ->
-        viewModel.sendCommand(prompt, chat)
+        viewModel.handleCommand(prompt, chat)
     }
 
     LaunchedEffect(Unit) {

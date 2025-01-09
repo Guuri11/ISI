@@ -12,10 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import org.isi.domain.models.Chat
-import org.isi.domain.models.MessageType
 import kotlinx.datetime.toJavaLocalDateTime
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
+import org.isi.domain.models.Chat
+import org.isi.domain.models.MessageType
 import presentation.LocalIsiViewModel
 import ui.componets.*
 import ui.componets.message.AssistantMessage
@@ -34,7 +34,7 @@ fun IsiChatScreen() {
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
     val sendCommand: (String, Chat?) -> Unit = { prompt, chat ->
-        viewModel.sendCommand(prompt, chat)
+        viewModel.handleCommand(prompt, chat)
     }
 
     val chatListState = rememberLazyListState()

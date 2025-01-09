@@ -3,11 +3,13 @@ package presentation
 import androidx.compose.runtime.staticCompositionLocalOf
 import com.guuri11.isi.Settings
 import data.repository.SettingsRepository
+import data.service.storeCarCoordinatesService
 import data.sources.Database
 import dev.jordond.compass.geolocation.Geolocator
 import domain.network.isLocal
 import getGeoLocator
 import getHttpClient
+import getPlatform
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,6 +23,7 @@ import org.isi.domain.mapper.createCommandFromString
 import org.isi.domain.models.*
 import org.isi.domain.repository.CommandRepository
 import java.net.ConnectException
+import java.util.*
 
 val LocalIsiViewModel = staticCompositionLocalOf<IsiViewModel> {
     error("No IsiViewModel provided")
@@ -126,7 +129,66 @@ class IsiViewModel() :
         }
     }
 
-    fun sendCommand(prompt: String, chat: Chat?) {
+    fun handleCommand(prompt: String, chat: Chat?) {
+        val lowerCaseCommand = prompt.lowercase(Locale.getDefault())
+        when {
+            getPlatform().name.contains("Android") && TaskType.SAVE_CAR_COORDINATES.options.contains(lowerCaseCommand) -> saveCarCoordinates(
+                prompt
+            )
+
+            else -> sendCommand(prompt, chat)
+        }
+    }
+
+    fun saveCarCoordinates(prompt: String? = null) {
+        viewModelScope.launch {
+            try {
+                storeCarCoordinatesService(
+                    viewModel = this@IsiViewModel,
+                    updateLocation = { location ->
+                        _uiState.update { currentState ->
+                            currentState.copy(
+                                settings = currentState.settings.copy(
+                                    carLatitude = location?.coordinates?.latitude,
+                                    carLongitude = location?.coordinates?.longitude
+                                )
+                            )
+                        }
+                    },
+                    updateStreet = { street ->
+                        _uiState.update { currentState ->
+                            currentState.copy(
+                                settings = currentState.settings.copy(
+                                    carStreet = street?.street
+                                )
+                            )
+                        }
+                    }
+                )
+                if (prompt != null) {
+                    val commandFromStringUser =
+                        createCommandFromString(content = prompt, messageType = MessageType.USER)
+                    updateCommandsList(commandFromStringUser)
+
+                    val commandFromStringAssistant = createCommandFromString(
+                        content = "Ubicación guardada en ${uiState.value.settings.carStreet}",
+                        messageType = MessageType.ASSISTANT
+                    )
+
+                    updateCommandsList(commandFromStringAssistant)
+                }
+            } catch (e: Exception) {
+                Napier.e { "Error saving car coordinates: ${e.message}" }
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        errorMessage = "Error saving car coordinates: ${e.message}"
+                    )
+                }
+            }
+        }
+    }
+
+    private fun sendCommand(prompt: String, chat: Chat?) {
         _uiState.update { it.copy(errorMessage = "") }
         viewModelScope.launch {
             try {
