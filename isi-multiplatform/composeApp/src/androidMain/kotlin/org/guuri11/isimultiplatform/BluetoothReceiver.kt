@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 
 class BluetoothReceiver(private val bluetoothViewModel: BluetoothViewModel) : BroadcastReceiver() {
@@ -20,7 +21,9 @@ class BluetoothReceiver(private val bluetoothViewModel: BluetoothViewModel) : Br
                     intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE, BluetoothDevice::class.java)
                 device?.let {
                     // TODO: Extract this to settings
+                    Toast.makeText(context, device.name.lowercase(), Toast.LENGTH_LONG).show()
                     if (device.name.lowercase().contains("ford fiesta")) {
+                        Toast.makeText(context, "Car connected", Toast.LENGTH_LONG).show()
                         bluetoothViewModel.updateConnectionStatus(true)
                     }
                 }

@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -53,6 +54,9 @@ class MainActivity : ComponentActivity() {
 
             bluetoothViewModel.saveCarCoordinates.observe(this) { saveCarCoordinates ->
                 saveCarCoordinatesState.value = saveCarCoordinates
+                if (saveCarCoordinates) {
+                    Toast.makeText(this, "Saving car coordinates", Toast.LENGTH_LONG).show()
+                }
             }
 
             App(intent, saveCarCoordinatesState.value)
