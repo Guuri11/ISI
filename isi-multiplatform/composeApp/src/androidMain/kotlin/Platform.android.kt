@@ -3,6 +3,7 @@ import dev.jordond.compass.geocoder.Geocoder
 import dev.jordond.compass.geocoder.mobile
 import dev.jordond.compass.geolocation.Geolocator
 import dev.jordond.compass.geolocation.mobile
+import org.isi.domain.models.AppsAvailable
 import platform.AppContext
 import utils.openGoogleMapsWithCoordinates
 
@@ -21,4 +22,8 @@ actual fun getGeocoding(): Geocoder {
 
 actual fun openMaps(latitude: Double, longitude: Double) {
     openGoogleMapsWithCoordinates(context = AppContext, latitude, longitude)
+}
+
+actual fun openApp(app: AppsAvailable) {
+    utils.openApp(context = AppContext, app)
 }

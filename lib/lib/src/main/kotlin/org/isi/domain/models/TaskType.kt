@@ -24,10 +24,16 @@ enum class TaskType(val onlyLocal: Boolean, val value: String, val show: Boolean
      */
     REFACTOR(false, "Refactor", true, listOf()),
 
-    /**
-     * todo: open an app
-     */
-    OPEN_APP(false, "Open App", false, listOf()),
+    OPEN_APP(false, "Open App", false, listOf(
+        // Smart camera
+        "busca esto",
+        "escanea",
+        "mira esto",
+        "analiza",
+        "explora",
+        "qué es esto",
+        "lente mágica"
+    )),
 
     /**
      * Reply LinkedIn message to reject an offer

@@ -1,5 +1,6 @@
 import dev.jordond.compass.geocoder.Geocoder
 import dev.jordond.compass.geolocation.Geolocator
+import org.isi.domain.models.AppsAvailable
 
 class JVMPlatform : Platform {
     override val name: String = "Java ${System.getProperty("java.version")}"
@@ -18,4 +19,8 @@ actual fun getGeocoding(): Geocoder {
 
 actual fun openMaps(latitude: Double, longitude: Double) {
     throw Exception("Maps not available for Desktop")
+}
+
+actual fun openApp(app: AppsAvailable) {
+    throw Exception("Open app not available for Desktop")
 }

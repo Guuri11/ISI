@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.viewmodel.ViewModel
 import moe.tlaster.precompose.viewmodel.viewModelScope
+import openApp
 import org.isi.data.repository.CommandRepositoryImpl
 import org.isi.data.repository.CommandRepositoryLocalImpl
 import org.isi.domain.mapper.createCommandFromString
@@ -136,8 +137,18 @@ class IsiViewModel() :
                 prompt
             )
 
+            TaskType.OPEN_APP.options.contains(lowerCaseCommand) -> openApp(prompt)
+
             else -> sendCommand(prompt, chat)
         }
+    }
+
+    private fun openApp(prompt: String) {
+        val commandFromStringUser =
+            createCommandFromString(content = prompt, messageType = MessageType.USER)
+        updateCommandsList(commandFromStringUser)
+
+        openApp(AppsAvailable.CAMERA_VISION)
     }
 
     fun saveCarCoordinates(prompt: String? = null) {
