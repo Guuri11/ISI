@@ -142,7 +142,11 @@ private fun BottomNavigationBar(navigator: Navigator, currentRoute: String) {
                 icon = { Icon(screen.icon, contentDescription = screen.label) },
                 label = { Text(screen.label) },
                 selected = currentRoute == screen.route,
-                onClick = { navigator.navigate(screen.route) },
+                onClick = {
+                    if (currentRoute != screen.route) {
+                        navigator.navigate(screen.route)
+                    }
+                },
                 modifier = Modifier.padding(vertical = 8.dp)
             )
         }
