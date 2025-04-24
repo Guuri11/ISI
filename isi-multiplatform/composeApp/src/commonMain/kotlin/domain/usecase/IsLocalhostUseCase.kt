@@ -1,9 +1,6 @@
-package domain.network
+package domain.usecase
 
 import platform.AppContext
-
-expect fun getSSID(context: AppContext): String?
-
 
 fun isLocal(wifis: String): Boolean {
     val wifiSSIDs = wifis.split("++")
@@ -12,7 +9,7 @@ fun isLocal(wifis: String): Boolean {
 }
 
 
-fun isAllSSIDsNotConnected(wifiSSIDs: List<String>): Boolean {
+private fun isAllSSIDsNotConnected(wifiSSIDs: List<String>): Boolean {
     return wifiSSIDs.all { ssid ->
         ssid != getSSID(context = AppContext)
     }

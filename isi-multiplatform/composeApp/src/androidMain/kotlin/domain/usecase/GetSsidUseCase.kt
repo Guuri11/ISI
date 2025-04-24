@@ -1,4 +1,4 @@
-package domain.network
+package domain.usecase
 
 import android.content.Context
 import android.net.wifi.WifiManager

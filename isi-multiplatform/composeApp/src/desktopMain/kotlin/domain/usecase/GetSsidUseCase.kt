@@ -1,4 +1,4 @@
-package domain.network
+package domain.usecase
 
 import platform.AppContext
 
