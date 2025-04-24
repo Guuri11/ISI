@@ -1,0 +1,21 @@
+[package]
+name = "business"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+# Chrono: Biblioteca de fecha y hora para Rust
+chrono = { version = "0.4", features = ["serde"] }
+# Serde: framework para serializar y deserializar
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0.140"
+# UUID: Una biblioteca para generar identificadores universalmente únicos
+uuid = { version = "1.16.0", features = ["v4", "serde"] }
+# Regex: Una biblioteca para analizar y manipular expresiones regulares
+regex = { version = "1.11.1", features = ["unicode"] }
+# Async Trait:Una biblioteca para escribir funciones de asíncrono en traits
+async-trait = "0.1.88"
+# ThisError: Manejo de errores con facilidad
+thiserror = "2.0.12"
+#https://docs.rs/anyhow/latest/anyhow/
+anyhow = "1.0.98"

@@ -1,0 +1,9 @@
+[workspace]
+members = [
+    "business",
+    "infrastructure/persistance",
+    "presentation/rest-api",
+    "business",
+    "presentation/playground",
+]
+resolver = "3"

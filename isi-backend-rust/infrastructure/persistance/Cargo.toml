@@ -1,0 +1,31 @@
+[package]
+name = "persistance"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+# Async Trait:Una biblioteca para escribir funciones de asíncrono en traits
+async-trait = "0.1.88"
+# SQLx is an async, pure Rust SQL crate featuring compile-time checked queries without a DSL
+sqlx = { version = "0.8.3", features = [
+    "runtime-tokio-rustls",
+    "postgres",
+    "uuid",
+    "chrono",
+    "uuid",
+    "macros",
+    "derive",
+    "migrate",
+    "json",
+] }
+
+tokio = { version = "1.44.1", features = ["full"] }
+# UUID: Una biblioteca para generar identificadores universalmente únicos
+uuid = { version = "1.16.0", features = ["v4", "serde"] }
+# Chrono: Biblioteca de fecha y hora para Rust
+chrono = { version = "0.4", features = ["serde"] }
+# Serde: framework para serializar y deserializar
+serde = { version = "1.0", features = ["derive"] }
+# ThisError: Manejo de errores con facilidad
+thiserror = "2.0.12"
+business = { path = "../../business" }
