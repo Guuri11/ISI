@@ -40,3 +40,4 @@ tracing = "0.1.40"
 
 business = { path = "../../business" }
 persistance = { path = "../../infrastructure/persistance" }
+ai = { path = "../../infrastructure/ai" }

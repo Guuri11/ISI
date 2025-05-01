@@ -1,4 +1,4 @@
-# DigiAnt - Smart Yard Scheduling API Makefile
+# Isi - Smart AI Assistant Makefile
 #
 # Targets principales:
 # - build: Compila el proyecto en modo debug
@@ -163,14 +163,14 @@ run-example:
 # Infraestructura para desarrollo local
 db-up:
 	@echo "${GREEN}Iniciando base de datos PostgreSQL en contenedor...${NC}"
-	$(DOCKER) run --name digiant-postgres -e POSTGRES_PASSWORD=postgres \
-		-e POSTGRES_USER=postgres -e POSTGRES_DB=digiant \
+	$(DOCKER) run --name postgres-isi -e POSTGRES_PASSWORD=postgres \
+		-e POSTGRES_USER=postgres -e POSTGRES_DB=isi \
 		-p 5432:5432 -d postgres:14
 
 db-down:
 	@echo "${RED}Deteniendo y eliminando contenedor de base de datos...${NC}"
-	$(DOCKER) stop digiant-postgres || true
-	$(DOCKER) rm digiant-postgres || true
+	$(DOCKER) stop postgres-isi || true
+	$(DOCKER) rm postgres-isi || true
 
 # Configuración inicial para desarrollo
 setup-dev:

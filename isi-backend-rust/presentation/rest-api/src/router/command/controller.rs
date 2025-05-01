@@ -3,7 +3,8 @@ use axum::http::StatusCode;
 use axum::response::IntoResponse;
 use axum::routing::{delete, get, post};
 use axum::{Json, Router};
-use business::domain::command::value_objets::{ChatId, MessageType, Task};
+use business::domain::command::value_objets::{ChatId, MessageType};
+use business::domain::task::model::TaskType;
 use utoipa::OpenApi;
 use uuid::Uuid;
 
@@ -62,7 +63,7 @@ async fn register_command_handler(
             payload.request,
             ChatId::new(payload.chat_id),
             MessageType::from(payload.message_type),
-            Task::from(payload.task),
+            payload.task.map(|task_dto| TaskType::from(task_dto)),
         )
         .await?;
 

@@ -2,16 +2,6 @@ use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub enum Task {
-    Refactor,
-    Weather,
-    OpenApp,
-    BookmarkRecommendations,
-    OtherThopics,
-    LinkedinOfferRejection,
-}
-
-#[derive(Debug, Clone, Deserialize, Serialize)]
 pub enum MessageType {
     Assistant,
     Function,

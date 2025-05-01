@@ -1,7 +1,4 @@
-# Backend de Digiant
-
-## Descripción general
-El Backend de DigiAnt es una aplicación monolítica modular diseñada para gestionar operaciones relacionadas con SVCP. Sigue los principios de Diseño Guiado por el Dominio (DDD) y Arquitectura Hexagonal para garantizar escalabilidad, mantenibilidad y separación de responsabilidades.
+# Backend de ISI
 
 ## Estructura del proyecto
 - **[presentation](presentation/README.md)**: Cómo vamos a presentar la lógica de negocio. Por ejemplo REST API, CLI, un cron, scripts, playgrounds...

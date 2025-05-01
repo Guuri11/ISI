@@ -5,5 +5,6 @@ members = [
     "presentation/rest-api",
     "business",
     "presentation/playground",
+    "infrastructure/ai",
 ]
 resolver = "3"

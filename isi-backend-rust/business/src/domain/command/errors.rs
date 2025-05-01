@@ -1,6 +1,6 @@
 use thiserror::Error;
 
-use crate::domain::errors::RepositoryError;
+use crate::domain::{errors::RepositoryError, task::errors::TaskError};
 
 #[derive(Debug, Error)]
 pub enum CommandError {
@@ -12,6 +12,8 @@ pub enum CommandError {
     RepositoryError(String),
     #[error("Validation error: {0}")]
     Validation(String),
+    #[error("Error processing task: {0}")]
+    TaskError(#[from] TaskError),
     #[error("Unknown error occurred: {0}")]
     Unknown(#[from] anyhow::Error),
 }

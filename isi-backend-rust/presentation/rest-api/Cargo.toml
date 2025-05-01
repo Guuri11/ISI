@@ -52,3 +52,4 @@ utoipa-swagger-ui = { version = "9.0.1", features = ["axum"] }
 
 business = { path = "../../business" }
 persistance = { path = "../../infrastructure/persistance" }
+ai = { path = "../../infrastructure/ai" }

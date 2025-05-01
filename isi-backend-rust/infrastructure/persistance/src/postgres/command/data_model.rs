@@ -1,6 +1,9 @@
-use business::domain::command::{
-    model::Command,
-    value_objets::{ChatId, MessageType as MessageTypeDomain, Task},
+use business::domain::{
+    command::{
+        model::Command,
+        value_objets::{ChatId, MessageType as MessageTypeDomain},
+    },
+    task::model::TaskType,
 };
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
@@ -66,7 +69,7 @@ impl TryFrom<&CommandDb> for Command {
             db.fav_name
                 .clone()
                 .map_or_else(|| "".to_string(), |name| name),
-            Task::OtherThopics,
+            TaskType::OtherTopics,
             db.created_at,
             db.updated_at,
         ))

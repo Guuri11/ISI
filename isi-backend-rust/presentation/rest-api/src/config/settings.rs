@@ -7,6 +7,9 @@ pub struct Settings {
 
     pub service_host: String,
     pub service_port: u16,
+
+    pub ai_api_key: String,
+    pub ai_api_url: String,
 }
 
 impl Settings {
@@ -18,6 +21,9 @@ impl Settings {
 
             service_host: env::var("SERVICE_IP")?,
             service_port: env::var("SERVICE_PORT")?.parse::<u16>().unwrap_or(8080),
+
+            ai_api_key: env::var("AI_API_KEY")?,
+            ai_api_url: env::var("AI_API_URL")?,
         })
     }
 }

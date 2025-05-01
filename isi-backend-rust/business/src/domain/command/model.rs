@@ -2,7 +2,9 @@ use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-use super::value_objets::{ChatId, MessageType, Task};
+use crate::domain::task::model::TaskType;
+
+use super::value_objets::{ChatId, MessageType};
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Command {
@@ -12,7 +14,7 @@ pub struct Command {
     message_type: MessageType,
     chat: ChatId,
     fav_name: String,
-    task: Task,
+    task: TaskType,
     created_at: NaiveDateTime,
     updated_at: NaiveDateTime,
 }
@@ -24,7 +26,7 @@ impl Command {
         message_type: MessageType,
         chat: ChatId,
         fav_name: String,
-        task: Task,
+        task: TaskType,
     ) -> Result<Self, String> {
         Ok(Self {
             id: Uuid::new_v4(),
@@ -46,7 +48,7 @@ impl Command {
         message_type: MessageType,
         chat: ChatId,
         fav_name: String,
-        task: Task,
+        task: TaskType,
         created_at: NaiveDateTime,
         updated_at: NaiveDateTime,
     ) -> Self {
@@ -87,7 +89,7 @@ impl Command {
         &self.fav_name
     }
 
-    pub fn task(&self) -> &Task {
+    pub fn task(&self) -> &TaskType {
         &self.task
     }
 

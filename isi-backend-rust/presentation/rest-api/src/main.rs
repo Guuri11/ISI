@@ -21,7 +21,7 @@ async fn run() -> Result<(), Box<dyn std::error::Error>> {
     let app = create_router(pool, settings.clone());
 
     let addr = format!("{}:{}", settings.service_host, settings.service_port);
-    info!("🚀 DigiAnt iniciado correctamente!");
+    info!("🚀 ISI iniciado correctamente!");
     info!("📡 API disponible en: http://{}/", addr);
 
     let listener = TcpListener::bind(&addr).await?;
@@ -29,6 +29,6 @@ async fn run() -> Result<(), Box<dyn std::error::Error>> {
         .with_graceful_shutdown(shutdown_signal())
         .await?;
 
-    info!("🚀 DigiAnt detenido!");
+    info!("🚀 ISI detenido!");
     Ok(())
 }

@@ -8,6 +8,9 @@ pub mod application {
     pub mod fav {
         pub mod service;
     }
+    pub mod task {
+        pub mod service;
+    }
 }
 
 pub mod domain {
@@ -28,6 +31,14 @@ pub mod domain {
 
     pub mod fav {
         pub mod errors;
+        pub mod model;
+        pub mod repository;
+        pub mod use_cases;
+    }
+
+    pub mod task {
+        pub mod errors;
+        pub mod executor;
         pub mod model;
         pub mod repository;
         pub mod use_cases;

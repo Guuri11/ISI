@@ -1,6 +1,6 @@
-use business::domain::command::{
-    model::Command,
-    value_objets::{MessageType, Task},
+use business::domain::{
+    command::{model::Command, value_objets::MessageType},
+    task::model::TaskType,
 };
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
@@ -42,32 +42,32 @@ pub enum TaskDTO {
     Weather,
     OpenApp,
     BookmarkRecommendations,
-    OtherThopics,
+    OtherTopics,
     LinkedinOfferRejection,
 }
 
-impl From<TaskDTO> for Task {
+impl From<TaskDTO> for TaskType {
     fn from(status: TaskDTO) -> Self {
         match status {
-            TaskDTO::Refactor => Task::Refactor,
-            TaskDTO::Weather => Task::Weather,
-            TaskDTO::OpenApp => Task::OpenApp,
-            TaskDTO::BookmarkRecommendations => Task::BookmarkRecommendations,
-            TaskDTO::OtherThopics => Task::OtherThopics,
-            TaskDTO::LinkedinOfferRejection => Task::LinkedinOfferRejection,
+            TaskDTO::Refactor => TaskType::Refactor,
+            TaskDTO::Weather => TaskType::Weather,
+            TaskDTO::OpenApp => TaskType::OpenApp,
+            TaskDTO::BookmarkRecommendations => TaskType::BookmarkRecommendations,
+            TaskDTO::OtherTopics => TaskType::OtherTopics,
+            TaskDTO::LinkedinOfferRejection => TaskType::LinkedinOfferRejection,
         }
     }
 }
 
-impl From<Task> for TaskDTO {
-    fn from(status: Task) -> Self {
+impl From<TaskType> for TaskDTO {
+    fn from(status: TaskType) -> Self {
         match status {
-            Task::Refactor => TaskDTO::Refactor,
-            Task::Weather => TaskDTO::Weather,
-            Task::OpenApp => TaskDTO::OpenApp,
-            Task::BookmarkRecommendations => TaskDTO::BookmarkRecommendations,
-            Task::OtherThopics => TaskDTO::OtherThopics,
-            Task::LinkedinOfferRejection => TaskDTO::LinkedinOfferRejection,
+            TaskType::Refactor => TaskDTO::Refactor,
+            TaskType::Weather => TaskDTO::Weather,
+            TaskType::OpenApp => TaskDTO::OpenApp,
+            TaskType::BookmarkRecommendations => TaskDTO::BookmarkRecommendations,
+            TaskType::OtherTopics => TaskDTO::OtherTopics,
+            TaskType::LinkedinOfferRejection => TaskDTO::LinkedinOfferRejection,
         }
     }
 }
@@ -77,7 +77,7 @@ pub struct CommandInputDTO {
     pub request: String,
     pub chat_id: Uuid,
     pub message_type: MessageTypeDTO,
-    pub task: TaskDTO,
+    pub task: Option<TaskDTO>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]

@@ -4,11 +4,13 @@ use async_trait::async_trait;
 
 use uuid::Uuid;
 
+use crate::domain::task::{model::TaskType, use_cases::TaskUseCases};
+
 use super::{
     errors::CommandError,
     model::Command,
     repository::CommandRepository,
-    value_objets::{ChatId, MessageType, Task},
+    value_objets::{ChatId, MessageType},
 };
 
 #[async_trait]
@@ -20,11 +22,12 @@ pub trait CommandUseCases: Send + Sync {
         request: String,
         chat_id: ChatId,
         message_type: MessageType,
-        task: Task,
+        task: Option<TaskType>,
     ) -> Result<Command, CommandError>;
     async fn update_command(&self, command: &Command) -> Result<(), CommandError>;
 }
 
 pub struct CommandUseCasesImpl {
     pub repository: Arc<dyn CommandRepository + Send + Sync>,
+    pub task_service: Arc<dyn TaskUseCases + Send + Sync>,
 }
