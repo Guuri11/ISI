@@ -25,8 +25,8 @@ impl CoreCommandRepository for CommandRepository {
 
         sqlx::query!(
             r#"
-            INSERT INTO commands (id, content, log, message_type, chat_id, fav_name, created_at, updated_at)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+            INSERT INTO commands (id, content, log, message_type, chat_id, fav_name, created_at, updated_at, deleted, deleted_at)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
             "#,
             command_db.id,
             command_db.content,
@@ -35,7 +35,9 @@ impl CoreCommandRepository for CommandRepository {
             command_db.chat_id,
             command_db.fav_name,
             command_db.created_at,
-            command_db.updated_at
+            command_db.updated_at,
+            command_db.deleted,
+            command_db.deleted_at,
         )
         .execute(&self.pool)
         .await
@@ -48,7 +50,7 @@ impl CoreCommandRepository for CommandRepository {
         let results = sqlx::query_as!(
             CommandDb,
             r#"
-            SELECT id, log, content, message_type as "message_type: _", chat_id, fav_name, created_at, updated_at
+            SELECT id, log, content, message_type as "message_type: _", chat_id, fav_name, created_at, updated_at, deleted, deleted_at
             FROM commands
             "#,
         )
@@ -66,7 +68,7 @@ impl CoreCommandRepository for CommandRepository {
         sqlx::query_as!(
             CommandDb,
             r#"
-            SELECT id, log, content, message_type as "message_type: _", chat_id, fav_name, created_at, updated_at
+            SELECT id, log, content, message_type as "message_type: _", chat_id, fav_name, created_at, updated_at, deleted, deleted_at
             FROM commands
             WHERE id = $1
             "#,
@@ -108,7 +110,7 @@ impl CoreCommandRepository for CommandRepository {
         let result = sqlx::query!(
             r#"
             UPDATE commands
-            SET log = $2, content = $3, message_type = $4, chat_id = $5, fav_name = $6, created_at = $7, updated_at = $8
+            SET log = $2, content = $3, message_type = $4, chat_id = $5, fav_name = $6, created_at = $7, updated_at = $8, deleted = $9, deleted_at = $10
             WHERE id = $1
             "#,
             command_db.id,
@@ -118,7 +120,9 @@ impl CoreCommandRepository for CommandRepository {
             command_db.chat_id,
             command_db.fav_name,
             command_db.created_at,
-            command_db.updated_at
+            command_db.updated_at,
+            command_db.deleted,
+            command_db.deleted_at,
         )
         .execute(&self.pool)
         .await;

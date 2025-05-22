@@ -10,6 +10,8 @@ pub struct Settings {
 
     pub ai_api_key: String,
     pub ai_api_url: String,
+
+    pub env: String,
 }
 
 impl Settings {
@@ -24,6 +26,8 @@ impl Settings {
 
             ai_api_key: env::var("AI_API_KEY")?,
             ai_api_url: env::var("AI_API_URL")?,
+
+            env: env::var("ENV").unwrap_or_else(|_| "development".to_string()),
         })
     }
 }

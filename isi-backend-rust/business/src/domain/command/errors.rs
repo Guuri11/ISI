@@ -4,17 +4,17 @@ use crate::domain::{errors::RepositoryError, task::errors::TaskError};
 
 #[derive(Debug, Error)]
 pub enum CommandError {
-    #[error("Command not found: {0}")]
+    #[error("command.not_found")]
     NotFound(String),
-    #[error("Command already exists: {0}")]
+    #[error("command.already_exists")]
     DuplicateCommand(String),
-    #[error("Repository error: {0}")]
+    #[error("command.repository_error")]
     RepositoryError(String),
-    #[error("Validation error: {0}")]
-    Validation(String),
-    #[error("Error processing task: {0}")]
+    #[error("command.validation_error")]
+    ValidationError(String),
+    #[error("command.task_error")]
     TaskError(#[from] TaskError),
-    #[error("Unknown error occurred: {0}")]
+    #[error("command.unknown")]
     Unknown(#[from] anyhow::Error),
 }
 
@@ -27,7 +27,7 @@ impl From<RepositoryError> for CommandError {
             RepositoryError::NotFound(msg) => Self::NotFound(msg),
             RepositoryError::Persistence(msg) => Self::RepositoryError(msg),
             RepositoryError::DatabaseError(msg) => Self::RepositoryError(msg),
-            RepositoryError::DuplicateEntity(entity) => Self::DuplicateCommand(entity),
+            RepositoryError::Duplicated(msg) => Self::DuplicateCommand(msg),
         }
     }
 }

@@ -14,12 +14,13 @@ async fn main() {
 }
 
 async fn run() -> Result<(), Box<dyn std::error::Error>> {
-    setup_tracing();
-
     let settings = Settings::from_env()?;
+
+    setup_tracing(settings.clone());
+
     let pool = create_postgres_pool(&DatabaseConfig::new(settings.database_url.clone())).await?;
     let app = create_router(pool, settings.clone());
-    
+
     let addr = format!("{}:{}", settings.service_host, settings.service_port);
     info!("🚀 ISI iniciado correctamente!");
     info!("📡 API disponible en: http://{}/", addr);

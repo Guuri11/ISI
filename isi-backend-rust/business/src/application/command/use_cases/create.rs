@@ -1,31 +1,30 @@
 use std::sync::Arc;
 
 use async_trait::async_trait;
-
 use uuid::Uuid;
 
 use crate::domain::{
-    chat::use_cases::ChatUseCases,
+    chat::use_cases::create::CreateChatUseCase,
     command::{
         errors::CommandError,
         model::Command,
         repository::CommandRepository,
-        use_cases::{CommandUseCases, CommandUseCasesImpl},
+        use_cases::create::{CreateCommandUseCase, CreateCommandUseCaseImpl},
         value_objets::{ChatId, MessageType},
     },
-    task::{errors::TaskError, model::TaskType, use_cases::TaskUseCases},
+    task::{errors::TaskError, model::TaskType, use_cases::execute::ExecuteTaskUseCase},
 };
 
-impl CommandUseCasesImpl {
+impl CreateCommandUseCaseImpl {
     pub fn new(
         repository: Arc<dyn CommandRepository + Send + Sync>,
-        task_service: Arc<dyn TaskUseCases + Send + Sync>,
-        chat_service: Arc<dyn ChatUseCases + Send + Sync>,
+        execute_task_use_case: Arc<dyn ExecuteTaskUseCase + Send + Sync>,
+        create_chat_use_case: Arc<dyn CreateChatUseCase + Send + Sync>,
     ) -> Self {
         Self {
             repository,
-            task_service,
-            chat_service,
+            execute_task_use_case,
+            create_chat_use_case,
         }
     }
 
@@ -49,7 +48,7 @@ impl CommandUseCasesImpl {
         message_type: MessageType,
     ) -> Result<Command, CommandError> {
         let agent_response = self
-            .task_service
+            .execute_task_use_case
             .get_task_type(request)
             .await
             .map_err(|e| CommandError::TaskError(TaskError::ExecutionFailed(e.to_string())))?;
@@ -63,8 +62,8 @@ impl CommandUseCasesImpl {
         self.repository.save(&command).await?;
 
         let command_response = self
-            .task_service
-            .execute_task(&agent_response, chat_id)
+            .execute_task_use_case
+            .execute(&agent_response, chat_id)
             .await
             .map_err(|e| CommandError::TaskError(TaskError::ExecutionFailed(e.to_string())))?;
 
@@ -101,27 +100,13 @@ impl CommandUseCasesImpl {
             "".to_string(),
             task,
         )
-        .map_err(CommandError::Validation)
+        .map_err(|e| CommandError::ValidationError(e.to_string()))
     }
 }
 
 #[async_trait]
-impl CommandUseCases for CommandUseCasesImpl {
-    /// Registers a new command.
-    ///
-    /// This function handles the registration of a command. If a specific task is provided,
-    /// it creates and saves the command directly. Otherwise, it delegates to
-    /// `handle_taskless_command` to determine the task type and execute the associated logic.
-    ///
-    /// # Arguments
-    /// * `request` - The user input or request string.
-    /// * `chat_id` - The unique identifier for the chat.
-    /// * `message_type` - The type of message (e.g., text, image).
-    /// * `task` - An optional task type to associate with the command.
-    ///
-    /// # Returns
-    /// A `Result` containing the created `Command` or a `CommandError` if an error occurs.
-    async fn register_command(
+impl CreateCommandUseCase for CreateCommandUseCaseImpl {
+    async fn execute(
         &self,
         request: String,
         chat_id: Option<Uuid>,
@@ -130,7 +115,7 @@ impl CommandUseCases for CommandUseCasesImpl {
     ) -> Result<Command, CommandError> {
         let chat = match chat_id {
             Some(chat_id) => ChatId::new(chat_id),
-            None => ChatId::new(self.chat_service.register_chat().await.unwrap().id()),
+            None => ChatId::new(self.create_chat_use_case.execute().await.unwrap().id()),
         };
 
         if let Some(task) = task {
@@ -142,19 +127,6 @@ impl CommandUseCases for CommandUseCasesImpl {
                 .await
         }
     }
-
-    async fn delete_command(&self, command_id: &Uuid) -> Result<(), CommandError> {
-        self.repository
-            .delete(command_id)
-            .await
-            .map_err(|e| e.into())
-    }
-
-    async fn get_commands(&self) -> Result<Vec<Command>, CommandError> {
-        self.repository.find_all().await.map_err(|e| e.into())
-    }
-
-    async fn update_command(&self, command: &Command) -> Result<(), CommandError> {
-        self.repository.update(command).await.map_err(|e| e.into())
-    }
 }
+
+// TODO: Tests

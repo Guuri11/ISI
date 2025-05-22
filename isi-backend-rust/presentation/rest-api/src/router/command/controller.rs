@@ -42,7 +42,7 @@ pub fn command_routes() -> Router<AppState> {
 async fn get_commands_handler(
     State(app_state): State<AppState>,
 ) -> Result<impl IntoResponse, RestError> {
-    let commands = app_state.command_service.get_commands().await?;
+    let commands = app_state.get_commands_use_case.execute().await?;
     Ok(Json(commands).into_response())
 }
 
@@ -58,8 +58,8 @@ async fn register_command_handler(
     Json(payload): Json<CommandInputDTO>,
 ) -> Result<impl IntoResponse, RestError> {
     let command = app_state
-        .command_service
-        .register_command(
+        .create_command_use_case
+        .execute(
             payload.request,
             payload.chat_id,
             MessageType::from(payload.message_type),
@@ -83,6 +83,6 @@ async fn delete_command_handler(
     State(app_state): State<AppState>,
     Path(id): Path<Uuid>,
 ) -> Result<impl IntoResponse, RestError> {
-    app_state.command_service.delete_command(&id).await?;
+    app_state.delete_command_use_case.execute(&id).await?;
     Ok(StatusCode::NO_CONTENT.into_response())
 }

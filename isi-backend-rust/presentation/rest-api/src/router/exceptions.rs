@@ -9,6 +9,7 @@ use business::domain::{
 use serde::Serialize;
 use thiserror::Error;
 use tracing::error;
+use utoipa::ToSchema;
 
 #[derive(Serialize)]
 struct ErrorResponse {
@@ -26,6 +27,14 @@ pub enum RestError {
     Chat(#[from] ChatError),
     #[error("Error desconocido")]
     Unknown(#[from] anyhow::Error),
+}
+
+/// Struct para representar los errores de la API REST en Swagger
+/// Lo hacemos así porque el derive de `ToSchema` no es soportado por anyhow::Error
+#[derive(Serialize, ToSchema)]
+pub struct RestErrorResponse {
+    pub error: String,
+    pub message: String,
 }
 
 /**

@@ -25,12 +25,14 @@ impl CoreChatRepository for ChatRepository {
 
         sqlx::query!(
             r#"
-            INSERT INTO chats (id, created_at, updated_at)
-            VALUES ($1, $2, $3)
+            INSERT INTO chats (id, created_at, updated_at, deleted, deleted_at)
+            VALUES ($1, $2, $3, $4, $5)
             "#,
             chat_db.id,
             chat_db.created_at,
             chat_db.updated_at,
+            chat_db.deleted,
+            chat_db.deleted_at,
         )
         .execute(&self.pool)
         .await
@@ -43,7 +45,7 @@ impl CoreChatRepository for ChatRepository {
         let results = sqlx::query_as!(
             ChatDb,
             r#"
-            SELECT id,created_at, updated_at
+            SELECT id,created_at, updated_at, deleted, deleted_at
             FROM chats
             "#,
         )
@@ -61,7 +63,7 @@ impl CoreChatRepository for ChatRepository {
         sqlx::query_as!(
             ChatDb,
             r#"
-            SELECT id, created_at, updated_at
+            SELECT id, created_at, updated_at, deleted, deleted_at
             FROM chats
             WHERE id = $1
             "#,
@@ -103,12 +105,14 @@ impl CoreChatRepository for ChatRepository {
         let result = sqlx::query!(
             r#"
             UPDATE chats
-            SET created_at = $2, updated_at = $3
+            SET created_at = $2, updated_at = $3, deleted = $4, deleted_at = $5
             WHERE id = $1
             "#,
             chat_db.id,
             chat_db.created_at,
             chat_db.updated_at,
+            chat_db.deleted,
+            chat_db.deleted_at,
         )
         .execute(&self.pool)
         .await;

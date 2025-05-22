@@ -12,19 +12,19 @@ use crate::domain::{
         executor::{TaskExecutor, TaskExecutorImpl},
         model::{AgentResponse, TaskType},
         repository::TaskRepository,
-        use_cases::{TaskUseCases, TaskUseCasesImpl},
+        use_cases::execute::{ExecuteTaskUseCase, ExecuteTaskUseCaseImpl},
     },
 };
 
-impl TaskUseCasesImpl {
+impl ExecuteTaskUseCaseImpl {
     pub fn new(repository: Arc<dyn TaskRepository + Send + Sync>) -> Self {
         Self { repository }
     }
 }
 
 #[async_trait]
-impl TaskUseCases for TaskUseCasesImpl {
-    async fn execute_task(
+impl ExecuteTaskUseCase for ExecuteTaskUseCaseImpl {
+    async fn execute(
         &self,
         agent_response: &AgentResponse,
         chat_id: ChatId,
@@ -69,7 +69,7 @@ impl TaskUseCases for TaskUseCasesImpl {
             fav_name,
             agent_response.task.clone(),
         )
-        .map_err(TaskError::ExecutionFailed)?;
+        .map_err(|e| TaskError::ExecutionFailed(e.to_string()))?;
 
         Ok(command)
     }

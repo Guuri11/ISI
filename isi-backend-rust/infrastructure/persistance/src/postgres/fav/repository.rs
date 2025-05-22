@@ -25,13 +25,15 @@ impl CoreFavRepository for FavRepository {
 
         sqlx::query!(
             r#"
-            INSERT INTO favs (id, name, created_at, updated_at)
-            VALUES ($1, $2, $3, $4)
+            INSERT INTO favs (id, name, created_at, updated_at, deleted, deleted_at)
+            VALUES ($1, $2, $3, $4, $5, $6)
             "#,
             fav_db.id,
             fav_db.name,
             fav_db.created_at,
             fav_db.updated_at,
+            fav_db.deleted,
+            fav_db.deleted_at,
         )
         .execute(&self.pool)
         .await
@@ -44,7 +46,7 @@ impl CoreFavRepository for FavRepository {
         let results = sqlx::query_as!(
             FavDb,
             r#"
-            SELECT id, name, created_at, updated_at
+            SELECT id, name, created_at, updated_at, deleted, deleted_at
             FROM favs
             "#,
         )
@@ -62,7 +64,7 @@ impl CoreFavRepository for FavRepository {
         sqlx::query_as!(
             FavDb,
             r#"
-            SELECT id, name, created_at, updated_at
+            SELECT id, name, created_at, updated_at, deleted, deleted_at
             FROM favs
             WHERE id = $1
             "#,
@@ -79,7 +81,7 @@ impl CoreFavRepository for FavRepository {
         sqlx::query_as!(
             FavDb,
             r#"
-            SELECT id, name, created_at, updated_at
+            SELECT id, name, created_at, updated_at, deleted, deleted_at
             FROM favs
             WHERE name = $1
             "#,
@@ -121,11 +123,15 @@ impl CoreFavRepository for FavRepository {
         let result = sqlx::query!(
             r#"
             UPDATE favs
-            SET name = $2
+            SET name = $2, created_at = $3, updated_at = $4, deleted = $5, deleted_at = $6
             WHERE id = $1
             "#,
             fav_db.id,
             fav_db.name,
+            fav_db.created_at,
+            fav_db.updated_at,
+            fav_db.deleted,
+            fav_db.deleted_at,
         )
         .execute(&self.pool)
         .await;

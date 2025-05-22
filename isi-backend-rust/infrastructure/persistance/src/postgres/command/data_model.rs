@@ -29,6 +29,8 @@ pub struct CommandDb {
     pub fav_name: Option<String>,
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,
+    pub deleted: bool,
+    pub deleted_at: Option<NaiveDateTime>,
 }
 
 impl From<&Command> for CommandDb {
@@ -47,6 +49,8 @@ impl From<&Command> for CommandDb {
             fav_name: Some(command.fav_name().clone()),
             created_at: command.created_at(),
             updated_at: command.updated_at(),
+            deleted: command.deleted(),
+            deleted_at: command.deleted_at(),
         }
     }
 }
@@ -57,6 +61,10 @@ impl TryFrom<&CommandDb> for Command {
     fn try_from(db: &CommandDb) -> Result<Self, Self::Error> {
         Ok(Command::from_repository(
             db.id,
+            db.created_at,
+            db.updated_at,
+            db.deleted,
+            db.deleted_at,
             db.log.clone().map_or_else(|| "".to_string(), |log| log),
             db.content.clone(),
             match db.message_type {
@@ -70,8 +78,6 @@ impl TryFrom<&CommandDb> for Command {
                 .clone()
                 .map_or_else(|| "".to_string(), |name| name),
             TaskType::OtherTopics,
-            db.created_at,
-            db.updated_at,
         ))
     }
 }

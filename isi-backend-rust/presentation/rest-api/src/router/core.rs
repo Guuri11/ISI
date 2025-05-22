@@ -51,14 +51,12 @@ fn configure_cors() -> CorsLayer {
         .allow_headers([AUTHORIZATION, CONTENT_TYPE])
 }
 
-/**
- * Router principal de la aplicación:
- * - Organizar rutas
- * - Aplicar middleware
- * - CORS
- * - Manejo de errores
- * - AppState
- */
+/// Router principal de la aplicación:
+/// - Organizar rutas
+/// - Aplicar middleware
+/// - CORS
+/// - Manejo de errores
+/// - AppState
 pub fn create_router(pool: PgPool, settings: Settings) -> Router {
     let state = AppState::new(pool, settings.clone());
 
@@ -67,7 +65,7 @@ pub fn create_router(pool: PgPool, settings: Settings) -> Router {
     // Configura el middleware de la aplicación, incluyendo manejo de errores y tiempo de espera
     let middleware = ServiceBuilder::new()
         .layer(HandleErrorLayer::new(handle_error))
-        .timeout(Duration::from_secs(300))
+        .timeout(Duration::from_secs(30))
         .layer(cors)
         .layer(middleware::from_fn(print_request_response)); // Depuración
 
@@ -80,12 +78,14 @@ pub fn create_router(pool: PgPool, settings: Settings) -> Router {
         .layer(
             TraceLayer::new_for_http()
                 .make_span_with(|req: &axum::http::Request<_>| {
+                    // Genera un span (lapso de tiempo) de trazado para cada solicitud, útil para monitoreo
                     tracing::info_span!(
                         "request",
                         method = %req.method(),
                         uri = %req.uri()
-                    ) // Genera un span de trazado para cada solicitud, útil para monitoreo
+                    )
                 })
+                // Registra la duración de la solicitud
                 .on_response(
                     |response: &axum::http::Response<_>,
                      latency: std::time::Duration,
@@ -96,6 +96,14 @@ pub fn create_router(pool: PgPool, settings: Settings) -> Router {
                             latency = latency
                         ); // Registra información sobre la respuesta, incluyendo latencia
                     },
+                )
+                // Registra errores del servidor
+                .on_failure(
+                    |error: tower_http::classify::ServerErrorsFailureClass,
+                     latency: std::time::Duration,
+                     _span: &tracing::Span| {
+                        tracing::error!("request failed: error = {error:?}, latency = {latency:?}");
+                    },
                 ),
         )
         .fallback(fallback) // Ruta por defecto para manejar solicitudes no reconocidas
@@ -103,17 +111,17 @@ pub fn create_router(pool: PgPool, settings: Settings) -> Router {
         .with_state(state) // Asocia el estado compartido con el router
 }
 
-// Ruta para verificar el estado de la aplicación, útil para monitoreo y pruebas rápidas
+/// Ruta para verificar el estado de la aplicación, útil para monitoreo y pruebas rápidas
 async fn health_check() -> &'static str {
     "OK\n"
 }
 
-// Ruta por defecto para manejar solicitudes no reconocidas, devuelve un error 404
+/// Ruta por defecto para manejar solicitudes no reconocidas, devuelve un error 404
 pub async fn fallback() -> Result<impl IntoResponse, RestError> {
     Ok((StatusCode::NOT_FOUND, "Not Found"))
 }
 
-// Middleware para registrar solicitudes y respuestas, útil para depuración y auditoría
+/// Middleware para registrar solicitudes y respuestas, útil para depuración y auditoría
 async fn print_request_response(
     req: Request,
     next: Next,
@@ -124,15 +132,10 @@ async fn print_request_response(
 
     let res = next.run(req).await;
 
-    // Descomentar las siguientes líneas para registrar el cuerpo de la respuesta, asegurando anonimización de datos sensibles
-    // let (parts, body) = res.into_parts();
-    // let bytes = buffer_and_print("response", body).await?;
-    // let res = Response::from_parts(parts, Body::from(bytes));
-
     Ok(res)
 }
 
-// Función auxiliar para registrar el cuerpo de solicitudes y respuestas
+/// Función auxiliar para registrar el cuerpo de solicitudes y respuestas
 async fn buffer_and_print<B>(direction: &str, body: B) -> Result<Bytes, (StatusCode, String)>
 where
     B: axum::body::HttpBody<Data = Bytes>,
@@ -155,7 +158,7 @@ where
     Ok(bytes)
 }
 
-// Señal para apagar la aplicación de forma controlada
+/// Señal para apagar la aplicación de forma controlada
 pub async fn shutdown_signal() {
     tokio::signal::ctrl_c()
         .await

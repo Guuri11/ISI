@@ -4,21 +4,30 @@ use crate::domain::errors::RepositoryError;
 
 #[derive(Debug, Error)]
 pub enum TaskError {
-    #[error("Task not found: {0}")]
+    #[error("task.not_found")]
     NotFound(String),
-    #[error("Execution failed: {0}")]
+    #[error("task.already_exists")]
+    DuplicateTask(String),
+    #[error("task.repository_error")]
+    RepositoryError(String),
+    #[error("task.validation_error")]
+    ValidationError(String),
+    #[error("task.execution_failed")]
     ExecutionFailed(String),
-    #[error("Unknown error occurred: {0}")]
+    #[error("task.unknown")]
     Unknown(#[from] anyhow::Error),
 }
 
+/**
+ * Matches the RepositoryError to the TaskError.
+ */
 impl From<RepositoryError> for TaskError {
     fn from(err: RepositoryError) -> Self {
         match err {
             RepositoryError::NotFound(msg) => Self::NotFound(msg),
-            RepositoryError::DuplicateEntity(entity) => Self::ExecutionFailed(entity),
-            RepositoryError::Persistence(msg) => Self::ExecutionFailed(msg),
-            RepositoryError::DatabaseError(msg) => Self::ExecutionFailed(msg),
+            RepositoryError::Persistence(msg) => Self::RepositoryError(msg),
+            RepositoryError::DatabaseError(msg) => Self::RepositoryError(msg),
+            RepositoryError::Duplicated(msg) => Self::DuplicateTask(msg),
         }
     }
 }

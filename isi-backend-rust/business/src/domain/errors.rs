@@ -2,6 +2,6 @@
 pub enum RepositoryError {
     NotFound(String),
     Persistence(String),
-    DuplicateEntity(String),
+    Duplicated(String),
     DatabaseError(String),
 }

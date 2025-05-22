@@ -4,15 +4,15 @@ use crate::domain::errors::RepositoryError;
 
 #[derive(Debug, Error)]
 pub enum FavError {
-    #[error("Fav not found")]
+    #[error("fav.not_found")]
     NotFound(String),
-    #[error("Some error occurred while processing the request")]
-    RepositoryError(String),
-    #[error("Fav already exists")]
+    #[error("fav.already_exists")]
     DuplicateFav(String),
-    #[error("Validation error")]
-    Validation(String),
-    #[error("Unknown error occurred")]
+    #[error("fav.repository_error")]
+    RepositoryError(String),
+    #[error("fav.validation_error")]
+    ValidationError(String),
+    #[error("fav.unknown")]
     Unknown(#[from] anyhow::Error),
 }
 
@@ -24,8 +24,8 @@ impl From<RepositoryError> for FavError {
         match err {
             RepositoryError::NotFound(msg) => Self::NotFound(msg),
             RepositoryError::Persistence(msg) => Self::RepositoryError(msg),
-            RepositoryError::DuplicateEntity(entity) => Self::DuplicateFav(entity),
             RepositoryError::DatabaseError(msg) => Self::RepositoryError(msg),
+            RepositoryError::Duplicated(msg) => Self::DuplicateFav(msg),
         }
     }
 }
