@@ -10,7 +10,7 @@ pub enum TaskType {
     LinkedinOfferRejection,
 }
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct AgentResponse {
     pub task: TaskType,
     pub parameters: serde_json::Value,

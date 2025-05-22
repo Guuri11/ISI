@@ -48,12 +48,12 @@ impl TaskUseCases for TaskUseCasesImpl {
                 TaskExecutorImpl::bookmark_recommendations(topic)
             }
             TaskType::OtherTopics => {
-                let topic = self.get_key("topic".to_string(), &agent_response);
-                TaskExecutorImpl::other_topics(topic)
+                let answer = self.get_key("answer".to_string(), &agent_response);
+                TaskExecutorImpl::other_topics(self.repository.clone(), answer)
             }
             TaskType::LinkedinOfferRejection => {
                 let offer = self.get_key("offer".to_string(), &agent_response);
-                TaskExecutorImpl::linkedin_offer_rejection(offer)
+                TaskExecutorImpl::linkedin_offer_rejection(self.repository.clone(), offer)
             }
         }
         .await;

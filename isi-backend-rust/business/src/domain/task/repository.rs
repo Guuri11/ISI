@@ -12,4 +12,6 @@ pub trait TaskRepository: Send + Sync {
         code: String,
         requirements: String,
     ) -> Result<String, RepositoryError>;
+    async fn other_topics(&self, topic: String) -> Result<String, RepositoryError>;
+    async fn linkedin_offer_rejection(&self, offer: String) -> Result<String, RepositoryError>;
 }

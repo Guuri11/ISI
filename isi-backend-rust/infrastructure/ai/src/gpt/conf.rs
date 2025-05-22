@@ -30,7 +30,7 @@ impl GPTClient {
         let url = format!("{}/chat/completions", self.base_url);
 
         let request_body = serde_json::json!({
-            "model": "gpt-3.5-turbo",
+            "model": "gpt-4.1-2025-04-14",
             "messages": messages,
         });
 

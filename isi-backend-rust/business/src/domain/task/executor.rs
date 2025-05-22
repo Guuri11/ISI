@@ -23,8 +23,14 @@ pub trait TaskExecutor {
     async fn weather(location: String) -> Result<String, TaskError>;
     async fn open_app(app_name: String) -> Result<String, TaskError>;
     async fn bookmark_recommendations(topic: String) -> Result<String, TaskError>;
-    async fn other_topics(topic: String) -> Result<String, TaskError>;
-    async fn linkedin_offer_rejection(offer: String) -> Result<String, TaskError>;
+    async fn other_topics(
+        repository: Arc<dyn TaskRepository + Send + Sync>,
+        topic: String,
+    ) -> Result<String, TaskError>;
+    async fn linkedin_offer_rejection(
+        repository: Arc<dyn TaskRepository + Send + Sync>,
+        offer: String,
+    ) -> Result<String, TaskError>;
 }
 
 pub struct TaskExecutorImpl;
@@ -53,11 +59,19 @@ impl TaskExecutor for TaskExecutorImpl {
         Ok(format!("Bookmark recommendations for: {}", topic))
     }
 
-    async fn other_topics(topic: String) -> Result<String, TaskError> {
-        Ok(format!("Handling other topic: {}", topic))
+    async fn other_topics(
+        repository: Arc<dyn TaskRepository + Send + Sync>,
+        topic: String,
+    ) -> Result<String, TaskError> {
+        let result = repository.other_topics(topic).await?;
+        Ok(result)
     }
 
-    async fn linkedin_offer_rejection(offer: String) -> Result<String, TaskError> {
-        Ok(format!("LinkedIn offer rejection: {}", offer))
+    async fn linkedin_offer_rejection(
+        repository: Arc<dyn TaskRepository + Send + Sync>,
+        offer: String,
+    ) -> Result<String, TaskError> {
+        let result = repository.linkedin_offer_rejection(offer).await?;
+        Ok(result)
     }
 }

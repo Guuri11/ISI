@@ -5,6 +5,7 @@ use async_trait::async_trait;
 use uuid::Uuid;
 
 use crate::domain::{
+    chat::use_cases::ChatUseCases,
     command::{
         errors::CommandError,
         model::Command,
@@ -19,10 +20,12 @@ impl CommandUseCasesImpl {
     pub fn new(
         repository: Arc<dyn CommandRepository + Send + Sync>,
         task_service: Arc<dyn TaskUseCases + Send + Sync>,
+        chat_service: Arc<dyn ChatUseCases + Send + Sync>,
     ) -> Self {
         Self {
             repository,
             task_service,
+            chat_service,
         }
     }
 
@@ -121,16 +124,21 @@ impl CommandUseCases for CommandUseCasesImpl {
     async fn register_command(
         &self,
         request: String,
-        chat_id: ChatId,
+        chat_id: Option<Uuid>,
         message_type: MessageType,
         task: Option<TaskType>,
     ) -> Result<Command, CommandError> {
+        let chat = match chat_id {
+            Some(chat_id) => ChatId::new(chat_id),
+            None => ChatId::new(self.chat_service.register_chat().await.unwrap().id()),
+        };
+
         if let Some(task) = task {
-            let command = self.create_command(&request, chat_id, message_type, task)?;
+            let command = self.create_command(&request, chat, message_type, task)?;
             self.repository.save(&command).await?;
             Ok(command)
         } else {
-            self.handle_taskless_command(&request, chat_id, message_type)
+            self.handle_taskless_command(&request, chat, message_type)
                 .await
         }
     }

@@ -44,6 +44,7 @@ impl AppState {
         let command_service: Arc<dyn CommandUseCases> = Arc::new(CommandUseCasesImpl {
             repository: command_repository,
             task_service: task_service.clone(),
+            chat_service: chat_service.clone(),
         });
 
         let fav_service: Arc<dyn FavUseCases> = Arc::new(FavUseCasesImpl {

@@ -75,7 +75,7 @@ impl From<TaskType> for TaskDTO {
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct CommandInputDTO {
     pub request: String,
-    pub chat_id: Uuid,
+    pub chat_id: Option<Uuid>,
     pub message_type: MessageTypeDTO,
     pub task: Option<TaskDTO>,
 }
