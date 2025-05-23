@@ -26,7 +26,7 @@ impl CoreTaskRepository for TaskRepository {
         - Refactor: si pide refactorizar algo. Parámetros: code, requirements
         - Weather: si pregunta por el tiempo. Parámetros: location (opcional)
         - OpenApp: si pide abrir una aplicación. Parámetros: app_name
-        - BookmarkRecommendations: si pide recomendaciones de marcadores. Parámetros: topic
+        - BookmarkRecommendations: si pide recomendaciones de marcadores, o guardar cualquier recurso. Parámetros: topic
         - LinkedinOfferRejection: si pide rechazar una oferta de trabajo en LinkedIn. Parámetros: offer
         - OtherTopics: No aplica al resto de tareas posibles. Simplemente responde a la preguntar del usuario. Parámetros: answer
         - Unknown: si no se entiende.
@@ -59,6 +59,8 @@ impl CoreTaskRepository for TaskRepository {
 
         let parsed: AgentResponse = serde_json::from_str(&response)
             .map_err(|err| RepositoryError::NotFound(err.to_string()))?;
+
+        println!("Parsed: {:?}", parsed);
 
         Ok(parsed)
     }

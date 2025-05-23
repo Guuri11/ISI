@@ -4,6 +4,7 @@ use async_trait::async_trait;
 
 use crate::domain::{
     command::{model::Command, value_objets::ChatId},
+    fav::use_cases::create::CreateFavUseCase,
     task::{errors::TaskError, model::AgentResponse, repository::TaskRepository},
 };
 
@@ -20,4 +21,5 @@ pub trait ExecuteTaskUseCase: Send + Sync {
 
 pub struct ExecuteTaskUseCaseImpl {
     pub repository: Arc<dyn TaskRepository + Send + Sync>,
+    pub fav_create_usecase: Arc<dyn CreateFavUseCase + Send + Sync>,
 }

@@ -12,7 +12,7 @@ use crate::domain::{
         use_cases::create::{CreateCommandUseCase, CreateCommandUseCaseImpl},
         value_objets::{ChatId, MessageType},
     },
-    task::{errors::TaskError, model::TaskType, use_cases::execute::ExecuteTaskUseCase},
+    task::{model::TaskType, use_cases::execute::ExecuteTaskUseCase},
 };
 
 impl CreateCommandUseCaseImpl {
@@ -51,7 +51,7 @@ impl CreateCommandUseCaseImpl {
             .execute_task_use_case
             .get_task_type(request)
             .await
-            .map_err(|e| CommandError::TaskError(TaskError::ExecutionFailed(e.to_string())))?;
+            .map_err(CommandError::TaskError)?;
 
         let command = self.create_command(
             request,
@@ -65,7 +65,7 @@ impl CreateCommandUseCaseImpl {
             .execute_task_use_case
             .execute(&agent_response, chat_id)
             .await
-            .map_err(|e| CommandError::TaskError(TaskError::ExecutionFailed(e.to_string())))?;
+            .map_err(CommandError::TaskError)?;
 
         self.repository.save(&command_response).await?;
 

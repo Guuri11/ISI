@@ -2,6 +2,8 @@ use std::sync::Arc;
 
 use async_trait::async_trait;
 
+use crate::domain::fav::use_cases::create::CreateFavUseCase;
+
 /// This module defines the TaskExecutor trait and its implementation.
 /// The TaskExecutor trait provides methods for executing various tasks.
 /// Each method takes a string input and returns a Result with either a string output or a TaskError.
@@ -22,7 +24,10 @@ pub trait TaskExecutor {
     ) -> Result<String, TaskError>;
     async fn weather(location: String) -> Result<String, TaskError>;
     async fn open_app(app_name: String) -> Result<String, TaskError>;
-    async fn bookmark_recommendations(topic: String) -> Result<String, TaskError>;
+    async fn bookmark_recommendations(
+        topic: String,
+        fav_create_use_case: Arc<dyn CreateFavUseCase + Send + Sync>,
+    ) -> Result<String, TaskError>;
     async fn other_topics(
         repository: Arc<dyn TaskRepository + Send + Sync>,
         topic: String,
@@ -31,47 +36,4 @@ pub trait TaskExecutor {
         repository: Arc<dyn TaskRepository + Send + Sync>,
         offer: String,
     ) -> Result<String, TaskError>;
-}
-
-pub struct TaskExecutorImpl;
-
-#[async_trait]
-impl TaskExecutor for TaskExecutorImpl {
-    async fn refactor(
-        repository: Arc<dyn TaskRepository + Send + Sync>,
-        code: String,
-        requirements: String,
-    ) -> Result<String, TaskError> {
-        let result = repository.code_assistant(code, requirements).await?;
-        Ok(result)
-    }
-
-    async fn weather(location: String) -> Result<String, TaskError> {
-        Ok(format!("Weather in {} on", location))
-    }
-
-    async fn open_app(app_name: String) -> Result<String, TaskError> {
-        // Open the app using the app name
-        Ok(format!("Opening app: {}", app_name))
-    }
-
-    async fn bookmark_recommendations(topic: String) -> Result<String, TaskError> {
-        Ok(format!("Bookmark recommendations for: {}", topic))
-    }
-
-    async fn other_topics(
-        repository: Arc<dyn TaskRepository + Send + Sync>,
-        topic: String,
-    ) -> Result<String, TaskError> {
-        let result = repository.other_topics(topic).await?;
-        Ok(result)
-    }
-
-    async fn linkedin_offer_rejection(
-        repository: Arc<dyn TaskRepository + Send + Sync>,
-        offer: String,
-    ) -> Result<String, TaskError> {
-        let result = repository.linkedin_offer_rejection(offer).await?;
-        Ok(result)
-    }
 }

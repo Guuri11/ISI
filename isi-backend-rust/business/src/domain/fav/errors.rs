@@ -1,6 +1,6 @@
 use thiserror::Error;
 
-use crate::domain::errors::RepositoryError;
+use crate::domain::{errors::RepositoryError, screenshot::errors::ScreenshotError};
 
 #[derive(Debug, Error)]
 pub enum FavError {
@@ -12,6 +12,8 @@ pub enum FavError {
     RepositoryError(String),
     #[error("fav.validation_error")]
     ValidationError(String),
+    #[error("fav.screenshot_error")]
+    ScreenshotError(#[from] ScreenshotError),
     #[error("fav.unknown")]
     Unknown(#[from] anyhow::Error),
 }

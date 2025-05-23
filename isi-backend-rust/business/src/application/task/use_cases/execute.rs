@@ -2,26 +2,35 @@ use std::sync::Arc;
 
 use async_trait::async_trait;
 
-use crate::domain::{
-    command::{
-        model::Command,
-        value_objets::{ChatId, MessageType},
-    },
-    task::{
-        errors::TaskError,
-        executor::{TaskExecutor, TaskExecutorImpl},
-        model::{AgentResponse, TaskType},
-        repository::TaskRepository,
-        use_cases::execute::{ExecuteTaskUseCase, ExecuteTaskUseCaseImpl},
+use crate::{
+    application::task::executor::TaskExecutorImpl,
+    domain::{
+        command::{
+            model::Command,
+            value_objets::{ChatId, MessageType},
+        },
+        fav::use_cases::create::CreateFavUseCase,
+        task::{
+            errors::TaskError,
+            executor::TaskExecutor,
+            model::{AgentResponse, TaskType},
+            repository::TaskRepository,
+            use_cases::execute::{ExecuteTaskUseCase, ExecuteTaskUseCaseImpl},
+        },
     },
 };
 
 impl ExecuteTaskUseCaseImpl {
-    pub fn new(repository: Arc<dyn TaskRepository + Send + Sync>) -> Self {
-        Self { repository }
+    pub fn new(
+        repository: Arc<dyn TaskRepository + Send + Sync>,
+        fav_create_usecase: Arc<dyn CreateFavUseCase + Send + Sync>,
+    ) -> Self {
+        Self {
+            repository,
+            fav_create_usecase,
+        }
     }
 }
-
 #[async_trait]
 impl ExecuteTaskUseCase for ExecuteTaskUseCaseImpl {
     async fn execute(
@@ -45,7 +54,7 @@ impl ExecuteTaskUseCase for ExecuteTaskUseCaseImpl {
             }
             TaskType::BookmarkRecommendations => {
                 let topic = self.get_key("topic".to_string(), &agent_response);
-                TaskExecutorImpl::bookmark_recommendations(topic)
+                TaskExecutorImpl::bookmark_recommendations(topic, self.fav_create_usecase.clone())
             }
             TaskType::OtherTopics => {
                 let answer = self.get_key("answer".to_string(), &agent_response);

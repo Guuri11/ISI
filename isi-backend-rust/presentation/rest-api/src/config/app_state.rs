@@ -8,10 +8,13 @@ use business::domain::{
         delete::{DeleteCommandUseCase, DeleteCommandUseCaseImpl},
         get_by::{GetByCommandUseCase, GetByCommandUseCaseImpl},
     },
+    fav::use_cases::create::{CreateFavUseCase, CreateFavUseCaseImpl},
+    screenshot::service::ScreenshotServiceImpl,
     task::use_cases::execute::{ExecuteTaskUseCase, ExecuteTaskUseCaseImpl},
 };
 use persistance::postgres::{
     chat::repository::ChatRepository, command::repository::CommandRepository,
+    fav::repository::FavRepository,
 };
 use sqlx::PgPool;
 
@@ -29,6 +32,7 @@ impl AppState {
     pub fn new(pool: PgPool, settings: Settings) -> Self {
         // Repositories
         let chat_repository = Arc::new(ChatRepository::new(pool.clone()));
+        let fav_repository = Arc::new(FavRepository::new(pool.clone()));
         let command_repository = Arc::new(CommandRepository::new(pool.clone()));
         let gpt_client = GPTClient::new(settings.ai_api_key.clone(), settings.ai_api_url.clone());
         let task_repository = Arc::new(TaskRepository::new(gpt_client.clone()));
@@ -42,8 +46,17 @@ impl AppState {
             Arc::new(GetByCommandUseCaseImpl {
                 repository: command_repository.clone(),
             });
+
+        let screenshot_service = Arc::new(ScreenshotServiceImpl);
+
+        let create_fav_use_case: Arc<dyn CreateFavUseCase> = Arc::new(CreateFavUseCaseImpl {
+            repository: fav_repository.clone(),
+            screenshot_service: screenshot_service,
+        });
+
         let execute_task_use_case: Arc<dyn ExecuteTaskUseCase> = Arc::new(ExecuteTaskUseCaseImpl {
             repository: task_repository,
+            fav_create_usecase: create_fav_use_case.clone(),
         });
 
         let create_command_use_case: Arc<dyn CreateCommandUseCase> =

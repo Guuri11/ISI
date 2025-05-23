@@ -8,9 +8,13 @@ use uuid::Uuid;
 
 #[derive(Debug, Clone, Deserialize, Serialize, ToSchema)]
 pub enum MessageTypeDTO {
+    #[serde(rename = "ASSISTANT")]
     Assistant,
+    #[serde(rename = "FUNCTION")]
     Function,
+    #[serde(rename = "SYSTEM")]
     System,
+    #[serde(rename = "USER")]
     User,
 }
 
@@ -38,11 +42,17 @@ impl From<MessageType> for MessageTypeDTO {
 
 #[derive(Debug, Clone, Deserialize, Serialize, ToSchema)]
 pub enum TaskDTO {
+    #[serde(rename = "REFACTOR")]
     Refactor,
+    #[serde(rename = "WEATHER")]
     Weather,
+    #[serde(rename = "OPEN_APP")]
     OpenApp,
+    #[serde(rename = "BOOKMARK_RECOMMENDATIONS")]
     BookmarkRecommendations,
+    #[serde(rename = "OTHER_TOPICS")]
     OtherTopics,
+    #[serde(rename = "LINKEDIN_OFFER_REJECTION")]
     LinkedinOfferRejection,
 }
 
@@ -75,7 +85,9 @@ impl From<TaskType> for TaskDTO {
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct CommandInputDTO {
     pub request: String,
+    #[serde(rename = "chatId")]
     pub chat_id: Option<Uuid>,
+    #[serde(rename = "messageType")]
     pub message_type: MessageTypeDTO,
     pub task: Option<TaskDTO>,
 }
@@ -83,12 +95,17 @@ pub struct CommandInputDTO {
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct CommandOutputDTO {
     pub id: Uuid,
+    #[serde(rename = "favName")]
     pub fav_name: String,
     pub content: String,
+    #[serde(rename = "chatId")]
     pub chat_id: Uuid,
+    #[serde(rename = "messageType")]
     pub message_type: MessageTypeDTO,
     pub task: TaskDTO,
+    #[serde(rename = "createdAt")]
     pub created_at: String,
+    #[serde(rename = "updatedAt")]
     pub updated_at: String,
 }
 

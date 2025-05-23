@@ -1,4 +1,12 @@
 pub mod application {
+    pub mod screenshot {
+        pub mod service;
+    }
+
+    pub mod clipboard {
+        pub mod service;
+    }
+
     pub mod chat {
         pub mod use_cases {
             pub mod create;
@@ -26,6 +34,7 @@ pub mod application {
         pub mod use_cases {
             pub mod execute;
         }
+        pub mod executor;
     }
 }
 
@@ -74,6 +83,16 @@ pub mod domain {
         pub mod use_cases {
             pub mod execute;
         }
+    }
+
+    pub mod screenshot {
+        pub mod errors;
+        pub mod service;
+    }
+
+    pub mod clipboard {
+        pub mod errors;
+        pub mod service;
     }
 
     pub mod errors;
