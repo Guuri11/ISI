@@ -14,4 +14,4 @@ expect fun getGeocoding(): Geocoder
 
 expect fun openMaps(latitude: Double, longitude: Double)
 
-expect fun openApp(app: AppsAvailable)
+expect fun openApp(app: AppsAvailable, args: String)

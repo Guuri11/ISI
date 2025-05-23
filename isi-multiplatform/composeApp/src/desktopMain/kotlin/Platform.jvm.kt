@@ -21,6 +21,6 @@ actual fun openMaps(latitude: Double, longitude: Double) {
     throw Exception("Maps not available for Desktop")
 }
 
-actual fun openApp(app: AppsAvailable) {
+actual fun openApp(app: AppsAvailable, args: String) {
     throw Exception("Open app not available for Desktop")
 }

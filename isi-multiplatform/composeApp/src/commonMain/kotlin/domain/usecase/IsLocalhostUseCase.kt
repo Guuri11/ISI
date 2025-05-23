@@ -2,7 +2,7 @@ package domain.usecase
 
 import platform.AppContext
 
-fun isLocal(wifis: String): Boolean {
+fun isLocalhostUseCase(wifis: String): Boolean {
     val wifiSSIDs = wifis.split("++")
 
     return isAllSSIDsNotConnected(wifiSSIDs)
@@ -11,6 +11,6 @@ fun isLocal(wifis: String): Boolean {
 
 private fun isAllSSIDsNotConnected(wifiSSIDs: List<String>): Boolean {
     return wifiSSIDs.all { ssid ->
-        ssid != getSSID(context = AppContext)
+        ssid != getSsidUseCase(context = AppContext)
     }
 }

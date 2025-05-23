@@ -24,6 +24,6 @@ actual fun openMaps(latitude: Double, longitude: Double) {
     openGoogleMapsWithCoordinates(context = AppContext, latitude, longitude)
 }
 
-actual fun openApp(app: AppsAvailable) {
-    utils.openApp(context = AppContext, app)
+actual fun openApp(app: AppsAvailable, args: String) {
+    utils.openApp(context = AppContext, app, args)
 }

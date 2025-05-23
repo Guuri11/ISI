@@ -6,7 +6,7 @@ import data.repository.SettingsRepository
 import data.service.storeCarCoordinatesService
 import data.sources.Database
 import dev.jordond.compass.geolocation.Geolocator
-import domain.network.isLocal
+import domain.usecase.isLocalhostUseCase
 import getGeoLocator
 import getHttpClient
 import getPlatform
@@ -79,7 +79,7 @@ class IsiViewModel() :
             )
         }
 
-        if (settings.wifis.isNullOrBlank() || isLocal(settings.wifis!!)) {
+        if (settings.wifis.isNullOrBlank() || isLocalhostUseCase(settings.wifis!!)) {
             currentEnvironment = EnvironmentSetting.LOCAL
             repo = CommandRepositoryLocalImpl(httpClient = getHttpClient())
         } else {
@@ -137,18 +137,33 @@ class IsiViewModel() :
                 prompt
             )
 
-            TaskType.OPEN_APP.options.contains(lowerCaseCommand) -> openApp(prompt)
+            TaskType.OPEN_APP_CAMERA_VISION.matches(lowerCaseCommand) -> openApp(
+                prompt,
+                AppsAvailable.CAMERA_VISION
+            )
+
+            TaskType.OPEN_APP_YOUTUBE.matches(lowerCaseCommand) -> {
+                val query = lowerCaseCommand.removePrefix("busca en youtube").trim().takeIf { it.isNotEmpty() }
+
+                openApp(prompt, AppsAvailable.YOUTUBE, query)
+            }
+
+            TaskType.OPEN_APP_SPOTIFY.matches(lowerCaseCommand) -> {
+                val query = lowerCaseCommand.removePrefix("busca en spotify").trim().takeIf { it.isNotEmpty() }
+
+                openApp(prompt, AppsAvailable.SPOTIFY, query)
+            }
 
             else -> sendCommand(prompt, chat)
         }
     }
 
-    private fun openApp(prompt: String) {
+    private fun openApp(prompt: String, app: AppsAvailable, args: String? = null) {
         val commandFromStringUser =
             createCommandFromString(content = prompt, messageType = MessageType.USER)
         updateCommandsList(commandFromStringUser)
 
-        openApp(AppsAvailable.CAMERA_VISION)
+        openApp(app, args.orEmpty())
     }
 
     fun saveCarCoordinates(prompt: String? = null) {
