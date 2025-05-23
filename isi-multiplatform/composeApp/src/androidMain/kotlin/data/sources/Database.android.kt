@@ -10,7 +10,7 @@ actual class Database {
     private val dbQuery = database.appDatabaseQueries
 
     /**
-     * Get setting from DB. If it does not exists, then create a default one
+     * Get setting from DB. If it does not exist, then create a default one
      */
     actual fun getSettings(): Settings {
         return try {
