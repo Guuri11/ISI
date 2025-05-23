@@ -5,7 +5,7 @@ import android.net.wifi.WifiManager
 import android.os.Build
 import platform.AppContext
 
-actual fun getSSID(context: AppContext): String? {
+actual fun getSsidUseCase(context: AppContext): String? {
     val wifiManager = AppContext.get().applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
     val wifiInfo = wifiManager.connectionInfo
 

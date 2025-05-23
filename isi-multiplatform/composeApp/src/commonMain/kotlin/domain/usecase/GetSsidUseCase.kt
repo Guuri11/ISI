@@ -2,4 +2,4 @@ package domain.usecase
 
 import platform.AppContext
 
-expect fun getSSID(context: AppContext): String?
+expect fun getSsidUseCase(context: AppContext): String?

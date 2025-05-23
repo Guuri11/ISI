@@ -2,7 +2,7 @@ package domain.usecase
 
 import platform.AppContext
 
-actual fun getSSID(context: AppContext): String? {
+actual fun getSsidUseCase(context: AppContext): String? {
     val os = System.getProperty("os.name").lowercase()
     if (os.contains("win")) {
         val process = Runtime.getRuntime().exec("netsh wlan show interfaces")
