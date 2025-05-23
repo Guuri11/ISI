@@ -157,7 +157,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "ISI"
-            packageVersion = "1.1.4"
+            packageVersion = "1.1.5"
             modules("java.sql")
         }
     }
