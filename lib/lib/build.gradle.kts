@@ -62,7 +62,7 @@ tasks.named<Test>("test") {
     useJUnitPlatform()
 }
 
-version = "1.2.0"
+version = "1.3.1"
 
 publishing {
     publications {
@@ -71,7 +71,7 @@ publishing {
 
             groupId = "com.isi"
             artifactId = "lib"
-            version = "1.2.0"
+            version = "1.3.1"
         }
     }
     repositories {

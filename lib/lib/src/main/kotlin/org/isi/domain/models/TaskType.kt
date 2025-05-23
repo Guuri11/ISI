@@ -24,15 +24,26 @@ enum class TaskType(val onlyLocal: Boolean, val value: String, val show: Boolean
      */
     REFACTOR(false, "Refactor", true, listOf()),
 
-    OPEN_APP(false, "Open App", false, listOf(
+    /**
+     * Open smart camera. Aka Google Lens
+     */
+    OPEN_APP_CAMERA_VISION(false, "Open App", false, listOf(
         // Smart camera
-        "busca esto",
-        "escanea",
-        "mira esto",
-        "analiza",
-        "explora",
-        "qué es esto",
-        "lente mágica"
+        "busca esto", "escanea", "mira esto", "analiza", "explora", "qué es esto", "lente mágica",
+    )),
+
+    /**
+     * Open YouTube
+     */
+    OPEN_APP_YOUTUBE(false, "Open App", false, listOf(
+        "abre youtube", "busca en youtube",
+    )),
+
+    /**
+     * Open Spotify
+     */
+    OPEN_APP_SPOTIFY(false, "Open App", false, listOf(
+        "abre spotify", "busca en spotify"
     )),
 
     /**
@@ -91,5 +102,7 @@ enum class TaskType(val onlyLocal: Boolean, val value: String, val show: Boolean
     "guarda la ubicación",
     "aparca",
     "guarda las coordenadas",
-    ))
+    ));
+
+    fun matches(command: String) = options.any { Regex(it, RegexOption.IGNORE_CASE).containsMatchIn(command) }
 }
