@@ -1,0 +1,24 @@
+{
+    "login": {
+        "title": "Iniciar sesión",
+        "subtitle": "Accede a tu cuenta",
+        "usernamePlaceholder": "Usuario",
+        "passwordPlaceholder": "Contraseña",
+        "retry": "Reintentar",
+        "loginButton": "Entrar",
+        "loading": "Cargando..."
+    },
+    "hello": "¡Hola, %{name}!",
+    "this-is-your-profile": "Este es tu perfil",
+    "error": {
+        "AUTHENTICATION": "Autenticación fallida.",
+        "AUTHORIZATION": "Se requiere autorización.",
+        "NETWORK": "Error de red, por favor intente nuevamente.",
+        "UNKNOWN": "Ocurrió un error desconocido.",
+        "USER_NOT_FOUND": "Usuario no encontrado.",
+        "EMAIL_FORMAT_NOT_VALID": "Formato de correo electrónico no válido.",
+        "USERNAME_EMPTY": "El nombre de usuario no puede estar vacío.",
+        "PASSWORD_FORMAT_NOT_VALID": "El formato de la contraseña no es válido.",
+        "INVALID_CREDENTIALS": "Credenciales inválidas proporcionadas."
+    }
+}

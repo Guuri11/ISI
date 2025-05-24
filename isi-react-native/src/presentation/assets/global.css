@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        /* COLORS */
+        --base-black: 0 0 0%;
+        --base-white: 0 0 100%;
+        --bondi-blue-100: 184 92% 90%;
+        --bondi-blue-200: 184 91% 82%;
+        --bondi-blue-300: 185 90% 69%;
+        --bondi-blue-400: 186 83% 53%;
+        --bondi-blue-50: 180 100% 96%;
+        --bondi-blue-500: 187 92% 43%;
+        --bondi-blue-600: 190 89% 35%;
+        --bondi-blue-700: 191 80% 31%;
+        --bondi-blue-800: 193 68% 27%;
+        --bondi-blue-900: 194 62% 24%;
+        --bondi-blue-950: 194 76% 15%;
+        /* COLORS */
+
+        /* THEME */
+        --background: var(--base-white);
+        --foreground: var(--bondi-blue-950);
+        --card: var(--base-white);
+        --card-foreground: var(--bondi-blue-950);
+        --popover: var(--base-white);
+        --popover-foreground: var(--bondi-blue-950);
+        --primary: var(--bondi-blue-900);
+        --primary-foreground: var(--bondi-blue-50);
+        --secondary: var(--bondi-blue-100);
+        --secondary-foreground: var(--bondi-blue-900);
+        --muted: var(--bondi-blue-100);
+        --muted-foreground: 190 13% 28%;
+        --accent: var(--bondi-blue-100);
+        --accent-foreground: var(--bondi-blue-900);
+        --destructive: var(--red-500);
+        --destructive-foreground: var(--bondi-blue-50);
+        --border: var(--bondi-blue-200);
+        --input: var(--bondi-blue-200);
+        --ring: var(--bondi-blue-500);
+        /* THEME */
+    }
+
+    .dark:root {
+        --background: var(--bondi-blue-950);
+        --foreground: var(--bondi-blue-50);
+        --card: var(--bondi-blue-950);
+        --card-foreground: var(--bondi-blue-50);
+        --popover: var(--bondi-blue-950);
+        --popover-foreground: var(--bondi-blue-50);
+        --primary: var(--bondi-blue-50);
+        --primary-foreground: var(--bondi-blue-900);
+        --secondary: var(--bondi-blue-800);
+        --secondary-foreground: var(--bondi-blue-50);
+        --muted: var(--bondi-blue-800);
+        --muted-foreground: var(--bondi-blue-400);
+        --accent: var(--bondi-blue-800);
+        --accent-foreground: var(--bondi-blue-50);
+        --destructive: var(--red-900);
+        --destructive-foreground: var(--bondi-blue-50);
+        --border: var(--bondi-blue-700);
+        --input: var(--bondi-blue-700);
+        --ring: var(--bondi-blue-400);
+    }
+}

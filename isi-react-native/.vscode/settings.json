@@ -1,0 +1,7 @@
+{
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.ts": "always"
+    },
+    "i18n-ally.localesPaths": ["src/presentation/lib/locales"]
+}

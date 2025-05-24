@@ -1,0 +1,36 @@
+{
+    "expo": {
+        "name": "rn-skltn",
+        "slug": "rn-skltn",
+        "version": "1.0.0",
+        "orientation": "portrait",
+        "icon": "./src/presentation/assets/images/icon.png",
+        "scheme": "myapp",
+        "userInterfaceStyle": "automatic",
+        "newArchEnabled": true,
+        "splash": {
+            "image": "./src/presentation/assets/images/splash.png",
+            "resizeMode": "contain",
+            "backgroundColor": "#ffffff"
+        },
+        "assetBundlePatterns": ["**/*"],
+        "ios": {
+            "supportsTablet": true
+        },
+        "android": {
+            "adaptiveIcon": {
+                "foregroundImage": "./src/presentation/assets/images/adaptive-icon.png",
+                "backgroundColor": "#ffffff"
+            }
+        },
+        "web": {
+            "bundler": "metro",
+            "output": "static",
+            "favicon": "./src/presentation/assets/images/favicon.png"
+        },
+        "plugins": ["expo-router", "expo-localization"],
+        "experiments": {
+            "typedRoutes": true
+        }
+    }
+}

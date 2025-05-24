@@ -1,0 +1,25 @@
+{
+    "login": {
+        "title": "Login",
+        "subtitle": "Access your account",
+        "usernamePlaceholder": "Username",
+        "passwordPlaceholder": "Password",
+        "retry": "Retry",
+        "loginButton": "Enter",
+        "loading": "Loading..."
+    },
+    "this-is-your-profile": "This is your profile",
+    "hello": "hello, %{name}!",
+    "error": {
+        "AUTHENTICATION": "Authentication failed.",
+        "AUTHORIZATION": "Authorization required.",
+        "NETWORK": "Network error, please try again.",
+        "UNKNOWN": "Unknown error occurred.",
+        "test": "test",
+        "USER_NOT_FOUND": "User not found.",
+        "EMAIL_FORMAT_NOT_VALID": "Invalid email format.",
+        "USERNAME_EMPTY": "Username cannot be empty.",
+        "PASSWORD_FORMAT_NOT_VALID": "Password format is not valid.",
+        "INVALID_CREDENTIALS": "Invalid credentials provided."
+    }
+}
