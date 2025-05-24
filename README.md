@@ -5,7 +5,7 @@
 ISI is a highly advanced artificial intelligence system designed to provide assistance and facilitate interactive interactions. With its machine learning capability and wide range of features, ISI becomes an invaluable ally for complex tasks and decision-making processes.
 
 ### 🏆️ Motivation
-Looking for a way to build a smart assistant that helps me with some tasks, decisions, or lets me do things faster. Everything done with JVM technologies
+Looking for a way to build a smart assistant that helps me with some tasks, decisions, or lets me do things faster. Done with Rust & Kotlin Multiplatform
 
 Why ISI? ISI was my cat that passed away some time ago, so this is kind of a dedication to it.
 
@@ -41,9 +41,7 @@ https://drive.google.com/file/d/1wEF1zCMSXae-XcyEeHgZAY_gfcmUhA7T/view?usp=drive
 
 **Desktop & Android Client:** Kotlin Multiplatform
 
-**Server:** Spring Boot 3 | JPA | Spring AI with OpenAI
-
-**Java version:** 21
+**Server:** Rust | Axum | Sqlx
 
 **DB**: Postgresql with Docker, also PGAdmin 4 as Db client
 
