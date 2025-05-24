@@ -233,6 +233,7 @@ class IsiViewModel() :
     }
 
     private fun updateCommandsList(command: Command) {
+        allCommands += command
         if (currentEnvironment?.equals(EnvironmentSetting.LOCAL) == true) {
             updateMessagesLocal(command)
         } else {
@@ -273,7 +274,6 @@ class IsiViewModel() :
     }
 
     private fun updateMessagesLocal(command: Command) {
-        allCommands += command
         val taskTypeSelected = (_uiState.value as? IsiUiState)?.taskTypeToFilter
         val filteredCommands = if (taskTypeSelected == null) {
             allCommands

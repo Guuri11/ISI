@@ -15,13 +15,13 @@ import org.isi.domain.models.TaskType
 import org.isi.domain.repository.CommandRepository
 
 class CommandRepositoryImpl(server: String, httpClient: HttpClient) : CommandRepository {
-    private val api = "$server/api/v1"
+    private val api = server
     private val client = httpClient
 
     override suspend fun findAll(): List<Command> {
 
         val commandResponse = client.get("$api/${ApiPath.COMMAND.value}").body<List<Command>>()
-
+        println("$api/${ApiPath.COMMAND.value}")
         if (commandResponse.isEmpty()) return emptyList()
 
         return commandResponse

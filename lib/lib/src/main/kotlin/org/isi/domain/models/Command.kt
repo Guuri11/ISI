@@ -15,6 +15,6 @@ data class Command (
     val messageType: MessageType,
     val task: TaskType? = null,
     @Serializable(with = LocalDateTimeSerializer::class) @SerialName("createdAt") val createdAt: LocalDateTime,
-    @Serializable(with = LocalDateTimeSerializer::class) @SerialName("updateAt") val updatedAt: LocalDateTime
+    @Serializable(with = LocalDateTimeSerializer::class) @SerialName("updatedAt") val updatedAt: LocalDateTime
 )
 
