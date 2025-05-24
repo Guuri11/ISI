@@ -1,5 +1,8 @@
 use business::domain::{
-    command::{model::Command, value_objets::MessageType},
+    command::{
+        model::Command,
+        value_objets::{ChatId, MessageType},
+    },
     task::model::TaskType,
 };
 use serde::{Deserialize, Serialize};
@@ -83,12 +86,22 @@ impl From<TaskType> for TaskDTO {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+pub struct ChatDTO {
+    pub id: Uuid,
+}
+
+impl ChatDTO {
+    pub fn from_chat(chat_id: &ChatId) -> Self {
+        ChatDTO { id: chat_id.id() }
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct CommandInputDTO {
     pub request: String,
     #[serde(rename = "chatId")]
     pub chat_id: Option<Uuid>,
-    #[serde(rename = "messageType")]
-    pub message_type: MessageTypeDTO,
+    #[serde(rename = "task")]
     pub task: Option<TaskDTO>,
 }
 
@@ -98,8 +111,7 @@ pub struct CommandOutputDTO {
     #[serde(rename = "favName")]
     pub fav_name: String,
     pub content: String,
-    #[serde(rename = "chatId")]
-    pub chat_id: Uuid,
+    pub chat: ChatDTO,
     #[serde(rename = "messageType")]
     pub message_type: MessageTypeDTO,
     pub task: TaskDTO,
@@ -115,11 +127,17 @@ impl CommandOutputDTO {
             id: command.id(),
             fav_name: command.fav_name().to_string(),
             content: command.content().to_string(),
-            chat_id: command.chat().id(),
+            chat: ChatDTO::from_chat(&command.chat()),
             message_type: MessageTypeDTO::from(command.message_type().clone()),
             task: TaskDTO::from(command.task().clone()),
-            created_at: command.created_at().to_string(),
-            updated_at: command.updated_at().to_string(),
+            created_at: command
+                .created_at()
+                .format("%Y-%m-%dT%H:%M:%S%.3f")
+                .to_string(),
+            updated_at: command
+                .updated_at()
+                .format("%Y-%m-%dT%H:%M:%S%.3f")
+                .to_string(),
         }
     }
 }

@@ -43,6 +43,11 @@ async fn get_commands_handler(
     State(app_state): State<AppState>,
 ) -> Result<impl IntoResponse, RestError> {
     let commands = app_state.get_commands_use_case.execute().await?;
+    let commands: Vec<CommandOutputDTO> = commands
+        .into_iter()
+        .map(|c| CommandOutputDTO::from_command(&c))
+        .collect();
+
     Ok(Json(commands).into_response())
 }
 
@@ -62,7 +67,7 @@ async fn register_command_handler(
         .execute(
             payload.request,
             payload.chat_id,
-            MessageType::from(payload.message_type),
+            MessageType::User,
             payload.task.map(|task_dto| TaskType::from(task_dto)),
         )
         .await?;

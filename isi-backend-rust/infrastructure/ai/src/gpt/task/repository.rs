@@ -72,7 +72,7 @@ impl CoreTaskRepository for TaskRepository {
     ) -> Result<String, RepositoryError> {
         let prompt = format!(
             r#"
-        Dado el código y los requisitos (si está vacio limpia el código), refactoriza el código para que cumpla con los requisitos.
+        Dado el código y los requisitos (si no hubiera tan solo aplica mejoras de legibilidad), refactoriza el código para que cumpla con los requisitos.
         
         Código:
         {}
