@@ -1,2 +1,12 @@
 static
 isi-backend-rust/.env
+
+lib/.kotlin
+
+isidb
+
+isi-wear/.idea
+
+isi-backend-rust/.vscode/launch.json
+
+isi-backend-rust/.env
